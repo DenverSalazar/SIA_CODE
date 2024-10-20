@@ -65,7 +65,7 @@
               <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
+              <a class="nav-link" href="about.php">About us</a>
             </li>
             <li class="nav-item-x">
               <a class="nav-link logout-link" href="../../php/logout.php">Logout</a>
@@ -192,7 +192,7 @@
           <li><a href="#Home">Home</a></li>
           <li><a href="books.php">Books</a></li>
           <li><a href="../../php/profile.php">Profile</a></li>
-          <li><a href="#">About Us</a></li>
+          <li><a href="about.php">About Us</a></li>
         </ul>
       </div>
       <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
@@ -211,12 +211,6 @@
           <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
           <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
         </address>
-        <div class="footer-social mt-3">
-          <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
       </div>
     </div>
   </div>
