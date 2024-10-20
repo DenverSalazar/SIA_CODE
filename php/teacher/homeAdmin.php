@@ -126,7 +126,7 @@
                             <div class="card-body">
                                 <h5 class="card-title text-center">Feedbacks</h5>
                                 <hr class="divider">
-                                <a href="#" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="admin_feedback.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>

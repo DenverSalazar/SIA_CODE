@@ -87,52 +87,36 @@
           </div>
       </div>   
     </section>
-
-    <section class="books-section py-5" style="background-color: #f8f9fa;">
-  <div class="container">
-    <h2 class="text-center mb-5" style="font-size: 3rem; color: #333;">Featured Books</h2>
-    <div class="row">
-      <!-- Book 1 -->
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <img src="../../img/libro.jpg" class="card-img-top" alt="Book 1" style="height: 300px; object-fit: cover;">
-          <div class="card-body">
-            <h5 class="card-title">The Art of Fiction</h5>
-            <p class="card-text">A masterful exploration of storytelling techniques and narrative structures.</p>
-            <a href="#" class="btn btn-outline-primary">Read More</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Book 2 -->
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <img src="../../img/libro2.jpg" class="card-img-top" alt="Book 2" style="height: 300px; object-fit: cover;">
-          <div class="card-body">
-            <h5 class="card-title">The Silent Echo</h5>
-            <p class="card-text">A gripping mystery that unravels the secrets of a small coastal town.</p>
-            <a href="#" class="btn btn-outline-primary">Read More</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Book 3 -->
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <img src="../../img/libro3.jpg" class="card-img-top" alt="Book 3" style="height: 300px; object-fit: cover;">
-          <div class="card-body">
-            <h5 class="card-title">Quantum Dreams</h5>
-            <p class="card-text">A mind-bending journey through the realms of quantum physics and consciousness.</p>
-            <a href="#" class="btn btn-outline-primary">Read More</a>
-          </div>
-        </div>
-      </div>
-    </div>
     
-    <div class="text-center mt-4">
-      <a href="books.php" class="btn btn-primary btn-lg">Explore All Books</a>
+    <section class="books-section py-5" style="background-color: #f8f9fa;">
+          <?php
+      // Fetch featured books
+      $featured_books_query = mysqli_query($con, "SELECT * FROM books LIMIT 3");
+      $featured_books = mysqli_fetch_all($featured_books_query, MYSQLI_ASSOC);
+      ?>
+    <div class="container">
+        <h2 class="text-center mb-5" style="font-size: 3rem; color: #333;">Featured Books</h2>
+        <div class="row">
+            <?php foreach ($featured_books as $book): ?>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($book['title']) ?>" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($book['title']) ?></h5>
+                            <p class="card-text">By <?= htmlspecialchars($book['author']) ?></p>
+                            <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
+                            <a href="book_details.php?id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="books.php" class="btn btn-primary btn-lg">Explore All Books</a>
+        </div>
     </div>
-  </div>
+</section>
 </section>
 
 <section class="services-section py-5" style="background-color: #ffffff;">

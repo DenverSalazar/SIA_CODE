@@ -100,11 +100,17 @@ mysqli_close($con);
         border-radius: 5px;
         padding: 10px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        min-height: 350px; /* Set a minimum height */
     }
 
     .book img {
         width: 100%;
-        height: auto;
+        height: 250px; /* Fixed height for book covers */
+        object-fit: cover; /* Ensures cover image fits the given size */
         border-bottom: 1px solid #ddd;
         margin-bottom: 10px;
     }
@@ -112,17 +118,26 @@ mysqli_close($con);
     .book-title {
         font-size: 16px;
         margin-bottom: 5px;
+        text-align: center; /* Center-align the title */
     }
 
     .book-status {
         color: #888;
         font-size: 14px;
         margin-bottom: 10px;
+        text-align: center;
     }
 
     .book-meta {
         font-size: 12px;
         color: #888;
+        text-align: center;
+        margin-bottom: 10px; /* Add spacing below meta information */
+    }
+
+    .d-flex {
+        justify-content: space-between;
+        margin-top: auto; /* Push buttons to the bottom */
     }
 
     .upload-btn {
@@ -132,11 +147,13 @@ mysqli_close($con);
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        align-self: center;
     }
 
     .upload-btn i {
         margin-right: 5px;
     }
+
 
     .footer-section {
         background-color: #2c3e50;
@@ -263,14 +280,14 @@ mysqli_close($con);
                 <div class="book-meta">
                     Author: <?= htmlspecialchars($book['author']) ?><br/>
                     Publication Year: <?= htmlspecialchars($book['publication_year']) ?><br/>
-                    Description: <?= htmlspecialchars($book['description']) ?>
+                    Description: <p><?= substr(htmlspecialchars($book['description']), 0, 90) ?>...</p>
                 </div>
                 <div class="d-flex justify-content-between mt-2">
                 <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
                 <a href="deleteBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
                 </div>
             </div>
-        <?php endforeach; ?>
+        <?php endforeach; ?>    
     </div>
 </div>
 </main>
