@@ -1,0 +1,258 @@
+.offcanvas {
+    width: 300px !important;
+}
+
+.navbar {
+    background-color: #f8f9fa;
+}
+
+.offcanvas-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.offcanvas-body {
+    padding: 1rem;
+}
+
+.btn-outline-success {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.btn-outline-success:hover {
+    background-color:#0056b3;
+    border-color: #0056b3;
+}
+
+.offcanvas .nav-item {
+    margin-bottom: 10px;
+}
+
+.offcanvas .nav-item a {
+    color: #333;
+    font-size: 16px;
+}
+
+.logout-link {
+color: red; 
+}
+
+.logout-link:hover {
+color: darkred; 
+}
+
+.offcanvas .nav-item a:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.navbar-brand img {
+    width: 150px;
+}
+
+.offcanvas-header h5 {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .navbar-toggler {
+        position: absolute;
+        right: 20px; 
+        top: 5px;
+    }
+}
+.hs-title{
+  font: 44px rubik, sans-serif;
+  margin: 100px 0px 0px;
+  font-weight: bold;
+}
+
+.hs-des{
+  font: 24px rubik, sans-serif;
+  margin: 10px 0px 16px;
+}
+
+.books-section {
+  background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+}
+
+.books-section h2 {
+  font-family: 'Playfair Display', serif;
+  color: #2c3e50;
+}
+
+.card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+  transition: transform 0.3s ease-in-out;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.card-body {
+  background-color: #ffffff;
+}
+
+.card-title {
+  font-family: 'Merriweather', serif;
+  color: #34495e;
+}
+
+.card-text { font-size: 1.1rem;
+  color: #666;
+}
+
+.btn-outline-primary {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3498db;
+  color: #ffffff;
+}
+
+.card-text {
+  font-family: 'Open Sans', sans-serif;
+  color: #7f8c8d;
+}
+
+.btn-outline-primary {
+  color: #3498db;
+  border-color: #3498db;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3498db;
+  color: #ffffff;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  border-color: #3498db;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: 18px;
+}
+
+.services-section {
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+  }
+  
+  .services-section h2 {
+    font-family: 'Playfair Display', serif;
+    color: #2c3e50;
+  }
+  
+  .service-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+  }
+  
+  .service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .service-card h3 {
+    font-family: ' Merriweather', serif;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .service-card p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    color: #7f8c8d;
+  }
+
+  .footer-section {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+  
+  .footer-logo {
+    filter: brightness(0) invert(1);
+  }
+  
+  .footer-description {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  
+  .footer-heading {
+    font-family: 'Merriweather', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #3498db;
+  }
+  
+  .footer-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-links a:hover {
+    color: #3498db;
+  }
+  
+  .footer -contact {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  
+  .footer-social a {
+    font-size: 1.2rem;
+    color: #ecf0f1;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-social a:hover {
+    color: #3498db;
+  }
+  
+  .footer-bottom {
+    background-color: #333;
+    padding: 1rem 0;
+  }
+  
+  .footer-divider {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 1rem 0;
+  }
+  
+  .footer-copyright {
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
+
+  

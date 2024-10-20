@@ -1,0 +1,219 @@
+.offcanvas {
+    width: 300px !important;
+}
+
+.navbar {
+    background-color: #f8f9fa;
+}
+
+.offcanvas-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.offcanvas-body {
+    padding: 1rem;
+}
+
+.btn-outline-success {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.btn-outline-success:hover {
+    background-color:#0056b3;
+    border-color: #0056b3;
+}
+
+.offcanvas .nav-item {
+    margin-bottom: 10px;
+}
+
+.offcanvas .nav-item a {
+    color: #333;
+    font-size: 16px;
+}
+
+.logout-link {
+color: red; 
+}
+
+.logout-link:hover {
+color: darkred; 
+}
+
+.offcanvas .nav-item a:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.navbar-brand img {
+    width: 150px;
+}
+
+.offcanvas-header h5 {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .navbar-toggler {
+        position: absolute;
+        right: 20px; 
+        top: 5px;
+    }
+}
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.content {
+    padding: 20px;
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+}
+.content.shifted {
+    margin-left: 250px;
+}
+.content .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+.footer {
+    text-align: right;
+    padding: 10px 20px;
+    background-color: #f4f4f4;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.btn-view {
+    background-color: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-view:hover {
+    background-color: rgba(255,255,255,0.3);
+    color: white;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-books {
+            background-color: #03a9f4;
+            color: white;
+        }
+
+        .card-dashboard {
+            background-color: #28a745;
+            color: white;
+        }
+        .card-feedback {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .card-profile {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-subtitle {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .welcome {
+            background-color: #e7e9fc;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .welcome .text {
+            flex: 1;
+        }
+        .welcome .text h1 {
+            font-size: 36px;
+            margin: 0;
+        }
+        .welcome .text p {
+            color: #6c757d;
+        }
+        .circle-person {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        
+        .circle-person svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .circle-person {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .circle-person {
+                width: 100px;
+                height: 100px;
+            }
+        }
