@@ -131,7 +131,7 @@
         echo '<td>'.$result['fName'].' '.$result['lName'].'</td>';
         echo '<td>'.$result['email'].'</td>';
         echo '<td>
-                <a href="teacher_activity_logs.php?id='.$result['id'].'" class="btn btn-primary">View Activity Logs</a>
+                <a href="activity_logs.php?id='.$result['id'].'" class="btn btn-primary">View Activity Logs</a>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal'.$result['id'].'">Delete Account</button>
               </td>';
         echo '</tr>';

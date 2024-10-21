@@ -83,7 +83,6 @@
     <div id="content">
         <div class="title" style="padding-left: 20px;" >
             Library Management
-            <span style="font-size: 18px; color: gray;">Control panel</span>
         </div>
     <section>
     <div class="welcome d-flex flex-column flex-md-row align-items-center justify-content-between">
