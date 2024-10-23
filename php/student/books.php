@@ -321,7 +321,8 @@ mysqli_close($con);
                             <h 5 class="card-title"><?= htmlspecialchars($book['title']) ?></h5>
                             <p class="card-text">By <?= htmlspecialchars($book['author']) ?></p>
                           <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
-                            <a href="#" class="btn btn-outline-primary">Read More</a>
+                            <a href="read_more.php?book_id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
+
                         </div>
                     </div>
                 </div>
@@ -352,8 +353,8 @@ mysqli_close($con);
             <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
                 <h5 class="footer-heading">Quick Links</h5>
                 <ul class="footer-links list-unstyled">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About Us</a></li>
+                    <li><a href="home.php">Home</a></li>
+                    <li><a href="about.php">About Us</a></li>
                 </ul>
             </div>
             <div class="col-lg-2 col-md-4 mb-4 mb-md-0">

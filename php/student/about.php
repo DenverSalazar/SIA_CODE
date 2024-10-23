@@ -175,15 +175,24 @@
         color: white;
     }
     .img-container {
-        width: 140px; 
-        height: 140px;
-        overflow: hidden;
-        border-radius: 50%; 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto 10px; 
-    }
+    width: 140px; 
+    height: 140px;
+    overflow: hidden;
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 10px; 
+    border: 3px solid #3498db; /* Rounded border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
+}
+
+.img-container img {
+    width: 100%;
+    height: auto; 
+    object-fit: cover;
+}
+
 
     .img-container img {
         width: 100%;
@@ -268,7 +277,8 @@
                     <img src="/SIA/img/jannie.jpg" alt="Zurbano Jannie B." />
                 </div>
                 <h2 class="fw-normal">ZURBANO JANNIE B.</h2>
-                <p>Some representative placeholder content for the first column.</p>
+                <p>Documentation / Assistant Leader.</p>
+                <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Online learning empowers knowledge without borders."</p>
             </div>
             
             <div class="col-lg-3 text-center">
@@ -276,7 +286,8 @@
                     <img src="/SIA/img/denver.jpg" alt="Salazar Denver T." />
                 </div>
                 <h2 class="fw-normal">SALAZAR DENVER T.</h2>
-                <p>Another exciting bit of representative placeholder content for the second column.</p>
+                <p>Web Developer / Back-end / Documentation.</p>
+                <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Education in the digital age: learn anywhere, grow everywhere."</p>
             </div>
 
             <div class="col-lg-3 text-center">
@@ -284,7 +295,8 @@
                     <img src="/SIA/img/alleon.jpg" alt="Perez Alleon John I." />
                 </div>
                 <h2 class="fw-normal">PEREZ ALLEON JOHN I.</h2>
-                <p>And lastly this, the third column of representative placeholder content.</p>
+                <p>Leader / Front-End / Documentation.</p>
+                <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Learning never stops, even when you're online."</p>
             </div>
 
             <div class="col-lg-3 text-center">
@@ -292,7 +304,8 @@
                     <img src="/SIA/img/berna.png" alt="Rodriguez Bernadette Anne H." />
                 </div>
                 <h2 class="fw-normal">RODRIGUEZ BERNADETTE ANNE H.</h2>
-                <p>This is the fourth column of representative placeholder content.</p>
+                <p>Documentation.</p>
+                <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Online learning turns curiosity into endless possibilities."</p>
             </div>
         </div>
     </div>

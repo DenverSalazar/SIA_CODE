@@ -105,7 +105,8 @@
                             <h5 class="card-title"><?= htmlspecialchars($book['title']) ?></h5>
                             <p class="card-text">By <?= htmlspecialchars($book['author']) ?></p>
                             <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
-                            <a href="book_details.php?id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
+                            <a href="read_more.php?book_id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
+
                         </div>
                     </div>
                 </div>

@@ -67,7 +67,7 @@
               <a class="nav-link" href="../../php/profile.php">Admin Profile</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Feedback Management</a>
+              <a class="nav-link" href="admin_feedback.php">Feedback Management</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="dashboard.php">Dashboard</a>

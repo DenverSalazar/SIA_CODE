@@ -136,7 +136,7 @@
     <div class="feedback-container">
         <!-- <button class="close-btn" onclick="closeFeedback()">×</button> -->
         <h1>Give Feedback</h1>
-        <p>What do you think about this tool?</p>
+        <p>Rate your Experience!</p>
 
         <!-- Star Rating System -->
         <div class="star-rating">

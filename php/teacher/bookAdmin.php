@@ -283,7 +283,7 @@ mysqli_close($con);
                     Description: <p><?= substr(htmlspecialchars($book['description']), 0, 90) ?>...</p>
                 </div>
                 <div class="d-flex justify-content-between mt-2">
-                <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-success btn-sm">Edit</a>
                 <a href="deleteBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
                 </div>
             </div>
