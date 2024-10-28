@@ -35,8 +35,8 @@ if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
     <link rel="stylesheet" href="../../SIA/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        body {
-            background-color: #f8f9fa;
+        body{
+            background-color: white;
         }
         .container {
             margin-top: 50px;

@@ -1,71 +1,9 @@
-.offcanvas {
-    width: 300px !important;
-}
-
-.navbar {
-    background-color: #f8f9fa;
-}
-
-.offcanvas-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #ddd;
-}
-
-.offcanvas-body {
-    padding: 1rem;
-}
-
-.btn-outline-success {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-}
-
-.btn-outline-success:hover {
-    background-color:#0056b3;
-    border-color: #0056b3;
-}
-
-.offcanvas .nav-item {
-    margin-bottom: 10px;
-}
-
-.offcanvas .nav-item a {
-    color: #333;
-    font-size: 16px;
-}
-
-.logout-link {
-color: red; 
-}
-
-.logout-link:hover {
-color: darkred; 
-}
-
-.offcanvas .nav-item a:hover {
-    color: #0056b3;
-    text-decoration: none;
-}
-
-.navbar-brand img {
-    width: 150px;
-}
-
-.offcanvas-header h5 {
-    margin-bottom: 0;
-}
-
 @media (max-width: 768px) {
     .navbar-toggler {
         position: absolute;
         right: 20px; 
         top: 5px;
     }
-}
-.navbar {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
 }
 body {
     font-family: Arial, sans-serif;
@@ -143,7 +81,7 @@ body {
         }
 
         .card-books {
-            background-color: #03a9f4;
+            background-color: #052659;
             color: white;
         }
 

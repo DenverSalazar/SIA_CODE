@@ -2,6 +2,9 @@
     include('../../php/db_config.php');
     session_start();
 
+    date_default_timezone_set('Asia/Manila');
+    $currentTime = date('H:i:s'); 
+
     if(!isset($_SESSION['valid'])){
         header("Location: ../../login.php");
     }
@@ -35,119 +38,285 @@
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/SIA/css/adminstyle.css">
-   
+    <style>
+        body{
+            background-color: white;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            padding-top: 20px;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #495057;
+            border-radius: 5px;
+            padding: 8px;
+        }
+
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .sidebar .nav-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .sidebar .logout-link:hover{
+            color: red;
+        }
+        
+
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background-color: #343a40;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .content {
+                margin-left: 0 !important;
+                padding-top: 70px;
+            }
+
+            .sidebar-toggle {
+                display: block;
+                border-radius: 5px            }
+
+            .content.sidebar-active {
+                margin-left: 250px !important;
+            }
+
+            .card-container {
+                margin-bottom: 20px;
+            }
+
+            .card {
+                width: 100% !important;
+            }
+
+            .row {
+                margin: 0;
+            }
+
+            .col-md-3 {
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .welcome {
+                padding: 10px;
+            }
+
+            .welcome h1 {
+                font-size: 1.5rem;
+            }
+
+            .card-container {
+                padding: 0 5px;
+            }
+        }
+        .sidebar-title {
+            filter: brightness(0) invert(1);
+        }
+    </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <nav class="navbar navbar-light fixed-top">
-        <div class="container">
-          <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a>
-          <form class="d-flex">
-           
-          </form>
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-      </nav>
-
-      <!-- Offcanvas Menu -->
-      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><img src="../../img/logo.png" alt="Readiculous" width="150"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          <ul class="nav flex-column">
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars" style="font-size: 24px;"></i>
+    </button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h5 class="sidebar-title"><img src="../../img/logo.png" alt="Readiculous" width="150"></h5>
+        <ul class="nav flex-column">
+            <li class="nav-item pt-5">
+                <a class="nav-link active" href="homeAdmin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            </li>
+            <hr class="featurette-divider">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="homeAdmin.php">Home</a>
+                <a class="nav-link" href="dashboard.php"><i class="fas fa-users"></i> Accounts</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../../php/profile.php">Admin Profile</a>
+                <a class="nav-link" href="../../php/profile.php"><i class="fas fa-user-circle"></i> Profile</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="admin_feedback.php">Feedback Management</a>
+                <a class="nav-link" href="bookAdmin.php"><i class="fas fa-book"></i> Books</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">Dashboard</a>
+                <a class="nav-link" href="admin_feedback.php"><i class="fas fa-comments"></i> Feedbacks</a>
             </li>
-            <li class="nav-item-x">
-              <a class="nav-link logout-link" href="../../php/logout.php">Logout</a>
+            <li class="nav-item" style="padding-top: 205PX;" >
+                <a class="nav-link logout-link" href="../../php/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </li>            
-          </ul>
-        </div>
-      </div>
-  </header>
-  <main class="content" style="padding-top: 70px;" >
-    <div id="content">
-        <div class="title" style="padding-left: 20px;" >
-            Library Management
-        </div>
-    <section>
-    <div class="welcome d-flex flex-column flex-md-row align-items-center justify-content-between">
-    <div class="text mb-3 mb-md-0">
-        <h1 style="font-weight: bold">Welcome, <?php echo $res_fName, " "; echo $res_lName; ?>!</h1>
-          </div>
-          <div class="circle-person">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
-          <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
-          </svg>
-          </div>
-      </div>
-        <div style="padding-top: 20px;" > 
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card-container">
-                        <div class="card card-books" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title text-center">Books</h5>
-                                <hr class="divider">
-                                <a href="bookAdmin.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
+        </ul>
+    </div>
+
+    <main class="content">
+        <div id="content">
+            <section>
+            <div class="welcome d-flex flex-column flex-md-row align-items-center justify-content-between" style="background-color:#C1E8FF">
+                <div class="text mb-3 mb-md-0">
+                    <h1 style="font-weight: bold">Welcome back, <?php echo $res_fName . " " . $res_lName; ?>!</h1>
+                    <p style="font-size: 1.2rem;">Current Time: <span id="currentTime"><?php echo $currentTime; ?></span></p>
                 </div>
-                <div class="col-md-3">
-                    <div class="card-container">
-                        <div class="card card-dashboard" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title text-center">Dashboard</h5>
-                                <hr class="divider">
-                                <a href="dashboard.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-container">
-                        <div class="card card-feedback" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title text-center">Feedbacks</h5>
-                                <hr class="divider">
-                                <a href="admin_feedback.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-container">
-                        <div class="card card-profile" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title text-center">Your Profile</h5>
-                                <hr class="divider">
-                                <a href="../../php/profile.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="circle-person">
+                    <!-- img DITO -->
                 </div>
             </div>
-        </div>
-    </section>
-</main>
+            <script>
+                
+                function updateClock() {
+                    
+                    const now = new Date();
+                    
+                    const options = {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true,
+                        timeZone: 'Asia/Manila'
+                    };
+                 
+                    const formatter = new Intl.DateTimeFormat('en-US', options);
+                    const timeString = formatter.format(now);
+                    
+                    document.getElementById('currentTime').textContent = timeString;
+                }
 
- 
-  <script src="../../js/bootstrap.bundle.min.js" ></script>
-  <script src="../../js/bootstrap.min.js"></script>
+                updateClock();
+                setInterval(updateClock, 1000);
+            </script>
+
+                <div style="padding-top: 20px;">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card-container">
+                                <div class="card card-books" style="width: 18rem; background-color:#5483b3">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Bookshelf</h5>
+                                        <hr class="divider">
+                                        <a href="bookAdmin.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card-container">
+                                <div class="card card-dashboard" style="width: 18rem; background-color:#5483b3">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Accounts</h5>
+                                        <hr class="divider">
+                                        <a href="dashboard.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card-container">
+                                <div class="card card-feedback" style="width: 18rem; background-color:#5483b3">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Feedbacks</h5>
+                                        <hr class="divider">
+                                        <a href="admin_feedback.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card-container">
+                                <div class="card card-profile" style="width: 18rem; background-color:#5483b3">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center"> My Personal Info</h5>
+                                        <hr class="divider">
+                                        <a href="../../php/profile.php" class="btn btn-view w-100">View <i class="fas fa-arrow-circle-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    
+    <!-- Add this new script for responsive functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                content.classList.toggle('sidebar-active');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+                        sidebar.classList.remove('active');
+                        content.classList.remove('sidebar-active');
+                    }
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    content.classList.remove('sidebar-active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

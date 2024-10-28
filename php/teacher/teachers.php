@@ -18,12 +18,16 @@
 </head>
 
 <style>
+    body{
+            background-color: white;
+        }
+
         .offcanvas {
             width: 300px !important;
         }
 
         .navbar {
-            background-color: #f8f9fa;
+            background-color: white;
         }
 
         .offcanvas-header {

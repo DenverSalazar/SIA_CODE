@@ -9,8 +9,7 @@
 
     <style>
         body {
-            background-color: #f8f9fa; /* Light background */
-            padding: 20px;
+            background-color: white;
             font-family: Arial, sans-serif;
         }
 
@@ -20,7 +19,7 @@
             border-radius: 8px;
             box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            position: relative; /* For positioning the close button */
+            position: relative; 
         }
 
         h1 {
@@ -41,14 +40,14 @@
         }
 
         .close-btn:hover {
-            color: #000; /* Change color on hover */
+            color: #000; 
         }
 
         .feedback-item {
             border-bottom: 1px solid #e9ecef;
             padding: 15px 0;
             display: flex;
-            align-items: flex-start; /* Align items to the top */
+            align-items: flex-start; 
         }
 
         .feedback-item:last-child {
@@ -65,7 +64,7 @@
         }
 
         .feedback-content {
-            flex: 1; /* Allows content to take available space */
+            flex: 1; 
         }
 
         .feedback-rating {
@@ -89,18 +88,18 @@
         }
 
         .delete-btn {
-            background-color: #dc3545; /* Red */
+            background-color: #dc3545; 
             color: white;
             border: none;
             padding: 8px 12px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            margin-left: 10px; /* Space between feedback content and button */
+            margin-left: 10px; 
         }
 
         .delete-btn:hover {
-            background-color: #c82333; /* Darker red on hover */
+            background-color: #c82333; 
         }
     </style>
 </head>

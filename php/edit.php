@@ -35,8 +35,8 @@ if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
     <link rel="stylesheet" href="../../SIA/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        body {
-            background-color: #f8f9fa;
+        body{
+            background-color: white;
         }
         .container {
             margin-top: 30px;
@@ -44,7 +44,7 @@ if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
         .form-box {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 3px 5px 7px rgba(0,0,0,0.1);
             padding: 20px;
             max-width: 400px; /* Adjust width */
             margin: auto; /* Center align */

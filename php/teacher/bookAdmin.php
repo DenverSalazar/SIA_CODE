@@ -18,21 +18,23 @@ mysqli_close($con);
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
 </head>
 <style>
+
     .offcanvas {
         width: 300px !important;
     }
 
     .navbar {
-        background-color: #f8f9fa;
+        background-color: white;
     }
 
     .offcanvas-header {
-        background-color: #f8f9fa;
+        background-color: #343a40;
         border-bottom: 1px solid #ddd;
     }
 
     .offcanvas-body {
         padding: 1rem;
+        background-color: #343a40;
     }
 
     .btn-outline-success {
@@ -51,7 +53,7 @@ mysqli_close($con);
     }
 
     .offcanvas .nav-item a {
-        color: #333;
+        color: white;
         font-size: 16px;
     }
 
@@ -71,16 +73,18 @@ mysqli_close($con);
     .navbar-brand img {
         width: 150px;
     }
-
+          
+    
     .offcanvas-header h5 {
         margin-bottom: 0;
+        filter: brightness(0) invert(1);
     }
 
     body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #f5f5f5;
+        background-color: white;
     }
 
     .bookshelf-title {
@@ -223,46 +227,21 @@ mysqli_close($con);
             max-height: none; 
         }
     }
+    
 </style>
 <body>
 <!-- HEADER -->
 <header>
     <nav class="navbar navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Offcanvas Menu -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><img src="../../img/logo.png" alt="Readiculous" width="150"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="homeAdmin.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../../php/profile.php">Admin Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Feedback Management</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard.php">Dashboard</a>
-                </li>
-                <li class="nav-item-x">
-                    <a class="nav-link logout-link" href="../../php/logout.php">Logout</a>
-                </li>            
-            </ul>
-        </div>
-    </div>
-</header>
+          <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a>
+          <form class="d-flex">
+           
+          </form>
+          <button type="button" class="btn btn-secondary" onclick="location.href='homeAdmin.php'">Back</button>
+          </div>
+      </nav>
+  </header>
 
 <main>
 <div class="container" style="margin-top: 80px;">
