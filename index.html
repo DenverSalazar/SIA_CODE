@@ -5,217 +5,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page</title>
     <link rel="stylesheet" href="../SIA/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://css.glass">
+
+</head>
     <style>
-        
-        .top {
-            background-image: url(/SIA/img/bsu.jpg);
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            position: fixed; /* Keep the background fixed */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh; /* Full viewport height */
-            z-index: -1; /* Send it behind other content */
-            filter: blur(5px); /* Add blur effect */
-            -webkit-backdrop-filter: blur(5px); /* For Safari */
-            backdrop-filter: blur(5px); /* Standard syntax */
-        }
-        
-        
-        .container {
-            position: relative; /* Ensure content layers correctly */
-            z-index: 1; /* Bring content above the background */
-        }
-        
-        .main-content {
-            padding-top: 65px; /* Space for the fixed header */
-            position: relative; /* Required for z-index stacking */
-        }
-        
+    .btn {
+      background: #2c3e50;
+    }
 
-        .about-section{
-            background-color: #fff;
-            height: auto;
-        }
+    .section{
+        overflow-x: hidden;
+    }
 
-        .btn {
-            background: #2c3e50;
-        }
-    
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            object-fit: cover;
-        }
+    .img-container {
+        overflow: hidden;
+    }
 
-        .featurette-image {
-            max-width: 100%;
-            height: auto;
-        }
+    .footer-section {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+    }
 
-        .footer-section {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-        }
+    .footer-logo {
+        filter: brightness(0) invert(1);
+    }
 
-        .footer-logo {
-            filter: brightness(0) invert(1);
-        }
+    .footer-description {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
 
-        .footer-description {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
+    .footer-heading {
+        font-family: 'Merriweather', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #3498db;
+    }
 
-        .footer-heading {
-            font-family: 'Merriweather', serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #3498db;
-        }
+    .footer-links a {
+        color: #ecf0f1;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+    }
 
-        .footer-links a {
-            color: #ecf0f1;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
+    .footer-links a:hover {
+        color: #3498db;
+    }
 
-        .footer-links a:hover {
-            color: #3498db;
-        }
+    .footer-contact {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
 
-        .footer-contact {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
+    .footer-bottom {
+        background-color: #333;
+        padding: 1rem 0;
+    }
 
-        .footer-bottom {
-            background-color: #333;
-            padding: 1rem 0;
-        }
+    .footer-divider {
+        border: none;
+        border-top: 1px solid #444;
+        margin: 1rem 0;
+    }
 
-        .footer-divider {
-            border: none;
-            border-top: 1px solid #444;
-            margin: 1rem 0;
-        }
+    .footer-copyright {
+        color: white;
+    }
 
-        .footer-copyright {
-            color: white;
-        }
+    .about-section {
+        padding: 40px 0; 
+    }
 
-        /* Additional styles for About Us section */
-        .about-section {
-            padding: 40px 0; /* Add padding for spacing */
-        }
+    .about-text {
+        overflow: hidden; 
+        max-height: 400px;
+        overflow-y: auto; 
+    }
 
+    @media (max-width: 768px) {
         .about-text {
-            overflow: hidden; /* Prevent overflow */
-            max-height: 400px; /* Adjust max height as needed */
-            overflow-y: auto; /* Allow scrolling if content is too long */
+         max-height: none;
         }
-
-        @media (max-width: 768px) {
-            .about-text {
-                max-height: none; /* Remove max height for smaller screens */
-            }
-        }
+    }
     </style>
-    <body>
-        <div class="top"></div> <!-- Fixed background image -->
-        
-        <div class="container">
-            <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+<body style="background-image: url(./img/bsu.jpg); background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+
+      <div class="container">
+         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
                 <div class="col-md-3 mb-2 mb-md-0">
-                    <img class="logo" src="../SIA/img/logo.png" style="width: 150px;" alt="Readiculous">
+                    <img class="logo" src="../SIA/img/logo.png" style="width: 200px;" alt="Readiculous">
                 </div>
-                <ul class="nav col-8 col-md-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="#home" class="nav-link px-2" style="color: white;"></a></li>
-                    <li><a href="#about" class="nav-link px-2" style="color: white;"></a></li>
-                </ul>
                 <div class="col-md-3 text-end">
                     <button type="button" class="btn btn-outline-dark" style="color: white;" onclick="location.href='php/login.php'">Login</button>
                     <button type="button" class="btn btn-outline-dark" style="color: white;" onclick="location.href='php/register.php'">Sign-up</button>
                 </div>
             </header>
-            
-            <main class="main-content"> <!-- Added main-content class -->
-                <div class="container vh-100" id="home">
-                    <div class="row featurette justify-content-center align-items-center">
-                        <div class="col-md-7">
-                            <h1 style="font-weight: 900; font-size: 59px;">Welcome to Readiculous!</h1>
-                            <p class="lead" style="font-weight: 400;">Your Gateway to a World of Learning and Adventure! Here, we celebrate the joy of reading and the thrill of exploration, all within the inviting community of our library.</p>
-                        </div>
-                        <div class="col-md-5">
-                            <img class="bd-placeholder-img-lg featurette-image img-fluid mx-auto" src="./img/book.png" alt="Books" style="width: 100%; height: auto;">
-                        </div>
-                    </div>
+
+    <main>
+        <section class="text-light" id="bg">
+          <div class="container vh-100" id="home">
+            <div class="row featurette justify-content-center align-items-center">
+                <div class="col-md-7">
+                    <h1 style="font-weight: 900; font-size: 55px;">Welcome to Readiculous!</h1>
+                    <p class="lead" style="font-weight: 400;">Your Gateway to a World of Learning and Adventure! Here, we celebrate the joy of reading and the thrill of exploration, all within the inviting community of our library.</p>
                 </div>
-    
-                <div class="about-section" id="about">
-                    <div class="row featurette">
-                        <div class="col-md-7 order-md-2">
-                            <h1 style="font-weight: 500; font-size: 35px; padding-top: 10px">About Us!</h1>
-                            <div class="about-text">
-                                <p class="lead">Welcome to Readiculous! We are dedicated to transforming the learning experience in Information Technology through our innovative online learning system. Our mission is to empower learners with the knowledge and skills needed to thrive in the rapidly evolving tech landscape. At Readiculous, we understand that the journey of learning can be both exciting and challenging, which is why we've crafted a platform that makes education accessible and engaging for everyone.</p>
-    
-                                <p class="lead">Our comprehensive courses are designed by industry experts who bring a wealth of experience and knowledge to the table. We blend interactive learning methods with real-world applications to ensure that our students not only grasp theoretical concepts but also understand how to apply them in practical scenarios. Join our vibrant community of learners, where collaboration and support thrive. Explore, learn, and grow with us in an environment that fosters creativity and encourages exploration. We believe in the power of learning together, and our dedicated instructors are always here to guide you. Whether you're a beginner or looking to advance your skills, Readiculous offers a supportive environment tailored to your unique learning journey.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-5 order-md-1">
-                            <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" src="./img/about.png" alt="About Us" style="width: 100%; height: auto;">
-                        </div>
-                    </div>
+                <div class="col-md-5">
+                    <img class="bd-placeholder-img-lg featurette-image img-fluid mx-auto" src="./img/book.png" alt="Books" style="width: 100%; height: auto;">
                 </div>
-            </main>
-    
-            <footer class="footer-section py-5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-4 mb-4 mb-lg-0">
-                            <img src="/SIA/img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
-                            <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                            <h5 class="footer-heading">Quick Links</h5>
-                            <ul class="footer-links list-unstyled">
-                                <li><a href="#home">Home</a></li>
-                                <li><a href="#about">About Us</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                            <h5 class="footer-heading">Services</h5>
-                            <ul class="footer-links list-unstyled">
-                                <li>Book Search</li>
-                                <li>Online Reading</li>
-                                <li>Give Feedback</li>
-                                <li>Digital Resources</li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-4 col-md-4">
-                            <h5 class="footer-heading">Contact Us</h5>
-                            <address class="footer-contact">
-                                <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
-                                <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
-                                <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
-                            </address>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
-                    <div class="container">
-                        <hr class="footer-divider">
-                        <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
-                    </div>
-                </div>
-            </footer>
+            </div>
         </div>
-    
-        <script src="../SIA/js/bootstrap.bundle.min.js"></script>
-    </body>
-    </html>
-    
+        </section>
+
+        <section class="text-light">
+          <div class="row featurette">
+            <div class="col-md-7 order-md-2">
+                <h1 style="font-weight: 500; font-size: 35px; padding-top: 10px">About Us!</h1>
+                <div class="about-text">
+                    <p class="lead">Welcome to Readiculous! We are dedicated to transforming the learning experience in Information Technology through our innovative online learning system. Our mission is to empower learners with the knowledge and skills needed to thrive in the rapidly evolving tech landscape. At Readiculous, we understand that the journey of learning can be both exciting and challenging, which is why we've crafted a platform that makes education accessible and engaging for everyone.</p>
+
+                    <p class="lead">Our comprehensive courses are designed by industry experts who bring a wealth of experience and knowledge to the table. We blend interactive learning methods with real-world applications to ensure that our students not only grasp theoretical concepts but also understand how to apply them in practical scenarios. Join our vibrant community of learners, where collaboration and support thrive. Explore, learn, and grow with us in an environment that fosters creativity and encourages exploration. We believe in the power of learning together, and our dedicated instructors are always here to guide you. Whether you're a beginner or looking to advance your skills, Readiculous offers a supportive environment tailored to your unique learning journey.</p>
+                </div>
+            </div>
+            <div class="col-md-5 order-md-1">
+                <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" src="./img/about.png" alt="About Us" style="width: 100%; height: auto;">
+            </div>
+        </div>
+        </section>
+    </main>
+  </div>
+    <hr class="featurette-divider">
+    <footer class="footer-section py-5">
+      <div class="container">
+          <div class="row">
+              <div class="col-lg-4 mb-4 mb-lg-0">
+                  <img src="/SIA/img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
+                  <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
+              </div>
+              <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                  <h5 class="footer-heading">Quick Links</h5>
+                  <ul class="footer-links list-unstyled">
+                      <li><a href="#home">Home</a></li>
+                      <li><a href="#about">About Us</a></li>
+                  </ul>
+              </div>
+              <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                  <h5 class="footer-heading">Services</h5>
+                  <ul class="footer-links list-unstyled">
+                      <li>Book Search</li>
+                      <li>Online Reading</li>
+                      <li>Give Feedback</li>
+                      <li>Digital Resources</li>
+                  </ul>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                  <h5 class="footer-heading">Contact Us</h5>
+                  <address class="footer-contact">
+                      <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
+                      <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
+                      <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
+                  </address>
+              </div>
+          </div>
+      </div>
+      <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
+          <div class="container">
+              <hr class="footer-divider">
+              <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
+          </div>
+      </div>
+    </footer>
+   
+  
+    <script src="../SIA/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
