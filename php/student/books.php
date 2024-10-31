@@ -1,29 +1,42 @@
 <?php
-include('../../php/db_config.php');
-session_start();
+    include('../../php/db_config.php');
+    session_start();
 
-// Pagination setup
-$books_per_page = 9;
-$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($current_page - 1) * $books_per_page;
+    // Pagination settings
+    $books_per_page = 9; // Set how many books to display per page
+    $offset = isset($_GET['page']) ? ($_GET['page'] - 1) * $books_per_page : 0;
 
-// Search functionality
-$search = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
-$where_clause = $search ? "WHERE title LIKE '%$search%' OR author LIKE '%$search%'" : "";
+    // Initialize search and category variables
+    $search = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
+    $selected_category = isset($_GET['category']) ? $_GET['category'] : 'All';
 
-// Count total books for pagination
-$count_sql = "SELECT COUNT(*) as total FROM books $where_clause";
-$count_result = mysqli_query($con, $count_sql);
-$total_books = mysqli_fetch_assoc($count_result)['total'];
-$total_pages = ceil($total_books / $books_per_page);
+    // Build the WHERE clause based on search and category
+    $where_clause = '';
+    if ($search) {
+        $where_clause .= "WHERE (title LIKE '%$search%')";
+    }
+    if ($selected_category !== 'All') {
+        $where_clause .= ($where_clause ? " AND " : "WHERE ") . "book_category = '$selected_category'";
+    }
 
-// Fetch books
-$sql = "SELECT * FROM books $where_clause LIMIT $offset, $books_per_page";
-$result = mysqli_query($con, $sql);
-$books = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    // Count total books for pagination
+    $count_sql = "SELECT COUNT(*) as total FROM books $where_clause";
+    $count_result = mysqli_query($con, $count_sql);
+    $total_books = mysqli_fetch_assoc($count_result)['total'];
+    $total_pages = ceil($total_books / $books_per_page);
 
-mysqli_close($con);
-?>
+    // Fetch books
+    $sql = "SELECT * FROM books $where_clause LIMIT $offset, $books_per_page";
+    $result = mysqli_query($con, $sql);
+    $books = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    // Fetch categories from the database
+    $category_result = mysqli_query($con, "SELECT DISTINCT book_category FROM books"); // Use DISTINCT to avoid duplicates
+    $categories = mysqli_fetch_all($category_result, MYSQLI_ASSOC);
+
+        mysqli_close($con);
+
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,35 +46,35 @@ mysqli_close($con);
     <title>Browse Books</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <style>
-        .book-card img {
-            height: 300px;
-            object-fit: cover;
-        }
-        body {
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .book-card {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .book-cover {
-            height: 300px;
-            object-fit: cover;
-        }
-        .search-bar {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .offcanvas {
-        width: 300px !important;
+    .book-card img {
+        height: 300px;
+        object-fit: cover;
+    }
+    body {
+        background-color: #f8f9fa;
+        color: #333;
+    }
+    .navbar {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    }
+    .book-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .book-cover {
+        height: 300px;
+        object-fit: cover;
+    }
+    .search-bar {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .offcanvas {
+    width: 300px !important;
     }
 
     .navbar {
@@ -251,6 +264,7 @@ mysqli_close($con);
     </style>
 </head>
 <body>
+
 <!-- HEADER -->
 <header>
     <nav class="navbar navbar-light fixed-top">
@@ -277,6 +291,9 @@ mysqli_close($con);
               <a class="nav-link" href="../../php/profile.php">User Profile</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="./student_messages.php">Messages</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
             </li>
             <li class="nav-item">
@@ -288,56 +305,63 @@ mysqli_close($con);
           </ul>
         </div>
       </div>
-  </header>
+</header>
 
 
 
     <div class="container mt-5">
         <h1 class="mb-4">Browse Books</h1>
 
-        <form class="d-flex mb-5" method="GET" action="">
-    <input class="form-control me-2" type="search" name="search" placeholder="Search books..." aria-label="Search" value="<?= htmlspecialchars($search) ?>">
-    <button class="btn btn-outline-primary me-2" type="submit">Search</button>
+        <form class="d-flex align-items-center justify-content-center" action="" method="get">
+            <input class="form-control w-25 me-3" type="search" name="search" placeholder="Search books..." aria-label="Search" value="<?= htmlspecialchars($search) ?>">
+            
+            <select name="category" class="form-control w-25 me-3">
+                <option value="All" <?= $selected_category === 'All' ? 'selected' : '' ?>>All Categories</option>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?= htmlspecialchars($category['book_category']) ?>" <?= $selected_category === $category['book_category'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($category['book_category']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            
+            <button class="btn btn-outline-primary me-2" type="submit" name="submit">Filter</button>
+        </form>
 
-    <!-- Filter Button -->
-    <div class="dropdown">
-        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            Filter
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
-            <li><a class="dropdown-item" href="?filter=latest">Latest</a></li>
-            <li><a class="dropdown-item" href="?filter=popular">Most Popular</a></li>
-            <li><a class="dropdown-item" href="?filter=author">By Author</a></li>
-        </ul>
-    </div>
-</form>
+        <div class="container mt-5">
+            <!-- <h1 class="mb-4">Browse Books</h1> -->
 
-        <div class="row">
-            <?php foreach ($books as $book): ?>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm book-card">
-                        <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($book['title']) ?>">
-                        <div class="card-body">
-                            <h 5 class="card-title"><?= htmlspecialchars($book['title']) ?></h5>
-                            <p class="card-text">By <?= htmlspecialchars($book['author']) ?></p>
-                          <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
-                            <a href="read_more.php?book_id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
-
+            <div class="row">
+                <?php if (count($books) > 0): ?>
+                    <?php foreach ($books as $book): ?>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm book-card">
+                                <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($book['title']) ?>">
+                                <div class="card-body">
+                                    <h5 class="card-title"><b><?= htmlspecialchars($book['title']) ?></b></h5>
+                                    <p class="card-text">Category: <b><?= htmlspecialchars($book['book_category']) ?></b></p>
+                                    <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
+                                    <a href="read_more.php?id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
+                                </div>
+                            </div>
                         </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="col-12">
+                        <p>No books found matching your search or category selection.</p>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endif; ?>
+            </div>
 
-        <nav aria-label="Book pagination" class="mt-5">
-            <ul class="pagination justify-content-center">
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <li class="page-item <?= $i == $current_page ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                    </li>
-                <?php endfor; ?>
-            </ul>
-        </nav>
+            <nav aria-label="Book pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?= $i == $current_page ? 'active' : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+        </div>
     </div>
 
     

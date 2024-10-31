@@ -117,7 +117,7 @@
       <div class="container justify-content-center align-items-center ">
         <div class="row">
           <div class="col-md-12">
-            <h1>List of Teacher who Register</h1>
+            <h1>List of Admin who Register</h1>
             <table class="table table-striped">
               <thead>
                 <tr>

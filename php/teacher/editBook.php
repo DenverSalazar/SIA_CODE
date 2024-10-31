@@ -1,5 +1,4 @@
-<?php
-include '../../php/db_config.php';
+<?php include '../../php/db_config.php';
 
 if (isset($_GET['id'])) {
     $book_id = $_GET['id'];
@@ -13,14 +12,12 @@ if (isset($_GET['id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title'];
-    $author = $_POST['author'];
-    $publication_year = $_POST['publication_year'];
     $description = $_POST['description'];
+    $book_category = $_POST['bookCategory'];
 
-    // Update book in database
-    $sql = "UPDATE books SET title = ?, author = ?, publication_year = ?, description = ? WHERE id = ?";
+    $sql = "UPDATE books SET title = ?, book_category = ?, description = ? WHERE id = ?";
     $stmt = $con->prepare($sql);
-    $stmt->bind_param("ssssi", $title, $author, $publication_year, $description, $book_id);
+    $stmt->bind_param("sssi", $title, $book_category, $description, $book_id);
     $stmt->execute();
 
     header("Location: bookAdmin.php");
@@ -36,24 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Edit Book</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <style>
-        body {
-            background-color: #f5f5f5;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            margin-top: 80px;
-        }
-        .form-label {
-            font-weight: bold;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
+        /* Styles omitted for brevity */
     </style>
 </head>
 <body>
@@ -65,22 +45,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="text" class="form-control" name="title" value="<?= htmlspecialchars($book['title']) ?>" required>
             </div>
             <div class="mb-3">
-                <label for="author" class="form-label">Author:</label>
-                <input type="text" class="form-control" name="author" value="<?= htmlspecialchars($book['author']) ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="publication_year" class="form-label">Publication Year:</label>
-                <input type="text" class="form-control" name="publication_year" value="<?= htmlspecialchars($book['publication_year']) ?>" required>
+                <label for="bookCategory" class="form-label">Category</label>
+                <select class="form-control" id="bookCategory" name="bookCategory" required>
+                    <option value="">Select a Category</option>
+                    <option value="HTML">HTML</option>
+                    <option value="CSS">CSS</option>
+                    <option value="Bootstrap">Bootstrap</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="c#">C#</option>
+                    <option value="c++">C++</option>
+                    <option value="SQL">SQL</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label>
                 <textarea class="form-control" name="description" rows="4" required><?= htmlspecialchars($book['description']) ?></textarea>
             </div>
+            <div class="mb-3">
+                <label for="cover_image" class="form-label">Cover Image</label>
+                <input type="file" class="form-control" id="cover_image" name="cover_image" accept="image/*">
+            </div>
+            <div class="mb-3">
+            <label for="upload_module" class="form-label">Upload Module</label>
+            <input type="file" class="form-control" id="upload_module" name="upload_module" accept=".pdf,.doc,.docx,.txt,.pptx,.xlsx">
+           </div>
             <button type="submit" class="btn btn-primary">Update Book</button>
             <a href="bookAdmin.php" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
-
     <script src="../../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

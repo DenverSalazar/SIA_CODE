@@ -1,13 +1,43 @@
 <?php
-include '../../php/db_config.php'; // Include database configuration
+    include '../../php/db_config.php'; // Include database configuration
 
-// Fetch books from the database
-$sql = "SELECT * FROM books";
-$result = mysqli_query($con, $sql);
-$books = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    // Pagination settings
+    $books_per_page = 10; // Set how many books to display per page
+    $offset = isset($_GET['page']) ? ($_GET['page'] - 1) * $books_per_page : 0;
 
-mysqli_close($con);
+    // Initialize search and category variables
+    $search = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
+    $selected_category = isset($_GET['category']) ? $_GET['category'] : 'All';
+
+    // Build the WHERE clause based on search and category
+    $where_clause = '';
+    if ($search) {
+        $where_clause .= "WHERE (title LIKE '%$search%')";
+    }
+    if ($selected_category !== 'All') {
+        $where_clause .= ($where_clause ? " AND " : "WHERE ") . "book_category = '$selected_category'";
+    }
+
+    // Count total books for pagination
+    $count_sql = "SELECT COUNT(*) as total FROM books $where_clause";
+    $count_result = mysqli_query($con, $count_sql);
+    $total_books = mysqli_fetch_assoc($count_result)['total'];
+    $total_pages = ceil($total_books / $books_per_page);
+
+    // Fetch books
+    $sql = "SELECT * FROM books $where_clause LIMIT $offset, $books_per_page";
+    $result = mysqli_query($con, $sql);
+    $books = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    // Fetch categories from the database
+    $category_result = mysqli_query($con, "SELECT DISTINCT book_category FROM books"); // Use DISTINCT to avoid duplicates
+    $categories = mysqli_fetch_all($category_result, MYSQLI_ASSOC);
+
+    mysqli_close($con);
+
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -157,76 +187,6 @@ mysqli_close($con);
     .upload-btn i {
         margin-right: 5px;
     }
-
-
-    .footer-section {
-        background-color: #2c3e50;
-        color: #ecf0f1;
-    }
-
-    .footer-logo {
-        filter: brightness(0) invert(1);
-    }
-
-    .footer-description {
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-
-    .footer-heading {
-        font-family: 'Merriweather', serif;
-        font-size: 1.2rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: #3498db;
-    }
-
-    .footer-links a {
-        color: #ecf0f1;
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.3s ease;
-    }
-
-    .footer-links a:hover {
-        color: #3498db;
-    }
-
-    .footer-contact {
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-
-    .footer-bottom {
-        background-color: #333;
-        padding: 1rem 0;
-    }
-
-    .footer-divider {
-        border: none;
-        border-top: 1px solid #444;
-        margin: 1rem 0;
-    }
-
-    .footer-copyright {
-        color: white;
-    }
-
-    .about-section {
-        padding: 40px 0; 
-    }
-
-    .about-text {
-        overflow: hidden; 
-        max-height: 400px; 
-        overflow-y: auto; 
-    }
-
-    @media (max-width: 768px) {
-        .about-text {
-            max-height: none; 
-        }
-    }
     
 </style>
 <body>
@@ -250,70 +210,62 @@ mysqli_close($con);
         <a href="upload.php"><button class="upload-btn"><i class="fas fa-upload"></i>Upload New Book</button></a>
     </div>
 
-    <div class="books">
-        <?php foreach ($books as $book): ?>
-            <div class="book">
-                <img alt="<?= htmlspecialchars($book['title']) ?> book cover" src="uploads/<?= htmlspecialchars($book['cover_image']) ?>" />
-                <div class="book-title"><?= htmlspecialchars($book['title']) ?></div>
-                <div class="book-status">Published</div>
-                <div class="book-meta">
-                    Author: <?= htmlspecialchars($book['author']) ?><br/>
-                    Publication Year: <?= htmlspecialchars($book['publication_year']) ?><br/>
-                    Description: <p><?= substr(htmlspecialchars($book['description']), 0, 90) ?>...</p>
+    <div class="container mt-5">
+        <!-- <h1 class="mb-4">Browse Books</h1> -->
+
+        <form class="d-flex align-items-center justify-content-center" action="" method="get">
+            <input class="form-control w-25 me-3" type="search" name="search" placeholder="Search books..." aria-label="Search" value="<?= htmlspecialchars($search) ?>">
+            
+            <select name="category" class="form-control w-25 me-3">
+                <option value="All" <?= $selected_category === 'All' ? 'selected' : '' ?>>All Categories</option>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?= htmlspecialchars($category['book_category']) ?>" <?= $selected_category === $category['book_category'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($category['book_category']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            
+            <button class="btn btn-outline-primary me-2" type="submit" name="submit">Filter</button>
+        </form>
+
+        <div class="container mt-5">
+            <!-- <h1 class="mb-4">Browse Books</h1> -->
+
+            <div class="books">
+                <?php if (count($books) > 0): ?>
+                <?php foreach ($books as $book): ?>
+                    <div class="book">
+                        <img alt="<?= htmlspecialchars($book['title']) ?> book cover" src="uploads/<?= htmlspecialchars($book['cover_image']) ?>" />
+                        <div class="book-title"><?= htmlspecialchars($book['title']) ?></div>
+                        <div class="book-status">Uploaded</div>
+                        <div class="book-meta">
+                            Category: <?= htmlspecialchars($book['book_category']) ?><br>
+                            Description: <p><?= substr(htmlspecialchars($book['description']), 0, 90) ?>...</p>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                        <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-success btn-sm">Edit</a>
+                        <a href="deleteBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>    
+                <?php else: ?>
+                    <div class="col-12">
+                        <p>No books found matching your search or category selection.</p>
+                    </div>
+                <?php endif; ?>
                 </div>
-                <div class="d-flex justify-content-between mt-2">
-                <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-success btn-sm">Edit</a>
-                <a href="deleteBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
-                </div>
-            </div>
-        <?php endforeach; ?>    
-    </div>
+                <nav aria-label="Book pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?= $i == $current_page ? 'active' : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+
 </div>
 </main>
-
-<hr class="featurette-divider">
-
-<footer class="footer-section py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 mb-4 mb-lg-0">
-                <img src="/SIA/img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
-                <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-heading">Quick Links</h5>
-                <ul class="footer-links list-unstyled">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About Us</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-heading">Services</h5>
-                <ul class="footer-links list-unstyled">
-                    <li>Book Search</li>
-                    <li>Online Reading</li>
-                    <li>Give Feedback</li>
-                    <li>Digital Resources</li>
-                </ul>
-            </div>
-            <div class="col-lg-4 col-md-4">
-                <h5 class="footer-heading">Contact Us</h5>
-                <address class="footer-contact">
-                    <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
-                    <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
-                    <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
-                </address>
-            </div>
-        </div>
-    </div>
-    <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
-        <div class="container">
-            <hr class="footer-divider">
-            <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
 <script src="../../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

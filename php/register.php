@@ -97,7 +97,7 @@
 
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="role" id="teacher" value="teacher">
-                    <label class="form-check-label" for="teacher">Teacher</label>
+                    <label class="form-check-label" for="teacher">Admin</label>
                 </div>
             </div>
 

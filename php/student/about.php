@@ -230,6 +230,9 @@
               <a class="nav-link" href="../../php/profile.php">User Profile</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="./student_messages.php">Messages</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
             </li>
             <li class="nav-item">

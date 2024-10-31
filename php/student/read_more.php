@@ -2,17 +2,60 @@
 include('../../php/db_config.php');
 session_start();
 
-if (isset($_GET['book_id'])) {
-    $book_id = intval($_GET['book_id']);
-    
-    // Fetch book details
-    $sql = "SELECT * FROM books WHERE id = $book_id";
-    $result = mysqli_query($con, $sql);
-    $book = mysqli_fetch_assoc($result);
-    mysqli_close($con);
+// Function to check file details and handle file streaming
+function streamFile($filepath, $mime_type) {
+    if (file_exists($filepath) && is_readable($filepath)) {
+        header('Content-Type: ' . $mime_type);
+        header('Content-Disposition: inline; filename="' . basename($filepath) . '"');
+        header('Content-Length: ' . filesize($filepath));
+        readfile($filepath);
+        exit;
+    }
+    return false;
 }
 
+// Validate and sanitize the ID
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    die("Error: No book ID provided. Please select a valid book.");
+}
+
+$id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
+if ($id === false || $id <= 0) {
+    die("Error: Invalid book ID format.");
+}
+
+// Fetch book details
+$sql = "SELECT * FROM books WHERE id = ?";
+$stmt = $con->prepare($sql);
+if (!$stmt) {
+    die("Error preparing statement: " . $con->error);
+}
+
+$stmt->bind_param("i", $id);
+if (!$stmt->execute()) {
+    die("Error executing query: " . $stmt->error);
+}
+
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+    $book = $result->fetch_assoc();
+} else {
+    die("Book not found in database.");
+}
+
+// Debug function (you can remove this in production)
+function debug_file_info($file_path) {
+    echo "File path: " . $file_path . "<br>";
+    echo "File exists: " . (file_exists($file_path) ? 'Yes' : 'No') . "<br>";
+    echo "Is readable: " . (is_readable($file_path) ? 'Yes' : 'No') . "<br>";
+    if (file_exists($file_path)) {
+        echo "File permissions: " . substr(sprintf('%o', fileperms($file_path)), -4) . "<br>";
+        echo "File size: " . filesize($file_path) . " bytes<br>";
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,39 +64,13 @@ if (isset($_GET['book_id'])) {
     <title><?= htmlspecialchars($book['title']) ?> - Book Details</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
 </head>
-<style>
-        .book-card img {
-            height: 300px;
-            object-fit: cover;
-        }
-        body {
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .book-card {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .book-cover {
-            height: 300px;
-            object-fit: cover;
-        }
-        .search-bar {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .offcanvas {
-        width: 300px !important;
-    }
+<style> 
+     .navbar {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,.1);
+     }
 
-    .navbar {
+        .navbar {
         background-color: #f8f9fa;
     }
 
@@ -105,68 +122,6 @@ if (isset($_GET['book_id'])) {
 
     .offcanvas-header h5 {
         margin-bottom: 0;
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f5;
-    }
-
-    .bookshelf-title {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .books {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-    }
-
-    .book {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .book img {
-        width: 100%;
-        height: auto;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-    }
-
-    .book-title {
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
-
-    .book-status {
-        color: #888;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-
-    .book-meta {
-        font-size: 12px;
-        color: #888;
-    }
-
-    .upload-btn {
-        background-color: #007bff;
-        color: #fff;
-        padding: 8px 15px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .upload-btn i {
-        margin-right: 5px;
     }
 
     .footer-section {
@@ -237,99 +192,178 @@ if (isset($_GET['book_id'])) {
             max-height: none; 
         }
     }
-    </style>
+</style>
 <body>
-    <!-- HEADER -->
-    <header>
-        <nav class="navbar navbar-light fixed-top">
-            <div class="container">
-                <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a>
+        
+        <!-- HEADER -->
+        <header>
+            <nav class="navbar navbar-light fixed-top">
+                <div class="container">
+                <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a> 
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-            </div>
-        </nav>
-        <!-- Offcanvas Menu -->
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-            <div class="offcanvas-header">
+                </div>
+            </nav>
+
+            <!-- Offcanvas Menu -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><img src="../../img/logo.png" alt="Readiculous" width="150"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
+                </div>
+                <div class="offcanvas-body">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="home.php">Home</a>
+                    <a class="nav-link active" aria-current="page" href="home.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../../php/profile.php">User Profile</a>
+                    <a class="nav-link" href="../../php/profile.php">User Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
+                    <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.php">About us</a>
+                    <a class="nav-link" href="about.php">About us</a>
                     </li>
                     <li class="nav-item-x">
-                        <a class="nav-link logout-link" href="../../php/logout.php">Logout</a>
-                    </li>
+                    <a class="nav-link logout-link" href="../../php/logout.php">Logout</a>
+                    </li>            
                 </ul>
+                </div>
             </div>
-        </div>
-    </header>
-    <div class="container mt-5">
-        <h1 class="mb-4"><?= htmlspecialchars($book['title']) ?></h1>
-        <div class="row">
-            <div class="col-md-6">
-                <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="img-fluid" alt="<?= htmlspecialchars($book['title']) ?>">
-            </div>
-            <div class="col-md-6">
-                <h5>Author: <?= htmlspecialchars($book['author']) ?></h5>
-                <p><?= htmlspecialchars($book['description']) ?></p>
+        </header>
+
+                    <div class="container mt-5">
+                    <h1 class="mb-4"><?= htmlspecialchars($book['title']) ?></h1>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="img-fluid" alt="<?= htmlspecialchars($book['title']) ?>">
+                        </div>
+                        <div class="col-md-6">
+                <p><?= nl2br(htmlspecialchars($book['description'])) ?></p>
                 <a href="books.php" class="btn btn-outline-primary">Back to Browse</a>
+
+                <h2 class="mt-5">Learning Material</h2>
+                <?php
+                if (!empty($book['file_name'])) {
+                    // Construct and validate file path
+                    $upload_dir = realpath(__DIR__ . "/../teacher/uploads/");
+                    $sanitized_filename = basename($book['file_name']);
+                    $final_path = $upload_dir . DIRECTORY_SEPARATOR . $sanitized_filename;
+
+                    // Security check
+                    if (strpos(realpath($final_path), $upload_dir) !== 0) {
+                        die("Invalid file path detected");
+                    }
+
+                    $file_extension = strtolower(pathinfo($sanitized_filename, PATHINFO_EXTENSION));
+                    $mime_type = mime_content_type($final_path);
+
+                    if (file_exists($final_path) && is_readable($final_path)) {
+                        echo '<div class="file-viewer mb-3">';
+                        
+                        switch ($file_extension) {
+                            case 'pdf':
+                                // Directly embed PDF
+                                echo '<div class="embed-responsive" style="height: 600px;">';
+                                echo '<iframe class="embed-responsive-item" src="' . htmlspecialchars($final_path) . '" width="100%" height="100%" frameborder="0"></iframe>';
+                                echo '</div>';
+                                break;
+                                
+                            case 'pptx':
+                            case 'ppt':
+                                // Using Microsoft's Office Online viewer
+                                $encoded_path = urlencode('https://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/view_file.php?id=' . $id);
+                                echo '<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=' . $encoded_path . '" width="100%" height="600px" frameborder="0"></iframe>';
+                                break;
+                                
+                            case 'doc':
+                            case 'docx':
+                                echo '<div class="alert alert-info">Word documents can be viewed online or downloaded.</div>';
+                                echo '<a href="view_file.php' . htmlspecialchars($final_path) . '" class="btn btn-primary" target="_blank">View Document</a>';
+                                echo '<a href="download_file.php?id=' . $id . '" class="btn btn-secondary">Download Document</a>';
+                                break;
+                                
+                            case 'txt':
+                                // Display text file content
+                                echo '<pre class="p-3 bg-light" style="max-height: 600px; overflow-y: auto;">';
+                                echo htmlspecialchars(file_get_contents($final_path));
+                                echo '</pre>';
+                                break;
+                                
+                            case 'jpg':
+                            case 'jpeg':
+                            case 'png':
+                            case 'gif':
+                                // Display image directly
+                                echo '<img src="' . htmlspecialchars($final_path) . '" class="img-fluid" alt="' . htmlspecialchars($book['title']) . '">';
+                                break;
+
+                            default:
+                                echo '<div class="alert alert-warning">Preview not available for this file type.</div>';
+                                echo '<a href="download_file.php?id=' . $id . '" class="btn btn-primary">Download File</a>';
+                        }
+
+                        echo '</div>';
+                        
+                        // Add download button below viewer
+                        echo '<a href="download_file.php?id=' . $id . '" class="btn btn-secondary">Download File</a>';
+                        
+                    } else {
+                        echo '<div class="alert alert-danger">File not found or not readable. Please contact administrator.</div>';
+                    }
+                } else {
+                    echo '<p>No learning materials available for this book.</p>';
+                }
+                ?>
+
             </div>
         </div>
     </div>
+
     <hr class="featurette-divider">
-    <footer class="footer-section py-5">
+
+<footer class="footer-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <img src="/SIA/img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
+                <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5 class="footer-heading">Quick Links</h5>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="home.php">Home</a></li>
+                    <li><a href="about.php">About Us</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5 class="footer-heading">Services</h5>
+                <ul class="footer-links list-unstyled">
+                    <li>Book Search</li>
+                    <li>Online Reading</li>
+                    <li>Give Feedback</li>
+                    <li>Digital Resources</li>
+                </ul>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <h5 class="footer-heading">Contact Us</h5>
+                <address class="footer-contact">
+                    <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
+                    <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
+                    <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
+                </address>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <img src="/SIA/img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
-                    <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                    <h5 class="footer-heading">Quick Links</h5>
-                    <ul class="footer-links list-unstyled">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                    <h5 class="footer-heading">Services</h5>
-                    <ul class="footer-links list-unstyled">
-                        <li>Book Search</li>
-                        <li>Online Reading</li>
-                        <li>Give Feedback</li>
-                        <li>Digital Resources</li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <h5 class="footer-heading">Contact Us</h5>
-                    <address class="footer-contact">
-                        <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
-                        <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
-                        <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
-                    </address>
-                </div>
-            </div>
+            <hr class="footer-divider">
+            <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
         </div>
-        <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
-            <div class="container">
-                <hr class="footer-divider">
-                <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    </div>
+</footer>
     <script src="../../js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>

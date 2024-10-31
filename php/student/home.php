@@ -62,6 +62,9 @@
               <a class="nav-link" href="../../php/profile.php">User Profile</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="./student_messages.php">Messages</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
             </li>
             <li class="nav-item">
@@ -89,13 +92,13 @@
     </section>
     
     <section class="books-section py-5" style="background-color: #f8f9fa;">
-          <?php
-      // Fetch featured books
-      $featured_books_query = mysqli_query($con, "SELECT * FROM books LIMIT 3");
-      $featured_books = mysqli_fetch_all($featured_books_query, MYSQLI_ASSOC);
-      ?>
+    <?php
+    // Fetch featured books
+    $featured_books_query = mysqli_query($con, "SELECT * FROM books LIMIT 3");
+    $featured_books = mysqli_fetch_all($featured_books_query, MYSQLI_ASSOC);
+    ?>
     <div class="container">
-        <h2 class="text-center mb-5" style="font-size: 3rem; color: #333;">Featured Books</h2>
+        <h2 class="text-center mb-5" style="font-size: 3rem; color: #333;">Featured Modules</h2>
         <div class="row">
             <?php foreach ($featured_books as $book): ?>
                 <div class="col-lg-4 col-md-6 mb-4">
@@ -103,10 +106,10 @@
                         <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($book['title']) ?>" style="height: 300px; object-fit: cover;">
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($book['title']) ?></h5>
-                            <p class="card-text">By <?= htmlspecialchars($book['author']) ?></p>
+                            <p class="card-text">Category: <b><?= htmlspecialchars($book['book_category']) ?></b></p>
                             <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
-                            <a href="read_more.php?book_id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
-
+                            <!-- Update the Read More link to use the correct ID parameter -->
+                            <a href="read_more.php?id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -114,7 +117,7 @@
         </div>
         
         <div class="text-center mt-4">
-            <a href="books.php" class="btn btn-primary btn-lg">Explore All Books</a>
+            <a href="books.php" class="btn btn-primary btn-lg">Explore All Modules</a>
         </div>
     </div>
 </section>
@@ -122,7 +125,7 @@
 
 <section class="services-section py-5" style="background-color: #ffffff;">
   <div class="container">
-    <h2 class="text-center mb-5" style="font-size: 3rem; color: #333;">Our Library Services</h2>
+    <h2 class="text-center mb-5" style="font-size: 3rem; color: #333;">Our System Services</h2>
     <div class="row">
       <div class="col-lg-4 col-md-6 mb-4">
         <div class="service-card text-center p-4">
