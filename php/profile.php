@@ -6,24 +6,17 @@ if(!isset($_SESSION['valid'])){
     header("Location: ../../login.php");
 }
 
-if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
-    $id = $_SESSION['id'];
-    $role = $_SESSION['role'];
+$id = $_SESSION['id'];
+$role = $_SESSION['role'];
 
-    if($role == 'student'){
-        $query = mysqli_query($con,"SELECT * FROM students WHERE id = '$id'");
-    } else if($role == 'teacher'){
-        $query = mysqli_query($con,"SELECT * FROM teacher WHERE id = '$id'");
-    }
-
-    while($result = mysqli_fetch_assoc($query)){
-        $res_fName = $result['fName'];
-        $res_lName = $result['lName'];
-        $res_email = $result['email'];
-    }
-} else {
-    echo "Error: ID is not set or empty.";
+// Fetch current user data
+if($role == 'student'){
+    $query = mysqli_query($con,"SELECT * FROM students WHERE id = '$id'");
+} else if($role == 'teacher'){
+    $query = mysqli_query($con,"SELECT * FROM teacher WHERE id = '$id'");
 }
+
+$result = mysqli_fetch_assoc($query);
 ?>
 
 <!DOCTYPE html>
@@ -32,99 +25,118 @@ if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link rel="stylesheet" href="../../SIA/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <style>
-        body{
-            background-color: white;
+        body {
+            background-color: #f8f9fa;
         }
-        .container {
-            margin-top: 50px;
+        
+        .profile-container {
+            max-width: 800px;
+            margin: 50px auto;
         }
+        
         .profile-card {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #6B8DE3 0%, #5E72E4 100%);
             padding: 30px;
+            color: white;
             text-align: center;
         }
-        .profile-card h2 {
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            padding: 30px;
+        }
+        
+        .info-item {
             margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
         }
-        .profile-detail {
-            margin: 15px 0;
-            font-size: 18px;
+        
+        .info-label {
+            color: #8898aa;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
         }
-        .btn2, .btn1 {
-            width: 100%;
-            margin: 10px 0;
+        
+        .info-value {
+            color: #32325d;
+            font-size: 1.1rem;
+            font-weight: 500;
         }
-        .link {
-            margin-top: 20px;
+        
+        .edit-btn {
+            background: #5E72E4;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background: #324cdd;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
-    
-    <div class="container">
-        <div class="profile-card">     
-            <header><h2>My Profile</h2></header>
-            <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                </svg>
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <?php if(isset($result['profile_picture']) && !empty($result['profile_picture'])): ?>
+                    <img src="../../uploads/profiles/<?php echo htmlspecialchars($result['profile_picture']); ?>" 
+                         alt="Profile Picture" class="profile-img">
+                <?php else: ?>
+                    <img src="../../img/default-profile.png" alt="Default Profile Picture" class="profile-img">
+                <?php endif; ?>
+                <h2><?php echo htmlspecialchars($result['fName'] . ' ' . $result['lName']); ?></h2>
+                <p><?php echo ucfirst($role); ?></p>
             </div>
-
-            <div class="profile-detail">
-                <strong>First Name:</strong> <?php echo htmlspecialchars($res_fName); ?>
-            </div>
-            <div class="profile-detail">
-                <strong>Last Name:</strong> <?php echo htmlspecialchars($res_lName); ?>
-            </div>
-            <div class="profile-detail">
-                <strong>Email Address:</strong> <?php echo htmlspecialchars($res_email); ?>
-            </div>
-            <div class="profile-detail">
-                <strong>User Type:</strong> <?php echo ucfirst(htmlspecialchars($role)); ?>
-            </div>
-
-            <div class="field">
-                <button class="btn2 btn-outline-dark" style="color:white;" onclick="location.href='edit.php'">Edit Profile</button>
-            </div>
-
-            <div class="field">
-                <button type="button" class="btn1 btn-danger" style="color:white;" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Account</button>
-            </div>
-
-            <div class="link">
-                <a class="link-dark link-underline-opacity-0" href="<?php echo ($role == 'student') ? '../../SIA/php/student/home.php' : '../../SIA/php/teacher/homeAdmin.php'; ?>">Back to Home</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Delete Account</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            
+            <div class="profile-info">
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value"><?php echo htmlspecialchars($result['email']); ?></div>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to delete your account?
+                
+                <div class="info-item">
+                    <div class="info-label">First Name</div>
+                    <div class="info-value"><?php echo htmlspecialchars($result['fName']); ?></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"data-bs-dismiss="modal">Cancel</button>
-                    <form action="../php/delete.php" method="post">
-                        <input type="hidden" name="id" value="<?php echo $id; ?>">
-                        <button type="submit" name="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                
+                <div class="info-item">
+                    <div class="info-label">Last Name</div>
+                    <div class="info-value"><?php echo htmlspecialchars($result['lName']); ?></div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="edit.php" class="edit-btn link-underline link-underline-opacity-0">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="../../SIA/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 body{
-    background: #898989;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
 }
 
 .container{
@@ -87,3 +87,12 @@ body{
     margin-top: 5px;
 }
 
+.input-group .btn {
+    border-color: #ccc;
+    color: #333;
+    min-width: 70px;
+    }
+
+    .input-group .dropdown-menu {
+        min-width: 100px;
+    }

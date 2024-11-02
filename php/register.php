@@ -1,5 +1,6 @@
 <?php
     session_start();
+    $role = isset($_GET['role']) ? $_GET['role'] : 'student';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,11 +11,19 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
+<style>
+    body{
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+</style>
 <body>
 
     <div class="container">
         <div class="box form-box">
-
 
         <?php
                 include("../php/db_config.php");
@@ -25,11 +34,12 @@
                     $password = $_POST['password'];
                     $confirmpassword = $_POST['confirmPassword'];
                     $role = $_POST['role'];
-
+                    $department = ($role == 'student') ? $_POST['department'] : ''; // Only get department for students
+                
                     // Check if email is already in use
                     $query = mysqli_query($con, "SELECT * FROM students WHERE email = '$email'");
                     $query2 = mysqli_query($con, "SELECT * FROM teacher WHERE email = '$email'");
-
+                
                     if(mysqli_num_rows($query) > 0 || mysqli_num_rows($query2) > 0){
                         echo "<div class= 'message'>
                         <p> Email is already in use!</p> </div> <br>";
@@ -39,14 +49,17 @@
                             echo "<div class= 'message'>
                             <p> Invalid email address!</p> </div> <br>";
                             echo "<a href= 'javascript:self.history.back()'><button class='btn btn-outline-dark' style='color: white;'>Go back</button>";
-
+                        } elseif ($role == 'student' && empty($department)) {
+                            // Only check department if role is student
+                            echo "<div class= 'message'>
+                            <p> Please select a department!</p> </div> <br>";
+                            echo "<a href= 'javascript:self.history.back()'><button class='btn btn-outline-dark' style='color: white;'>Go back</button>";
                         } else {
-
                             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
+                
                             // CREATE ACCOUNT SQL STATEMENT
                             if($role == 'student'){
-                                $query = "INSERT INTO students (fName, lName, email, password, confirmPassword) VALUES ('$fname', '$lname', '$email', '$hashed_password', '$hashed_password')";
+                                $query = "INSERT INTO students (fName, lName, email, password, confirmPassword, department) VALUES ('$fname', '$lname', '$email', '$hashed_password', '$hashed_password', '$department')";
                                 mysqli_query($con, $query) or die("Error");
                             } else if($role == 'teacher'){
                                 $query = "INSERT INTO teacher (fName, lName, email, password, confirmPassword) VALUES ('$fname', '$lname', '$email', '$hashed_password', '$hashed_password')";
@@ -61,7 +74,6 @@
                 }else{
             ?>
 
-
             <header>Register</header>
             <form action="" method="post">
                 <div class="field input">
@@ -75,9 +87,26 @@
                 </div>
 
                 <div class="field input">
-                    <input type="text" name="email" id="email" placeholder="  Email Address">
+                <?php if($role == 'student'): ?>
+                    <div class="input-group">
+                        <input type="text" name="email" id="email" placeholder="  Email Address" class="form-control">
+                        <button class="btn5 btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="department"></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" data-value="CICS">CICS</a></li>
+                            <!-- Add more departments as needed -->
+                        </ul>
+                    </div>
+                    <?php else: ?>
+                        <!-- Show only email input for admin -->
+                        <input type="text" name="email" id="email" placeholder="  Email Address">
+                    <?php endif; ?>
                     <div id="email-error" class="error-message"></div>
                 </div>
+
+                <?php if($role == 'student'): ?>
+                <!-- Hidden department input only for students -->
+                <input type="hidden" name="department" id="department-input">
+                <?php endif; ?>
 
                 <div class="field input">
                     <input type="password" name="password" id="password" placeholder="  Password">
@@ -89,20 +118,10 @@
                     <div id="confirmPassword-error" class="error-message"></div>
                 </div>
 
-                <div class="role-selection">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" id="student" value="student" checked>
-                    <label class="form-check-label" for="student">Student</label>
-                </div>
-
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" id="teacher" value="teacher">
-                    <label class="form-check-label" for="teacher">Admin</label>
-                </div>
-            </div>
+                <input type="hidden" name="role" value="<?php echo htmlspecialchars($role); ?>">
 
                 <div class="field">
-                <button type="submit" name="submit" class="btn btn-outline-dark" style="color: white;">Create Account</button>
+                    <button type="submit" name="submit" class="btn btn-outline-dark" style="color: white;">Create Account</button>
                 </div>
 
                 <div class="link">Already have an account? <a href="login.php">Login</a></div>
@@ -122,6 +141,21 @@
         const emailError = document.getElementById('email-error');
         const passwordError = document.getElementById('password-error');
         const confirmPasswordError = document.getElementById('confirmPassword-error');
+        const departmentButton = document.getElementById('department');
+        const departmentInput = document.getElementById('department-input');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const selectedValue = this.getAttribute('data-value');
+                    departmentButton.textContent = selectedValue;
+                    departmentInput.value = selectedValue; // Set the hidden input value
+                });
+            });
+        });
 
         document.addEventListener('input', () => {
             if (fNameInput.value.trim() !== '') {
@@ -198,10 +232,19 @@
                 isValid = false;
             }
 
+            // Only check department if role is student
+            if ('<?php echo $role; ?>' === 'student' && !departmentInput.value) {
+                emailError.textContent = 'Please select a department';
+                emailError.style.color = 'red';
+                emailError.style.fontSize = '12px';
+                isValid = false;
+            }
+
             if (!isValid) {
                 e.preventDefault();
             }
         });
-    </script>
+</script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -2,6 +2,24 @@
     include('../../php/db_config.php');
     session_start();
 
+
+      if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'student') {
+        header("Location: ../../login.php");
+        exit();
+    }
+    
+    // Check if student's account is accepted
+    $student_id = $_SESSION['id'];
+    $check_query = mysqli_query($con, "SELECT is_accepted FROM students WHERE id = '$student_id'");
+    $student = mysqli_fetch_assoc($check_query);
+    
+    if(!$student || $student['is_accepted'] == 0) {
+        session_destroy();
+        header("Location: ../../login.php?error=not_accepted");
+        exit();
+    }
+
+
     if(!isset($_SESSION['valid'])){
         header("Location: ../../login.php");
     }

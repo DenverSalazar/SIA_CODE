@@ -1,0 +1,105 @@
+body {
+background-color: #f8f9fa;
+}
+
+.edit-container {
+max-width: 1100px;
+margin-left: 350px;
+}
+
+.edit-card {
+background: white;
+border-radius: 15px;
+box-shadow: 0 0 20px rgba(0,0,0,0.1);
+overflow: hidden;
+}
+
+.edit-header {
+background: #C1E8FF;
+padding: 30px;
+color: black;
+text-align: center;
+}
+
+.edit-form {
+padding: 30px;
+}
+
+.form-group {
+margin-bottom: 25px;
+}
+
+.form-label {
+color: #8898aa;
+font-size: 0.9rem;
+margin-bottom: 8px;
+}
+
+.form-control {
+border-radius: 5px;
+border: 1px solid #e4e7eb;
+padding: 12px;
+transition: all 0.3s;
+}
+
+.form-control:focus {
+border-color: #5E72E4;
+box-shadow: 0 0 0 0.2rem rgba(94,114,228,0.25);
+}
+
+.profile-upload {
+text-align: center;
+margin-bottom: 30px;
+}
+
+.profile-upload img {
+width: 150px;
+height: 150px;
+border-radius: 50%;
+border: 5px solid white;
+margin-bottom: 15px;
+object-fit: cover;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.upload-btn {
+background: #5E72E4;
+color: white;
+border: none;
+padding: 8px 20px;
+border-radius: 5px;
+cursor: pointer;
+transition: all 0.3s;
+}
+
+.upload-btn:hover {
+background: #324cdd;
+}
+
+.save-btn {
+background: #2dce89;
+color: white;
+border: none;
+padding: 12px 30px;
+border-radius: 5px;
+transition: all 0.3s;
+}
+
+.save-btn:hover {
+background: #26af74;
+transform: translateY(-2px);
+}
+
+.cancel-btn {
+background: #f5365c;
+color: white;
+border: none;
+padding: 12px 30px;
+border-radius: 5px;
+transition: all 0.3s;
+}
+
+.cancel-btn:hover {
+background: #f01744;
+transform: translateY(-2px);
+}

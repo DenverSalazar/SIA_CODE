@@ -228,9 +228,18 @@
             <button class="btn btn-outline-primary me-2" type="submit" name="submit">Filter</button>
         </form>
 
-        <div class="container mt-5">
-            <!-- <h1 class="mb-4">Browse Books</h1> -->
+       <!-- No books found message -->
+        <?php if (isset($books) && count($books) == 0): ?>
+            <div class="container">
+                <div class="row mt-5">
+                    <div class="col-12 text-center" style="color:red; font-weight:bolder">
+                        <p>No Modules found matching your search or category selection.</p>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
+        <div class="container mt-5">
             <div class="books">
                 <?php if (count($books) > 0): ?>
                 <?php foreach ($books as $book): ?>
@@ -248,10 +257,6 @@
                         </div>
                     </div>
                 <?php endforeach; ?>    
-                <?php else: ?>
-                    <div class="col-12">
-                        <p>No books found matching your search or category selection.</p>
-                    </div>
                 <?php endif; ?>
                 </div>
                 <nav aria-label="Book pagination" class="mt-5">

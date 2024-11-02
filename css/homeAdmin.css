@@ -1,0 +1,328 @@
+body {
+    background-color: #f0f2f5;
+    }
+    .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    padding-top: 20px;
+    transition: 0.3s;
+    z-index: 1000;
+    }
+    .sidebar ul {
+    list-style: none;
+    padding: 0;
+    }
+    .sidebar ul li {
+    padding: 10px;
+    }
+    .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    }
+    .sidebar ul li a:hover {
+    background-color: #495057;
+    border-radius: 5px;
+    padding: 8px;
+    }
+    .content {
+    margin-left: 260px;
+    padding: 20px;
+    transition: 0.3s;
+    }
+    .chat-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    }
+    .chat-header {
+    padding: 15px;
+    background-color: #f0f2f5;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    }
+    .chat-box {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    }
+    .message {
+    margin-bottom: 10px;
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 18px;
+    }
+    .message.admin {
+    align-self: flex-end;
+    background-color: #0084ff;
+    color: white;
+    margin-left: auto;
+    }
+    .message.student {
+    align-self: flex-start;
+    background-color: #e4e6eb;
+    color: black;
+    }
+    .chat-input {
+    padding: 15px;
+    background-color: #f0f2f5;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    }
+    .input-group {
+    background-color: white;
+    border-radius: 20px;
+    overflow: hidden;
+    }
+    #message {
+    border: none;
+    border-radius: 20px;
+    padding-left: 20px;
+    }
+    #message:focus {
+    box-shadow: none;
+    }
+    .btn-send {
+    background-color: transparent;
+    border: none;
+    color: #0084ff;
+    }
+    .btn-send:hover {
+    color: #0056b3;
+    }
+    .sidebar-title {
+    filter: brightness(0) invert(1);
+    text-align: center;
+    }
+    /* Add these styles to your existing style section */
+    .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    padding-top: 20px;
+    transition: 0.3s;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar .nav-link {
+    color: rgba(255,255,255,0.8);
+    padding: 12px 20px;
+    margin: 4px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    }
+    
+    .sidebar .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255,255,255,0.1);
+    transform: translateX(5px);
+    }
+    
+    .sidebar .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+    }
+    
+    .sidebar .nav-link i {
+    width: 24px;
+    text-align: center;
+    margin-right: 8px;
+    }
+    
+    .sidebar-title {
+    padding: 0 20px;
+    margin-bottom: 30px;
+    }
+    
+    .sidebar-title img {
+    filter: brightness(0) invert(1);
+    transition: all 0.3s ease;
+    }
+    
+    .sidebar-title img:hover {
+    transform: scale(1.05);
+    }
+    
+    /* Add a nice hover effect for the logout button */
+    .sidebar .nav-link.text-danger:hover {
+    background-color: rgba(220,53,69,0.1);
+    color: #dc3545;
+    }
+    
+    /* Add a subtle divider between nav items */
+    .sidebar .nav-item {
+    position: relative;
+    }
+    
+    .sidebar .nav-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    }
+    
+    /* Make the last nav item (logout) stick to bottom */
+    .sidebar .nav {
+    height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    }
+    
+    /* Adjust the content margin to accommodate the sidebar */
+    .content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    }
+    
+    /* Add some nice transitions */
+    .sidebar, .content {
+    transition: all 0.3s ease;
+    }
+    
+    /* Make the chat container take full height */
+    .chat-container {
+    height: calc(100vh - 40px);
+    margin-right: 20px;
+    }
+    
+    .chart-container {
+    height: 400px; /* Adjust this value as needed */
+    }
+    
+    .table td, .table th {
+    vertical-align: middle;
+    }
+    
+    .fas {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    }
+    
+    .card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: none;
+    border-radius: 10px;
+    }
+    
+    .table-responsive {
+    border-radius: 10px;
+    }
+    
+    .dashboard-card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    }
+    
+    .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .icon-shape {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(84, 131, 179, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+    
+    .icon-shape i {
+    font-size: 24px;
+    color: #5483b3;
+    }
+    
+    /* Custom colors for each card */
+    .dashboard-card:nth-child(1) .icon-shape {
+    background-color: rgba(0, 200, 81, 0.1);
+    }
+    
+    .dashboard-card:nth-child(1) .icon-shape i {
+    color: #00c851;
+    }
+    
+    .card-text {
+    font-size: 1.8rem;
+    margin-bottom: 0;
+    }
+    
+    /* Animation for icons */
+    .icon-shape i {
+    transition: transform 0.3s ease;
+    }
+    
+    .dashboard-card:hover .icon-shape i {
+    transform: scale(1.2);
+    }
+    
+    /* Gradient border on hover */
+    .dashboard-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #5483b3, #7fa9d4);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: -1;
+    }
+    
+    .dashboard-card:hover::after {
+    opacity: 0.1;
+    }
+    .welcome {
+        background-color: #C1E8FF;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .circle-person {
+        flex-shrink: 0;
+        margin-left: 10px;
+    }
+    
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .profile-img:hover {
+        transform: scale(1.05);
+    }
+    
+    @media (min-width: 768px) {
+        .profile-img {
+            width: 200px;
+            height: 200px;
+        }
+    }
+    

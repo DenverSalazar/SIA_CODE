@@ -52,7 +52,7 @@
 </head>
 <body>
     
-    <div class="container">
+    <div class="container vh-100">
     <div class="box form-box">
         <header>Change Password</header>
         <div class="icon" >

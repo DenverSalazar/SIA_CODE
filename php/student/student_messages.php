@@ -305,274 +305,274 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                             </div>
                             <div class="card-body">
                             <div class="conversation-list">
-    <?php foreach ($conversations as $conversation): ?>
-        <div class="conversation-item <?php echo $conversation['unread_count'] > 0 ? 'unread' : ''; ?>" 
-            data-teacher-id="<?php echo $conversation['id']; ?>">
-            <strong><?php echo htmlspecialchars($conversation['fName'] . ' ' . $conversation['lName']); ?></strong>
-            <?php if ($conversation['unread_count'] > 0): ?>
-                <span class="unread-badge"><?php echo $conversation['unread_count']; ?></span>
-            <?php endif; ?>
-            <br>
-            <small><?php echo htmlspecialchars(substr($conversation['last_message'], 0, 30)) . '...'; ?></small>
-        </div>
-    <?php endforeach; ?>
-</div>
+                                    <?php foreach ($conversations as $conversation): ?>
+                                        <div class="conversation-item <?php echo $conversation['unread_count'] > 0 ? 'unread' : ''; ?>" 
+                                            data-teacher-id="<?php echo $conversation['id']; ?>">
+                                            <strong><?php echo htmlspecialchars($conversation['fName'] . ' ' . $conversation['lName']); ?></strong>
+                                            <?php if ($conversation['unread_count'] > 0): ?>
+                                                <span class="unread-badge"><?php echo $conversation['unread_count']; ?></span>
+                                            <?php endif; ?>
+                                            <br>
+                                            <small><?php echo htmlspecialchars(substr($conversation['last_message'], 0, 30)) . '...'; ?></small>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-8">
-    <!-- Chat box section -->
-    <div class="chat-container">
-        <div class="chat-header">
-            <button class="back-button">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <h5 id="chat-header-name"></h5>
-        </div>
-        <div class="chat-box" id="chat-box">
-            <!-- Messages will be loaded here -->
-        </div>
-        <div class="chat-input">
-            <form id="message-form">
-                <div class="input-group">
-                    <input type="text" id="message" name="message" class="form-control" placeholder="Type a message..." required>
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-send">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+            <!-- Chat box section -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <button class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h5 id="chat-header-name"></h5>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-            <script>
-        $(document).ready(function(){
-    var selectedUserId = null;
-
-    $('.back-button').click(function() {
-        // Hide the chat container
-        $('.chat-box').html('');
-        $('#chat-header-name').text('');
-        
-        // Show default message
-        $('.chat-box').html(`
-            <div class="default-message">
-                <h4 class="text-muted">Select a conversation to start chatting.</h4>
+                <div class="chat-box" id="chat-box">
+                    <!-- Messages will be loaded here -->
+                </div>
+                <div class="chat-input">
+                    <form id="message-form">
+                        <div class="input-group">
+                            <input type="text" id="message" name="message" class="form-control" placeholder="Type a message..." required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-send">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-        `);
-        
-        // Clear selected user
-        selectedUserId = null;
-        
-        // Remove active class from conversations
-        $('.conversation-item').removeClass('active');
-        
-        // Reset the teacher email select if you have one
-        $('#teacher_email').val('');
+        </div>
+                    <script>
+                $(document).ready(function(){
+            var selectedUserId = null;
 
-        // If you're using mobile view, you might want to show the conversation list
-        if($(window).width() < 768) {
-            $('.col-md-4').show();
-            $('.col-md-8').hide();
-        }
-    });
+            $('.back-button').click(function() {
+                // Hide the chat container
+                $('.chat-box').html('');
+                $('#chat-header-name').text('');
+                
+                // Show default message
+                $('.chat-box').html(`
+                    <div class="default-message">
+                        <h4 class="text-muted">Select a conversation to start chatting.</h4>
+                    </div>
+                `);
+                
+                // Clear selected user
+                selectedUserId = null;
+                
+                // Remove active class from conversations
+                $('.conversation-item').removeClass('active');
+                
+                // Reset the teacher email select if you have one
+                $('#teacher_email').val('');
 
-    function showConversation(userId, userName) {
-        selectedUserId = userId;
-        $('#chat-header-name').text(userName);
-        $('.chat-container').addClass('show');
-        $('.default-message').hide();
-        $('.messages-list').show();
-        loadMessages(userId);
-        
-        $('.conversation-item').removeClass('active');
-        $('.conversation-item[data-teacher-id="' + userId + '"]').addClass('active');
-    }
+                // If you're using mobile view, you might want to show the conversation list
+                if($(window).width() < 768) {
+                    $('.col-md-4').show();
+                    $('.col-md-8').hide();
+                }
+            });
 
-    function hideConversation() {
-        selectedUserId = null;
-        $('.chat-container').removeClass('show');
-        $('#chat-header-name').text('');
-        $('.default-message').show();
-        $('.messages-list').hide();
-    }
-
-    // Handle email selection
-    $('#teacher_email').change(function() {
-        var selectedId = $(this).val();
-        if (selectedId) {
-            var selectedName = $(this).find('option:selected').text();
-            showConversation(selectedId, selectedName);
-        } else {
-            hideConversation();
-        }
-    });
-
-    // Handle conversation item click
-    $(document).on('click', '.conversation-item', function() {
-        var userId = $(this).data('teacher-id');
-        var userName = $(this).find('strong').text();
-        showConversation(userId, userName);
-    });
-
-    // Handle back button click
-    $('.back-button').click(function() {
-        hideConversation();
-    });
-
-    // Add this auto-refresh function
-    setInterval(function() {
-        if(selectedUserId) {
-            loadMessages(selectedUserId);
-        }
-    }, 5000); // Checks every 5 seconds for new messages
-
-
-    function loadMessages(userId) {
-    $.ajax({
-        url: "load_messages.php",
-        method: "POST",
-        data: {
-            student_id: <?php echo $student_id; ?>,
-            admin_id: userId
-        },
-        success: function(data) {
-            $('.chat-box').html(data);
-            scrollToBottom();
-        }
-    });
-}
-
-function scrollToBottom() {
-    var chatBox = $('.chat-box');
-    chatBox.scrollTop(chatBox[0].scrollHeight);
-}
-
-    // Make sure your loadMessages function properly displays messages
-    function showConversation(userId, userName) {
-        selectedUserId = userId;
-        $('#chat-header-name').text(userName);
-        $('.chat-container').addClass('show');
-        $('.default-message').hide();
-        $('.messages-list').show();
-        loadMessages(userId);
-        
-        // Update conversation list
-        $('.conversation-item').removeClass('active');
-        $('.conversation-item[data-teacher-id="' + userId + '"]').addClass('active');
-    }
-
-    function scrollToBottom() {
-        var chatBox = $('.chat-box');
-        chatBox.scrollTop(chatBox[0].scrollHeight);
-    }
-
-    function markMessagesAsRead(userId) {
-        $.ajax({
-            url: "mark_messages_read.php",
-            method: "POST",
-            data: {
-                student_id: <?php echo $student_id; ?>,
-                admin_id: userId
-            },
-            success: function() {
-                updateConversationList();
+            function showConversation(userId, userName) {
+                selectedUserId = userId;
+                $('#chat-header-name').text(userName);
+                $('.chat-container').addClass('show');
+                $('.default-message').hide();
+                $('.messages-list').show();
+                loadMessages(userId);
+                
+                $('.conversation-item').removeClass('active');
+                $('.conversation-item[data-teacher-id="' + userId + '"]').addClass('active');
             }
-        });
-    }
 
-       // Also update your load_messages.php file to properly format the messages:
-        function updateConversationList() {
-        $.ajax({
-            url: "get_conversations.php",
-            method: "GET",
-            success: function(data) {
-                $('.conversation-list').html(data);
-                // Reattach click events if needed
-                attachConversationClickEvents();
+            function hideConversation() {
+                selectedUserId = null;
+                $('.chat-container').removeClass('show');
+                $('#chat-header-name').text('');
+                $('.default-message').show();
+                $('.messages-list').hide();
             }
-        });
-    }
 
-    function attachConversationClickEvents() {
-        $('.conversation-item').click(function() {
-            var userId = $(this).data('teacher-id');
-            var userName = $(this).find('strong').text();
-            showConversation(userId, userName);
-        });
-    }
+            // Handle email selection
+            $('#teacher_email').change(function() {
+                var selectedId = $(this).val();
+                if (selectedId) {
+                    var selectedName = $(this).find('option:selected').text();
+                    showConversation(selectedId, selectedName);
+                } else {
+                    hideConversation();
+                }
+            });
 
-    // Initial attachment of click events
-    attachConversationClickEvents();
+            // Handle conversation item click
+            $(document).on('click', '.conversation-item', function() {
+                var userId = $(this).data('teacher-id');
+                var userName = $(this).find('strong').text();
+                showConversation(userId, userName);
+            });
 
-    // Update your message sending function to immediately show the new message
-    $('#message-form').submit(function(e) {
-        e.preventDefault();
-        var message = $('#message').val();
-        if (message.trim() !== '' && selectedUserId != null) {
+            // Handle back button click
+            $('.back-button').click(function() {
+                hideConversation();
+            });
+
+            // Add this auto-refresh function
+            setInterval(function() {
+                if(selectedUserId) {
+                    loadMessages(selectedUserId);
+                }
+            }, 5000); // Checks every 5 seconds for new messages
+
+
+            function loadMessages(userId) {
             $.ajax({
-                url: "send_message.php",
+                url: "load_messages.php",
                 method: "POST",
                 data: {
-                    message: message,
                     student_id: <?php echo $student_id; ?>,
-                    admin_id: selectedUserId
+                    admin_id: userId
                 },
-                success: function(response) {
-                    $('#message').val('');
-                    loadMessages(selectedUserId); // Reload messages immediately
-                    updateConversationList(); // Update the conversation list
+                success: function(data) {
+                    $('.chat-box').html(data);
+                    scrollToBottom();
                 }
             });
         }
-    });
 
-    // Handle Enter key press
-    $('#message').keypress(function(e) {
-        if(e.which == 13 && !e.shiftKey) {
-            e.preventDefault();
-            $('#message-form').submit();
+        function scrollToBottom() {
+            var chatBox = $('.chat-box');
+            chatBox.scrollTop(chatBox[0].scrollHeight);
         }
-    });
 
-    // Initial hide of conversation
-    hideConversation();
-});
-
-
-</script>
-<script>
-$(document).ready(function(){
-    function updateConversationList() {
-        $.ajax({
-            url: "get_conversations.php",
-            method: "GET",
-            success: function(data) {
-                $('.conversation-list').html(data);
-                // Reattach click events if needed
-                attachConversationClickEvents();
+            // Make sure your loadMessages function properly displays messages
+            function showConversation(userId, userName) {
+                selectedUserId = userId;
+                $('#chat-header-name').text(userName);
+                $('.chat-container').addClass('show');
+                $('.default-message').hide();
+                $('.messages-list').show();
+                loadMessages(userId);
+                
+                // Update conversation list
+                $('.conversation-item').removeClass('active');
+                $('.conversation-item[data-teacher-id="' + userId + '"]').addClass('active');
             }
+
+            function scrollToBottom() {
+                var chatBox = $('.chat-box');
+                chatBox.scrollTop(chatBox[0].scrollHeight);
+            }
+
+            function markMessagesAsRead(userId) {
+                $.ajax({
+                    url: "mark_messages_read.php",
+                    method: "POST",
+                    data: {
+                        student_id: <?php echo $student_id; ?>,
+                        admin_id: userId
+                    },
+                    success: function() {
+                        updateConversationList();
+                    }
+                });
+            }
+
+            // Also update your load_messages.php file to properly format the messages:
+                function updateConversationList() {
+                $.ajax({
+                    url: "get_conversations.php",
+                    method: "GET",
+                    success: function(data) {
+                        $('.conversation-list').html(data);
+                        // Reattach click events if needed
+                        attachConversationClickEvents();
+                    }
+                });
+            }
+
+            function attachConversationClickEvents() {
+                $('.conversation-item').click(function() {
+                    var userId = $(this).data('teacher-id');
+                    var userName = $(this).find('strong').text();
+                    showConversation(userId, userName);
+                });
+            }
+
+            // Initial attachment of click events
+            attachConversationClickEvents();
+
+            // Update your message sending function to immediately show the new message
+            $('#message-form').submit(function(e) {
+                e.preventDefault();
+                var message = $('#message').val();
+                if (message.trim() !== '' && selectedUserId != null) {
+                    $.ajax({
+                        url: "send_message.php",
+                        method: "POST",
+                        data: {
+                            message: message,
+                            student_id: <?php echo $student_id; ?>,
+                            admin_id: selectedUserId
+                        },
+                        success: function(response) {
+                            $('#message').val('');
+                            loadMessages(selectedUserId); // Reload messages immediately
+                            updateConversationList(); // Update the conversation list
+                        }
+                    });
+                }
+            });
+
+            // Handle Enter key press
+            $('#message').keypress(function(e) {
+                if(e.which == 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    $('#message-form').submit();
+                }
+            });
+
+            // Initial hide of conversation
+            hideConversation();
         });
-    }
 
-    function attachConversationClickEvents() {
-        $('.conversation-item').click(function() {
-            var userId = $(this).data('teacher-id');
-            var userName = $(this).find('strong').text();
-            showConversation(userId, userName);
+
+        </script>
+        <script>
+        $(document).ready(function(){
+            function updateConversationList() {
+                $.ajax({
+                    url: "get_conversations.php",
+                    method: "GET",
+                    success: function(data) {
+                        $('.conversation-list').html(data);
+                        // Reattach click events if needed
+                        attachConversationClickEvents();
+                    }
+                });
+            }
+
+            function attachConversationClickEvents() {
+                $('.conversation-item').click(function() {
+                    var userId = $(this).data('teacher-id');
+                    var userName = $(this).find('strong').text();
+                    showConversation(userId, userName);
+                });
+            }
+
+            // Update conversation list every 5 seconds
+            setInterval(updateConversationList, 5000);
+
+            // Initial load of conversations
+            updateConversationList();
+
+            // Your existing JavaScript code...
         });
-    }
-
-    // Update conversation list every 5 seconds
-    setInterval(updateConversationList, 5000);
-
-    // Initial load of conversations
-    updateConversationList();
-
-    // Your existing JavaScript code...
-});
-</script>
+        </script>
 <script src="../../js/bootstrap.bundle.min.js" ></script>
 <script src="../../js/bootstrap.min.js"></script>
 </body>
