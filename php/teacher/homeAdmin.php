@@ -268,14 +268,14 @@
                 <div class="text mb-3 mb-md-0 flex-grow-1">
                     <h1 style="font-weight: bold;">Welcome back, <?php echo $res_fName . " " . $res_lName; ?>!</h1>
                     <div class="d-flex align-items-center">
-    <p style="font-size: 1.2rem; margin-right: 15px; margin-bottom: 0;">
-        Current Time: <span id="currentTime"><?php echo $currentTime; ?></span>
-    </p>
-    <div class="date-picker-container">
-        <i class="far fa-calendar-alt calendar-icon"></i>
-        <input type="date" class="form-control date-input" name="date" value="<?php echo isset($date_filter) ? $date_filter : date('Y-m-d'); ?>">
-    </div>
-</div>
+                    <p style="font-size: 1.2rem; margin-right: 15px; margin-bottom: 0;">
+                        Current Time: <span id="currentTime"><?php echo $currentTime; ?></span>
+                    </p>
+                    <div class="date-picker-container">
+                        <i class="far fa-calendar-alt calendar-icon"></i>
+                        <input type="date" class="form-control date-input" name="date" value="<?php echo isset($date_filter) ? $date_filter : date('Y-m-d'); ?>">
+                    </div>
+                </div>
                 </div>
                 <div class="circle-person ms-md-3" style="position: relative; right: 80px;"> 
                     <?php 
