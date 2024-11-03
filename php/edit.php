@@ -9,8 +9,10 @@ if(!isset($_SESSION['valid'])){
 $id = $_SESSION['id'];
 $role = $_SESSION['role'];
 
+// Use your original path structure
+$upload_directory = "../../uploads/profiles/";
+
 // Create uploads directory if it doesn't exist
-$upload_directory = __DIR__ . "/../../uploads/profiles/";
 if (!file_exists($upload_directory)) {
     mkdir($upload_directory, 0777, true);
 }
@@ -30,60 +32,77 @@ if(isset($_POST['update'])){
     $lName = mysqli_real_escape_string($con, $_POST['lName']);
     $email = mysqli_real_escape_string($con, $_POST['email']);
     
-    // Initialize update query
     $update_query = "";
-    
-   // Handle profile picture upload
-if(isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0){
-    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-    $filename = $_FILES['profile_picture']['name'];
-    $filetype = pathinfo($filename, PATHINFO_EXTENSION);
-    
-    if(in_array(strtolower($filetype), $allowed)){
-        // Generate unique filename using timestamp
-        $new_filename = "profile_" . $id . "_" . time() . "." . $filetype;
-        $upload_path = $upload_directory . $new_filename;
+
+    // Handle profile picture upload
+    if(isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0){
+        $file_name = $_FILES['profile_picture']['name'];
+        $file_tmp = $_FILES['profile_picture']['tmp_name'];
         
-        if(move_uploaded_file($_FILES['profile_picture']['tmp_name'], $upload_path)){
-            // Delete old profile picture if it exists
-            if(!empty($result['profile_picture']) && file_exists($upload_directory . $result['profile_picture'])){
-                unlink($upload_directory . $result['profile_picture']);
-            }
+        // Get file extension
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        // Allowed extensions
+        $allowed_ext = array('jpg', 'jpeg', 'png', 'gif');
+        
+        if(in_array($file_ext, $allowed_ext)){
+            // Generate new filename
+            $new_filename = 'profile_' . $id . '_' . time() . '.' . $file_ext;
             
-            // Update database with new profile picture path
-            if($role == 'student'){
-                $update_query = "UPDATE students SET fName='$fName', lName='$lName', 
-                               email='$email', profile_picture='$new_filename' 
-                               WHERE id='$id'";
+            // Set complete upload path using your original path structure
+            $upload_path = $upload_directory . $new_filename;
+            
+            // Try to move the uploaded file
+            if(move_uploaded_file($file_tmp, $upload_path)){
+                // File uploaded successfully, update database
+                if($role == 'student'){
+                    $update_query = "UPDATE students SET 
+                                   fName='$fName', 
+                                   lName='$lName', 
+                                   email='$email', 
+                                   profile_picture='$new_filename' 
+                                   WHERE id='$id'";
+                } else {
+                    $update_query = "UPDATE teacher SET 
+                                   fName='$fName', 
+                                   lName='$lName', 
+                                   email='$email', 
+                                   profile_picture='$new_filename' 
+                                   WHERE id='$id'";
+                }
             } else {
-                $update_query = "UPDATE teacher SET fName='$fName', lName='$lName', 
-                               email='$email', profile_picture='$new_filename' 
-                               WHERE id='$id'";
+                $error = "Failed to upload file.";
             }
         } else {
-            $error = "Failed to upload file. Please check directory permissions.";
+            $error = "Invalid file type. Allowed types: jpg, jpeg, png, gif";
         }
     } else {
-        $error = "Invalid file type. Allowed types: jpg, jpeg, png, gif";
-    }
-
-    } else {
-        // Update without changing profile picture
+        // No new profile picture, just update other fields
         if($role == 'student'){
-            $update_query = "UPDATE students SET fName='$fName', lName='$lName', 
-                           email='$email' WHERE id='$id'";
+            $update_query = "UPDATE students SET 
+                           fName='$fName', 
+                           lName='$lName', 
+                           email='$email' 
+                           WHERE id='$id'";
         } else {
-            $update_query = "UPDATE teacher SET fName='$fName', lName='$lName', 
-                           email='$email' WHERE id='$id'";
+            $update_query = "UPDATE teacher SET 
+                           fName='$fName', 
+                           lName='$lName', 
+                           email='$email' 
+                           WHERE id='$id'";
         }
     }
     
     // Execute update query
     if(!empty($update_query)){
         if(mysqli_query($con, $update_query)){
+            if($_SESSION['role'] == 'student') {
+                $student_id = $_SESSION['id'];
+                $log_query = "INSERT INTO activity_logs (student_id, action, details, timestamp) 
+                             VALUES ('$student_id', 'update_profile', 'Updated profile information', NOW())";
+                mysqli_query($con, $log_query);
+            }
             $_SESSION['message'] = "Profile updated successfully!";
-            // Clear the cache for the image
-            header("Cache-Control: no-cache, must-revalidate");
             header("Location: profile.php");
             exit();
         } else {
@@ -92,7 +111,6 @@ if(isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0
     }
 }
 ?>
-<!-- edit.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

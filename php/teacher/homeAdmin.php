@@ -188,6 +188,37 @@
         font-size: 1.5rem;
         color: #fff;
     }
+        .date-picker-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .calendar-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        pointer-events: none;
+    }
+
+    .date-input {
+        padding-left: 35px;
+        width: 150px;
+        background-color: #C1E8FF;
+    }
+
+    .date-input::-webkit-calendar-picker-indicator {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
     
     .dashboard-card .icon-container.blue { background-color: #007bff; }
     .dashboard-card .icon-container.green { background-color: #28a745; }
@@ -204,12 +235,13 @@
                 <?php
                 $current_page = basename($_SERVER['PHP_SELF']);
                 $nav_items = [
-                    'homeAdmin.php' => ['icon' => 'fas fa-home', 'text' => 'Dashboard'],
+                    'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                     'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
-                    'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Bookshelf'],
+                    'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
+                    'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                     'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                    'admin_feedback.php' => ['icon' => 'fas fa-envelope', 'text' => 'Feedbacks'],
-                    '/SIA/php/teacher/admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                    'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                    'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                 ];
 
                 foreach ($nav_items as $page => $item) {
@@ -235,7 +267,15 @@
             <div class="welcome d-flex flex-column flex-md-row align-items-center justify-content-between" style="background-color:#C1E8FF; padding: 20px; border-radius: 10px;">
                 <div class="text mb-3 mb-md-0 flex-grow-1">
                     <h1 style="font-weight: bold;">Welcome back, <?php echo $res_fName . " " . $res_lName; ?>!</h1>
-                    <p style="font-size: 1.2rem;">Current Time: <span id="currentTime"><?php echo $currentTime; ?></span></p>
+                    <div class="d-flex align-items-center">
+    <p style="font-size: 1.2rem; margin-right: 15px; margin-bottom: 0;">
+        Current Time: <span id="currentTime"><?php echo $currentTime; ?></span>
+    </p>
+    <div class="date-picker-container">
+        <i class="far fa-calendar-alt calendar-icon"></i>
+        <input type="date" class="form-control date-input" name="date" value="<?php echo isset($date_filter) ? $date_filter : date('Y-m-d'); ?>">
+    </div>
+</div>
                 </div>
                 <div class="circle-person ms-md-3" style="position: relative; right: 80px;"> 
                     <?php 

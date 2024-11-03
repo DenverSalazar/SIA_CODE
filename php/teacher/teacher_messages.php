@@ -364,12 +364,13 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                 <?php
                 $current_page = basename($_SERVER['PHP_SELF']);
                 $nav_items = [
-                    'homeAdmin.php' => ['icon' => 'fas fa-home', 'text' => 'Dashboard'],
-                    'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
-                    'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Bookshelf'],
-                    'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                    'admin_feedback.php' => ['icon' => 'fas fa-envelope', 'text' => 'Feedbacks'],
-                    '/SIA/php/teacher/admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                        'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                        'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
+                        'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
+                        'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
+                        'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
+                        'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                        'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                 ];
 
                 foreach ($nav_items as $page => $item) {

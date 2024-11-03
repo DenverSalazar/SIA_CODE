@@ -46,75 +46,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Book Shelf</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+
 </head>
 <style>
-
-    .offcanvas {
-        width: 300px !important;
-    }
-
-    .navbar {
-        background-color: white;
-    }
-
-    .offcanvas-header {
-        background-color: #343a40;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .offcanvas-body {
-        padding: 1rem;
-        background-color: #343a40;
-    }
-
-    .btn-outline-success {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
-    }
-
-    .btn-outline-success:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
-
-    .offcanvas .nav-item {
-        margin-bottom: 10px;
-    }
-
-    .offcanvas .nav-item a {
-        color: white;
-        font-size: 16px;
-    }
-
-    .logout-link {
-        color: red; 
-    }
-
-    .logout-link:hover {
-        color: darkred; 
-    }
-
-    .offcanvas .nav-item a:hover {
-        color: #0056b3;
-        text-decoration: none;
-    }
-
-    .navbar-brand img {
-        width: 150px;
-    }
-          
-    
-    .offcanvas-header h5 {
-        margin-bottom: 0;
-        filter: brightness(0) invert(1);
-    }
-
     body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
         background-color: white;
+    }
+
+    main {
+        margin-left: 250px; /* Width of the sidebar */
+        padding: 20px;
+        transition: margin-left 0.3s ease;
     }
 
     .bookshelf-title {
@@ -138,13 +86,13 @@
         flex-direction: column;
         justify-content: space-between;
         height: 100%;
-        min-height: 350px; /* Set a minimum height */
+        min-height: 350px;
     }
 
     .book img {
         width: 100%;
-        height: 250px; /* Fixed height for book covers */
-        object-fit: cover; /* Ensures cover image fits the given size */
+        height: 250px;
+        object-fit: cover;
         border-bottom: 1px solid #ddd;
         margin-bottom: 10px;
     }
@@ -152,7 +100,7 @@
     .book-title {
         font-size: 16px;
         margin-bottom: 5px;
-        text-align: center; /* Center-align the title */
+        text-align: center;
     }
 
     .book-status {
@@ -166,12 +114,12 @@
         font-size: 12px;
         color: #888;
         text-align: center;
-        margin-bottom: 10px; /* Add spacing below meta information */
+        margin-bottom: 10px;
     }
 
     .d-flex {
         justify-content: space-between;
-        margin-top: auto; /* Push buttons to the bottom */
+        margin-top: auto;
     }
 
     .upload-btn {
@@ -187,24 +135,60 @@
     .upload-btn i {
         margin-right: 5px;
     }
-    
+
+    /* Adjust the container padding */
+    .container {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    /* Search and filter form styling */
+    .search-filter-form {
+        margin-bottom: 30px;
+    }
+
+    /* Pagination styling */
+    .pagination {
+        margin-top: 30px;
+    }
 </style>
 <body>
-<!-- HEADER -->
-<header>
-    <nav class="navbar navbar-light fixed-top">
-        <div class="container">
-          <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a>
-          <form class="d-flex">
-           
-          </form>
-          <button type="button" class="btn btn-secondary" onclick="location.href='homeAdmin.php'">Back</button>
-          </div>
-      </nav>
-  </header>
+<div class="sidebar">
+            <h5 class="sidebar-title mb-5">
+                <img src="../../img/logo.png" alt="Logo" width="190" height="20">
+            </h5>
+            <ul class="nav flex-column">
+                <?php
+                $current_page = basename($_SERVER['PHP_SELF']);
+                $nav_items = [
+                    'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                    'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
+                    'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
+                    'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
+                    'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
+                    'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                    'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                ];
+
+                foreach ($nav_items as $page => $item) {
+                    $active_class = ($current_page === $page) ? 'active' : '';
+                    echo "<li class='nav-item'>
+                            <a class='nav-link {$active_class}' href='{$page}'>
+                                <i class='{$item['icon']}'></i> {$item['text']}
+                            </a>
+                        </li>";
+                }
+                ?>
+                <li class="nav-item mt-auto">
+                    <a class="nav-link text-danger" href="../../php/logout.php">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
 
 <main>
-<div class="container" style="margin-top: 80px;">
+<div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="bookshelf-title">My Book Shelf</div>
         <a href="upload.php"><button class="upload-btn"><i class="fas fa-upload"></i>Upload New Book</button></a>

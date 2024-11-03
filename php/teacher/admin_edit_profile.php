@@ -106,8 +106,13 @@ if(isset($_POST['update'])){
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/admin_edit_profile.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    
 </head>
+<style>
+     .edit-container {
+            max-width: 1220px;
+            margin-left: 280px;
+        }
+</style>
 <body>
 <div class="sidebar">
                     <h5 class="sidebar-title mb-5">
@@ -117,11 +122,12 @@ if(isset($_POST['update'])){
                         <?php
                         $current_page = basename($_SERVER['PHP_SELF']);
                         $nav_items = [
-                            'homeAdmin.php' => ['icon' => 'fas fa-home', 'text' => 'Dashboard'],
+                            'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                             'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
-                            'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Bookshelf'],
+                            'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
+                            'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                             'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                            'admin_feedback.php' => ['icon' => 'fas fa-envelope', 'text' => 'Feedbacks'],
+                            'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                             'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                         ];
 
@@ -174,9 +180,9 @@ if(isset($_POST['update'])){
                             <div class="form-group">
                                 <label class="form-label">First Name</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">
+                                    <!-- <span class="input-group-text">
                                         <i class="fas fa-user"></i>
-                                    </span>
+                                    </span> -->
                                     <input type="text" class="form-control" name="fName" 
                                            value="<?php echo htmlspecialchars($result['fName']); ?>" required>
                                 </div>
@@ -187,9 +193,9 @@ if(isset($_POST['update'])){
                             <div class="form-group">
                                 <label class="form-label">Last Name</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">
+                                    <!-- <span class="input-group-text">
                                         <i class="fas fa-user"></i>
-                                    </span>
+                                    </span> -->
                                     <input type="text" class="form-control" name="lName" 
                                            value="<?php echo htmlspecialchars($result['lName']); ?>" required>
                                 </div>
@@ -200,9 +206,9 @@ if(isset($_POST['update'])){
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
                         <div class="input-group">
-                            <span class="input-group-text">
+                            <!-- <span class="input-group-text">
                                 <i class="fas fa-envelope"></i>
-                            </span>
+                            </span> -->
                             <input type="email" class="form-control" name="email" 
                                    value="<?php echo htmlspecialchars($result['email']); ?>" required>
                         </div>

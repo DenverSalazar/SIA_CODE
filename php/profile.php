@@ -102,9 +102,9 @@ $result = mysqli_fetch_assoc($query);
     <div class="profile-container">
         <div class="profile-card">
             <div class="profile-header">
-                <?php if(isset($result['profile_picture']) && !empty($result['profile_picture'])): ?>
+            <?php if(isset($result['profile_picture']) && !empty($result['profile_picture'])): ?>
                     <img src="../../uploads/profiles/<?php echo htmlspecialchars($result['profile_picture']); ?>" 
-                         alt="Profile Picture" class="profile-img">
+                        alt="Profile Picture" class="profile-img">
                 <?php else: ?>
                     <img src="../../img/default-profile.png" alt="Default Profile Picture" class="profile-img">
                 <?php endif; ?>

@@ -91,12 +91,13 @@ $result = mysqli_query($con, $query);
                             <?php
                             $current_page = basename($_SERVER['PHP_SELF']);
                             $nav_items = [
-                                'homeAdmin.php' => ['icon' => 'fas fa-home', 'text' => 'Dashboard'],
+                                'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                                 'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
-                                'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Bookshelf'],
+                                'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
+                                'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                                 'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                                'admin_feedback.php' => ['icon' => 'fas fa-envelope', 'text' => 'Feedbacks'],
-                                '/SIA/php/teacher/admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                                'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                                'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                             ];
 
                             foreach ($nav_items as $page => $item) {
@@ -178,19 +179,19 @@ $result = mysqli_query($con, $query);
                         </div>
 
                         <!-- Add this after your filter container -->
-<?php if(isset($_GET['msg']) && $_GET['msg'] == 'deleted'): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        Feedback has been successfully deleted.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
+                        <?php if(isset($_GET['msg']) && $_GET['msg'] == 'deleted'): ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                Feedback has been successfully deleted.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif; ?>
 
-<?php if(isset($_GET['error']) && $_GET['error'] == 'delete_failed'): ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        Failed to delete feedback. Please try again.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
+                        <?php if(isset($_GET['error']) && $_GET['error'] == 'delete_failed'): ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                Failed to delete feedback. Please try again.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif; ?>
 
                         <!-- Add success/error messages -->
                         <?php if(isset($_GET['msg']) && $_GET['msg'] == 'all_deleted'): ?>
@@ -226,40 +227,40 @@ $result = mysqli_query($con, $query);
                             </div>
                         </div>
                         <?php while($feedback = mysqli_fetch_assoc($result)): ?>
-    <div class="feedback-item">
-        <div class="avatar">
-            <?php
-            // Get student's profile picture
-            $student_id = $feedback['student_id'];
-            $profile_query = mysqli_query($con, "SELECT profile_picture FROM students WHERE id = '$student_id'");
-            $profile_result = mysqli_fetch_assoc($profile_query);
-            
-            if(isset($profile_result['profile_picture']) && !empty($profile_result['profile_picture'])) {
-                echo '<img src="../../../uploads/profiles/'. htmlspecialchars($profile_result['profile_picture']) .'" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">';
-            } else {
-                echo '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                </svg>';
-            }
-            ?>
-        </div>
-        <div class="feedback-content">
-            <div class="student-info">
-                <?php echo htmlspecialchars($feedback['fName'] . ' ' . $feedback['lName']); ?>
-                <span class="date">- <?php echo date('Y-m-d', strtotime($feedback['created_at'])); ?></span>
-            </div>
-            <div class="feedback-rating">Rating: <?php echo str_repeat('★', $feedback['rating']) . str_repeat('☆', 5 - $feedback['rating']); ?></div>
-            <div class="feedback-text"><?php echo htmlspecialchars($feedback['comment']); ?></div>
-        </div>
-        <form method="POST" class="delete-form">
-            <input type="hidden" name="feedback_id" value="<?php echo $feedback['feedback_id']; ?>">
-            <button type="submit" name="delete_feedback" class="delete-btn" onclick="return confirm('Are you sure you want to delete this feedback?');">
-                <i class="fas fa-trash-alt"></i> Delete
-            </button>
-        </form>
-    </div>
-<?php endwhile; ?>
+                        <div class="feedback-item">
+                            <div class="avatar">
+                                <?php
+                                // Get student's profile picture
+                                $student_id = $feedback['student_id'];
+                                $profile_query = mysqli_query($con, "SELECT profile_picture FROM students WHERE id = '$student_id'");
+                                $profile_result = mysqli_fetch_assoc($profile_query);
+                                
+                                if(isset($profile_result['profile_picture']) && !empty($profile_result['profile_picture'])) {
+                                    echo '<img src="../../../uploads/profiles/'. htmlspecialchars($profile_result['profile_picture']) .'" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">';
+                                } else {
+                                    echo '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                    </svg>';
+                                }
+                                ?>
+                            </div>
+                            <div class="feedback-content">
+                                <div class="student-info">
+                                    <?php echo htmlspecialchars($feedback['fName'] . ' ' . $feedback['lName']); ?>
+                                    <span class="date">- <?php echo date('Y-m-d', strtotime($feedback['created_at'])); ?></span>
+                                </div>
+                                <div class="feedback-rating">Rating: <?php echo str_repeat('★', $feedback['rating']) . str_repeat('☆', 5 - $feedback['rating']); ?></div>
+                                <div class="feedback-text"><?php echo htmlspecialchars($feedback['comment']); ?></div>
+                            </div>
+                            <form method="POST" class="delete-form">
+                                <input type="hidden" name="feedback_id" value="<?php echo $feedback['feedback_id']; ?>">
+                                <button type="submit" name="delete_feedback" class="delete-btn" onclick="return confirm('Are you sure you want to delete this feedback?');">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    <?php endwhile; ?>
 
                 </div>
             </div>

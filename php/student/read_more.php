@@ -54,6 +54,20 @@ function debug_file_info($file_path) {
         echo "File size: " . filesize($file_path) . " bytes<br>";
     }
 }
+
+$student_id = $_SESSION['id'];
+$book_id = $_GET['id']; // Assuming you get the book ID from the URL
+$book_title = $book['title']; // Assuming you have fetched the book details
+$query = "INSERT INTO activity_logs (student_id, action, details, timestamp) 
+          VALUES ('$student_id', 'view_module', 'Viewed Module: $book_title (ID: $book_id)', NOW())";
+mysqli_query($con, $query);
+
+$student_id = $_SESSION['id'];
+$book_id = $_GET['id'];
+$book_title = $book['title'];
+$query = "INSERT INTO activity_logs (student_id, action, details, timestamp) 
+          VALUES ('$student_id', 'download_module', 'Downloaded Module: $book_title (ID: $book_id)', NOW())";
+mysqli_query($con, $query);
 ?>
 
 <!DOCTYPE html>

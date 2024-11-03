@@ -2,11 +2,6 @@ body {
 background-color: #f8f9fa;
 }
 
-.edit-container {
-max-width: 1100px;
-margin-left: 350px;
-}
-
 .edit-card {
 background: white;
 border-radius: 15px;
