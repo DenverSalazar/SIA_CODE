@@ -61,7 +61,7 @@ if(isset($_POST['submit'])){
 </head>
 <style>
     body{
-    background: linear-gradient(135deg, #2c3e50, #3498db);
+    background: gray;
     min-height: 100vh;
     display: flex;
     align-items: center;

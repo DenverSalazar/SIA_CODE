@@ -21,6 +21,11 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/accounts.css">
 </head>
+<style>
+    .sidebar{
+        background-color: #052659;
+    }
+</style>
 <body>
         <div id="alertMessage" class="custom-alert">
                 <span id="alertText"></span>

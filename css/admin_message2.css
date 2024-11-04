@@ -1,0 +1,100 @@
+   /* Add to your existing CSS */
+   .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.info-button {
+    background: none;
+    border: none;
+    color: #0084ff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.info-button:hover {
+    color: #0056b3;
+}
+
+.search-section, .filter-section {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-body h6 {
+    color: #1d2939;
+    margin-bottom: 15px;
+}
+
+#messageSearch {
+    border-right: none;
+}
+
+.btn-outline-secondary {
+    border-left: none;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: #0084ff;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.back-button:hover {
+    color: #0056b3;
+}
+
+.info-button {
+    background: none;
+    border: none;
+    color: #0084ff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.info-button:hover {
+    color: #0056b3;
+}
+
+#chat-header-name {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.default-header {
+    width: 100%;
+    text-align: center;
+}

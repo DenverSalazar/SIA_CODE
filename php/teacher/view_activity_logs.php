@@ -53,6 +53,11 @@ function getActionIcon($action) {
     <link rel="stylesheet" href="/SIA/css/activity_logs.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
+<style>
+    .sidebar{
+        background-color: #052659;
+    }
+</style>
 <body>
         <div class="sidebar">
             <h5 class="sidebar-title mb-5">

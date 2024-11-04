@@ -89,7 +89,10 @@ $result = mysqli_query($con, $query);
     color: #4a90e2;
     margin-bottom: 30px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
+    }
+    .sidebar{
+        background-color: #052659;
+    }
 </style>
 <body>
             <div class="sidebar">

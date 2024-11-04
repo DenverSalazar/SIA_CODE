@@ -112,6 +112,9 @@ if(isset($_POST['update'])){
             max-width: 1220px;
             margin-left: 280px;
         }
+    .sidebar{
+        background-color: #052659;
+        } 
 </style>
 <body>
 <div class="sidebar">

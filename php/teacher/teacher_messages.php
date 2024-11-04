@@ -1,7 +1,7 @@
 <?php
 include('../../php/db_config.php');
 session_start();
-if(!isset($_SESSION['valid'])){
+if (!isset($_SESSION['valid'])) {
     header("Location: ../../login.php");
 }
 if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
@@ -11,12 +11,15 @@ if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
 }
 
 // Fetch student emails from the database
-$student_query = "SELECT id, email FROM students"; // Adjust table name as needed
+$student_query = "SELECT id, email, fName, lName FROM students"; // Adjust table name as needed
 $student_result = mysqli_query($con, $student_query);
 $students = [];
 while ($row = mysqli_fetch_assoc($student_result)) {
     $students[] = $row; // Store the student id and email
 }
+
+// Initialize conversations as an empty array
+$conversations = [];
 
 // Fetch conversations
 $conversations_query = "
@@ -42,7 +45,7 @@ $stmt = $con->prepare($conversations_query);
 $stmt->bind_param("iiiiiii", $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id, $admin_id);
 $stmt->execute();
 $conversations_result = $stmt->get_result();
-$conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
+$conversations = $conversations_result->fetch_all(MYSQLI_ASSOC); // This will ensure $conversations is defined
 ?>
 
 <!DOCTYPE html>
@@ -50,65 +53,82 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Messages</title>
+    <title>Teacher Messages</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="/SIA/css/admin_message.css">
+    <link rel="stylesheet" href="/SIA/css/admin_message2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
-   <!-- Add this part back in the sidebar div -->
-        <div class="sidebar">
-            <h5 class="sidebar-title mb-5">
-                <img src="../../img/logo.png" alt="Logo" width="190" height="20">
-            </h5>
-            <ul class="nav flex-column">
-                <?php
-                $current_page = basename($_SERVER['PHP_SELF']);
-                $nav_items = [
-                        'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
-                        'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
-                        'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                        'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
-                        'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                        'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
-                        'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
-                ];
+<style>
+    .sidebar{
+        background-color: #052659;
+    }
+    .card-header{
+        background-color: #C1E8FF;
+    }
+    .chat-header{
+        background-color: #C1E8FF;
+    }
+    .chat-input{
+        background-color: #C1E8FF;
+    }
 
-                foreach ($nav_items as $page => $item) {
-                    $active_class = ($current_page === $page) ? 'active' : '';
-                    echo "<li class='nav-item'>
-                            <a class='nav-link {$active_class}' href='{$page}'>
-                                <i class='{$item['icon']}'></i> {$item['text']}
-                            </a>
-                        </li>";
-                }
-                ?>
-                <li class="nav-item mt-auto">
-                    <a class="nav-link text-danger" href="../../php/logout.php">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-   
-  <!-- Modify the main content structure right after the sidebar div -->
-        <div class="content">
-            <div class="row">
-                <div class="col-md-4">
-                    <!-- Chat list section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Messages</h5>
-                            <select name="student_email" id="student_email" class="form-control mb-3">
-                                <option value="">Select a student</option>
-                                <?php foreach ($students as $student): ?>
-                                    <option value="<?php echo $student['id']; ?>"><?php echo htmlspecialchars($student['email']); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="card-body">
-                            <div class="conversation-list">
+</style>
+<body>
+    <div class="sidebar">
+        <h5 class="sidebar-title mb-5">
+            <img src="../../img/logo.png" alt="Logo" width="190" height="20">
+        </h5>
+        <ul class="nav flex-column">
+            <?php
+            $current_page = basename($_SERVER['PHP_SELF']);
+            $nav_items = [
+                'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
+                'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
+                'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
+                'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
+                'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+            ];
+
+            foreach ($nav_items as $page => $item) {
+                $active_class = ($current_page === $page) ? 'active' : '';
+                echo "<li class='nav-item'>
+                        <a class='nav-link {$active_class}' href='{$page}'>
+                            <i class='{$item['icon']}'></i> {$item['text']}
+                        </a>
+                    </li>";
+            }
+            ?>
+            <li class="nav-item mt-auto">
+                <a class="nav-link text-danger" href="../../php/logout.php">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Chat list section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Messages</h5>
+                        <select name="student_email" id="student_email" class="form-control mb-3">
+                            <option value="">Select a student</option>
+                            <?php foreach ($students as $student): ?>
+                                <option value="<?php echo $student['id']; ?>"><?php echo htmlspecialchars($student['email']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="conversation-list">
+                            <?php if (empty($conversations)): ?>
+                                <p>No conversations available.</p>
+                            <?php else: ?>
                                 <?php foreach ($conversations as $conversation): ?>
                                     <div class="conversation-item <?php echo $conversation['unread_count'] > 0 ? 'unread' : ''; ?>" 
                                         data-student-id="<?php echo $conversation['id']; ?>">
@@ -120,28 +140,30 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                                         <small><?php echo htmlspecialchars(substr($conversation['last_message'], 0, 30)) . '...'; ?></small>
                                     </div>
                                 <?php endforeach; ?>
-                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
-                    <!-- Chat container -->
-                    <div class="chat-container">
+            </div>
+            <div class="col-md-8">
+                <!-- Chat box section -->
+                <div class="chat-container">
                     <div class="chat-header">
-                        <button class="back-button">
-                            <a href="teacher_messages.php"><i class="fas fa-arrow-left"></i></a>
+                        <button class="back-button" style="display: none;">
+                            <i class="fas fa-arrow-left"></i>
                         </button>
                         <h5 id="chat-header-name"></h5>
+                        <button class="info-button" data-bs-toggle="modal" data-bs-target="#chatSettingsModal" style="display: none;">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
                     </div>
                     <div class="chat-box">
-                        <div class="default-message" style="display: block;">
-                            <h4 class="text-muted align-items-center justify-content-center d-flex" style="margin-top:30%">Select a conversation to start chatting.</h4>
+                        <div class="default-message text-center" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                            <h4 class="text-muted">Select a conversation to start chatting.</h4>
                         </div>
-                        <div class="messages-list" style="display: none;">
-                            <!-- Messages will be loaded here -->
-                        </div>
+                        <div class="messages-list" style="display: none;"></div>
                     </div>
-                    <div class="chat-input">
+                    <div class="chat-input" style="display: none;">
                         <form id="sendMessage">
                             <div class="input-group">
                                 <input type="text" id="message" name="message" class="form-control" placeholder="Type a message..." required>
@@ -154,53 +176,103 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                         </form>
                     </div>
                 </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Settings Modal -->
+    <div class="modal fade" id="chatSettingsModal" tabindex="-1" aria-labelledby="chatSettingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatSettingsModalLabel">Chat Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="searchMessages" class="form-control" placeholder="Search messages...">
+                    <div id="searchResults" class="mt-3"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             var selectedUserId = null;
 
             function showConversation(userId, userName) {
-            selectedUserId = userId;
-            $('#chat-header-name').text(userName);
-            $('.chat-container').addClass('show');
-            loadMessages(userId);
-            
-            $('.conversation-item').removeClass('active');
-            $('.conversation-item[data-student-id="' + userId + '"]').addClass('active');
-        }
+                selectedUserId = userId;
+                $('#chat-header-name').text(userName);
+                $('.chat-container').addClass('show');
+                $('.default-message').hide();
+                $('.messages-list').show();
+                $('.chat-input').show(); // Show the message input
+                $('.back-button').show(); // Show the back button
+                $('.info-button').show(); // Show the info button
+                loadMessages(userId);
+            }
 
             function hideConversation() {
                 selectedUserId = null;
                 $('.chat-container').removeClass('show');
-                $('#chat-header-name').text(''); // Clear the header name when hiding conversation
+                $('#chat-header-name').text('');
+                $('.default-message').show();
+                $('.messages-list').hide();
+                $('.chat-input').hide(); // Hide the message input
+                $('.back-button').hide(); // Hide the back button
+                $('.info-button').hide(); // Hide the info button
+                $('.conversation-item').removeClass('active');
             }
 
+            // Handle back button click
             $('.back-button').click(function() {
                 hideConversation();
             });
+
+            // Handle student email select change
+            $('#student_email').change(function() {
+                var selectedId = $(this).val();
+                if (selectedId) {
+                    var selectedName = $(this).find('option:selected').text();
+                    showConversation(selectedId, selectedName);
+                } else {
+                    hideConversation();
+                }
+            });
+
+            // Your existing click handlers for conversation items
+            $('.conversation-item').click(function() {
+                var userId = $(this).data('student-id');
+                var userName = $(this).find('strong').text();
+                showConversation(userId, userName);
+            });
+
+            // Load messages function (defined earlier)
+            function loadMessages(userId) {
+                $.ajax({
+                    url: "load_messages.php",
+                    method: "POST",
+                    data: {
+                        student_id: userId,
+                        admin_id: <?php echo isset($admin_id) ? $admin_id : 'null'; ?>
+                    },
+                    success: function(data) {
+                        $('.messages-list').html(data);
+                        $('.default-message').hide();
+                        $('.messages-list').show();
+                        scrollToBottom();
+                        markMessagesAsRead(userId);
+                    }
+                });
+            }
 
             function scrollToBottom() {
                 var chatBox = $('.chat-box');
                 chatBox.scrollTop(chatBox[0].scrollHeight);
             }
-
-            function loadMessages(userId) {
-            $.ajax({
-                url: "load_messages.php",
-                method: "POST",
-                data: {
-                    student_id: userId,
-                    admin_id: <?php echo isset($admin_id) ? $admin_id : 'null'; ?>
-                },
-                success: function(data) {
-                    $('.messages-list').html(data);
-                    $('.default-message').hide();
-                    $('.messages-list').show();
-                    scrollToBottom();
-                    markMessagesAsRead(userId);
-                }
-            });
-        }
 
             function markMessagesAsRead(userId) {
                 $.ajax({
@@ -223,7 +295,6 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                     method: "GET",
                     success: function(data) {
                         $('.conversation-list').html(data);
-                        // Reattach click event to new conversation items
                         attachConversationClickEvents();
                     }
                 });
@@ -237,19 +308,7 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                 });
             }
 
-            // Initial attachment of click events
-            attachConversationClickEvents();
-
-            $('#student_email').change(function() {
-                selectedUserId = $(this).val();
-                if (selectedUserId) {
-                    var userName = $(this).find('option:selected').text();
-                    showConversation(selectedUserId, userName);
-                } else {
-                    hideConversation();
-                }
-            });
-
+            // Send message functionality
             $('#sendMessage').on('submit', function(e) {
                 e.preventDefault();
                 var message = $('#message').val();
@@ -264,7 +323,7 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                             sender: 'admin'
                         },
                         success: function(response) {
-                            $('#message').val('');
+                            $('#message').val(''); // Clear the message input
                             loadMessages(selectedUserId);
                         }
                     });
@@ -273,7 +332,7 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
 
             // Handle Enter key press
             $('#message').keypress(function(e) {
-                if(e.which == 13 && !e.shiftKey) {
+                if (e.which == 13 && !e.shiftKey) {
                     e.preventDefault();
                     $('#sendMessage').submit();
                 }
@@ -281,12 +340,32 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
 
             // Auto refresh messages every 5 seconds if a conversation is selected
             setInterval(function() {
-                if(selectedUserId) {
+                if (selectedUserId) {
                     loadMessages(selectedUserId);
                 }
-            }, 5000);
+            }, 15000);
+
+            // Search messages
+            $('#searchMessages').on('keyup', function() {
+                var query = $(this).val();
+                if (query) {
+                    $.ajax({
+                        url: "search_messages.php",
+                        method: "POST",
+                        data: {
+                            student_id: selectedUserId,
+                            query: query
+                        },
+                        success: function(data) {
+                            $('#searchResults').html(data);
+                        }
+                    });
+                } else {
+                    $('#searchResults').empty();
+                }
+            });
         });
-        </script>
-    <script src="../../ js/script.js"></script>
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

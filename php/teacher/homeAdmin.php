@@ -152,6 +152,11 @@
     <link rel="stylesheet" href="/SIA/css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<style>
+    .sidebar{
+        background-color: #052659;
+    }
+</style>
 <body>
         <div class="sidebar">
             <h5 class="sidebar-title mb-5">

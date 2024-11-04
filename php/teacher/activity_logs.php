@@ -20,6 +20,11 @@ $student_query = mysqli_query($con, "SELECT * FROM students WHERE is_accepted = 
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/activity_logs.css">
 </head>
+<style>
+    .sidebar{
+        background-color: #052659;
+    }
+</style>
 <body>
     <div class="sidebar">
         <h5 class="sidebar-title mb-5">
