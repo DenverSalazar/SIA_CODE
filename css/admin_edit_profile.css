@@ -98,3 +98,7 @@ transition: all 0.3s;
 background: #f01744;
 transform: translateY(-2px);
 }
+.edit-container {
+    max-width: 1220px;
+    margin-left: 280px;
+}

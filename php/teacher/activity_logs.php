@@ -18,53 +18,7 @@ $student_query = mysqli_query($con, "SELECT * FROM students WHERE is_accepted = 
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
-    <style>
-        .table-container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        .table-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-        }
-        .table {
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        .table thead th {
-            background-color: #f8f9fa;
-            border-top: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-        .table tbody tr:hover {
-            background-color: #f1f3f5;
-        }
-        .table td, .table th {
-            vertical-align: middle;
-        }
-        .btn-action {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            border-radius: 0.2rem;
-        }
-        .bookshelf-title {
-            font-size: 36px;
-            font-weight: 700;
-            color: #4a90e2;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="/SIA/css/activity_logs.css">
 </head>
 <body>
     <div class="sidebar">

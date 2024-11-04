@@ -1,0 +1,73 @@
+.dashboard-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-card .card-content h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.dashboard-card .card-content p {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.dashboard-card .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: #fff;
+}
+    .date-picker-container {
+    position: relative;
+    display: inline-block;
+}
+
+.calendar-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+}
+
+.date-input {
+    padding-left: 35px;
+    width: 150px;
+    background-color: #C1E8FF;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.dashboard-card .icon-container.blue { background-color: #007bff; }
+.dashboard-card .icon-container.green { background-color: #28a745; }
+.dashboard-card .icon-container.orange { background-color: #ffc107; }
+.dashboard-card .icon-container.red { background-color: #dc3545; }

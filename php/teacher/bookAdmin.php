@@ -34,10 +34,7 @@
     $categories = mysqli_fetch_all($category_result, MYSQLI_ASSOC);
 
     mysqli_close($con);
-
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">

@@ -27,77 +27,8 @@ $result = mysqli_fetch_assoc($query);
     <title>User Profile</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
+    <link rel="stylesheet" href="/SIA/css/admin_profile.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        
-        .profile-container {
-            max-width: 1220px;
-            margin-left: 280px;
-        }
-        
-        .profile-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .profile-header {
-            background: #C1E8FF;
-            padding: 30px;
-            color: black;
-            text-align: center;
-        }
-        
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid white;
-            margin-bottom: 15px;
-            object-fit: cover;
-        }
-        
-        .profile-info {
-            padding: 30px;
-        }
-        
-        .info-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #f8f9fa;
-        }
-        
-        .info-label {
-            color: #8898aa;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        
-        .info-value {
-            color: #32325d;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-        
-        .edit-btn {
-            background: #5E72E4;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        
-        .edit-btn:hover {
-            background: #324cdd;
-            transform: translateY(-2px);
-        }
-    </style>
 </head>
 <body>
         <div class="sidebar">

@@ -50,27 +50,9 @@ function getActionIcon($action) {
     <title>Activity Logs for <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
+    <link rel="stylesheet" href="/SIA/css/activity_logs.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<style>
-    .bookshelf-title {
-    font-size: 36px;
-    font-weight: 700;
-    color: #4a90e2;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-.btn-cancel {
-            background-color: #6c757d;
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-</style>
 <body>
         <div class="sidebar">
             <h5 class="sidebar-title mb-5">
