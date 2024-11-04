@@ -82,6 +82,16 @@ $result = mysqli_query($con, $query);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/SIA/css/admin_feedback.css">
 </head>
+<style>
+    .bookshelf-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #4a90e2;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+</style>
 <body>
             <div class="sidebar">
                         <h5 class="sidebar-title mb-5">
@@ -121,7 +131,11 @@ $result = mysqli_query($con, $query);
                     <div id="content">
                         <div class="container">
                             <div class="feedback-container">
-                                <h1>Student Feedback</h1>
+                            <div class="container">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h1 class="bookshelf-title">Student Feedback</h1>
+                                </div>
+                            </div>
 
                                 <div class="filter-container">
                             <form method="GET" class="row g-3">

@@ -47,113 +47,11 @@
     <title>Admin Book Shelf</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
-    
+    <link rel="stylesheet" href="/SIA/css/bookAdmin.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-
 </head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: white;
-    }
-
-    main {
-        margin-left: 250px; /* Width of the sidebar */
-        padding: 20px;
-        transition: margin-left 0.3s ease;
-    }
-
-    .bookshelf-title {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .books {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-    }
-
-    .book {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-        min-height: 350px;
-    }
-
-    .book img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-    }
-
-    .book-title {
-        font-size: 16px;
-        margin-bottom: 5px;
-        text-align: center;
-    }
-
-    .book-status {
-        color: #888;
-        font-size: 14px;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    .book-meta {
-        font-size: 12px;
-        color: #888;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    .d-flex {
-        justify-content: space-between;
-        margin-top: auto;
-    }
-
-    .upload-btn {
-        background-color: #007bff;
-        color: #fff;
-        padding: 8px 15px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        align-self: center;
-    }
-
-    .upload-btn i {
-        margin-right: 5px;
-    }
-
-    /* Adjust the container padding */
-    .container {
-        padding: 20px;
-        max-width: 100%;
-    }
-
-    /* Search and filter form styling */
-    .search-filter-form {
-        margin-bottom: 30px;
-    }
-
-    /* Pagination styling */
-    .pagination {
-        margin-top: 30px;
-    }
-</style>
 <body>
-<div class="sidebar">
+    <div class="sidebar">
             <h5 class="sidebar-title mb-5">
                 <img src="../../img/logo.png" alt="Logo" width="190" height="20">
             </h5>
@@ -187,74 +85,85 @@
             </ul>
         </div>
 
-<main>
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="bookshelf-title">My Book Shelf</div>
-        <a href="upload.php"><button class="upload-btn"><i class="fas fa-upload"></i>Upload New Book</button></a>
-    </div>
 
-    <div class="container mt-5">
-        <!-- <h1 class="mb-4">Browse Books</h1> -->
-
-        <form class="d-flex align-items-center justify-content-center" action="" method="get">
-            <input class="form-control w-25 me-3" type="search" name="search" placeholder="Search books..." aria-label="Search" value="<?= htmlspecialchars($search) ?>">
-            
-            <select name="category" class="form-control w-25 me-3">
-                <option value="All" <?= $selected_category === 'All' ? 'selected' : '' ?>>All Categories</option>
-                <?php foreach ($categories as $category): ?>
-                    <option value="<?= htmlspecialchars($category['book_category']) ?>" <?= $selected_category === $category['book_category'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($category['book_category']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            
-            <button class="btn btn-outline-primary me-2" type="submit" name="submit">Filter</button>
-        </form>
-
-       <!-- No books found message -->
-        <?php if (isset($books) && count($books) == 0): ?>
-            <div class="container">
-                <div class="row mt-5">
-                    <div class="col-12 text-center" style="color:red; font-weight:bolder">
-                        <p>No Modules found matching your search or category selection.</p>
-                    </div>
-                </div>
+        <main>
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="bookshelf-title">Collection of Modules</h1>
+                <a href="upload.php"><button class="upload-btn"><i class="fas fa-upload me-2"></i>Upload New Module</button></a>
             </div>
-        <?php endif; ?>
 
-        <div class="container mt-5">
+            <div class="search-filter-form">
+                <form class="row g-3 align-items-center" action="" method="get">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input class="form-control" type="search" name="search" placeholder="Search modules..." aria-label="Search" value="<?= htmlspecialchars($search) ?>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-filter"></i></span>
+                            <select name="category" class="form-select">
+                                <option value="All" <?= $selected_category === 'All' ? 'selected' : '' ?>>All Categories</option>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?= htmlspecialchars($category['book_category']) ?>" <?= $selected_category === $category['book_category'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($category['book_category']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary w-100" type="submit" name="submit">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <?php if (isset($books) && count($books) == 0): ?>
+                <div class="alert alert-info text-center" role="alert">
+                    No Modules found matching your search or category selection.
+                </div>
+            <?php endif; ?>
+
             <div class="books">
                 <?php if (count($books) > 0): ?>
-                <?php foreach ($books as $book): ?>
-                    <div class="book">
-                        <img alt="<?= htmlspecialchars($book['title']) ?> book cover" src="uploads/<?= htmlspecialchars($book['cover_image']) ?>" />
-                        <div class="book-title"><?= htmlspecialchars($book['title']) ?></div>
-                        <div class="book-status">Uploaded</div>
-                        <div class="book-meta">
-                            Category: <?= htmlspecialchars($book['book_category']) ?><br>
-                            Description: <p><?= substr(htmlspecialchars($book['description']), 0, 90) ?>...</p>
+                    <?php foreach ($books as $book): ?>
+                        <div class="book">
+                            <img alt="<?= htmlspecialchars($book['title']) ?> book cover" src="uploads/<?= htmlspecialchars($book['cover_image']) ?>" />
+                            <div class="book-content">
+                                <div class="book-title"><?= htmlspecialchars($book['title']) ?></div>
+                                <div class="book-status"><?= isset($book['status']) ? htmlspecialchars($book['status']) : 'Uploaded' ?></div>
+                                <div class="book-meta">
+                                    Category: <?= htmlspecialchars($book['book_category']) ?><br>
+                                    Description: <p><?= substr(htmlspecialchars($book['description']), 0, 90) ?>...</p>
+                                </div>
+                                <div class="book-actions">
+                                    <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-book btn-edit">Edit</a>
+                                    <a href="deleteBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-book btn-delete" onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between mt-2">
-                        <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-success btn-sm">Edit</a>
-                        <a href="deleteBook.php?id=<?= htmlspecialchars($book['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
-                        </div>
-                    </div>
-                <?php endforeach; ?>    
+                    <?php endforeach; ?>    
                 <?php endif; ?>
-                </div>
-                <nav aria-label="Book pagination" class="mt-5">
-                <ul class="pagination justify-content-center">
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <li class="page-item <?= $i == $current_page ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                        </li>
-                    <?php endfor; ?>
-                </ul>
-            </nav>
+            </div>
 
-</div>
-</main>
+            <?php if (isset($pagination) && count($pagination) > 1): ?>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <?php foreach ($pagination as $page => $url): ?>
+                            <li class="page-item <?= $page === $current_page ? 'active' : '' ?>">
+                                <a class="page-link" href="<?= htmlspecialchars($url) ?>"><?= htmlspecialchars($page) ?></a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </nav>
+            <?php endif; ?>
+        </div>
+    </main>
+
 <script src="../../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -52,47 +52,67 @@ function getActionIcon($action) {
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
+<style>
+    .bookshelf-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #4a90e2;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+.btn-cancel {
+            background-color: #6c757d;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+</style>
 <body>
-<div class="sidebar">
+        <div class="sidebar">
             <h5 class="sidebar-title mb-5">
                 <img src="../../img/logo.png" alt="Logo" width="190" height="20">
             </h5>
             <ul class="nav flex-column">
-            <ul class="nav flex-column">
-                    <?php
-                    $current_page = basename($_SERVER['PHP_SELF']);
-                    $nav_items = [
-                        'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
-                        'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
-                        'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                        'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
-                        'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                        'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
-                        'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
-                    ];
+                <?php
+                $current_page = basename($_SERVER['PHP_SELF']);
+                $nav_items = [
+                    'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                    'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
+                    'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
+                    'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
+                    'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
+                    'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                    'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                ];
 
-                    foreach ($nav_items as $page => $item) {
-                        $active_class = ($current_page === $page) ? 'active' : '';
-                        echo "<li class='nav-item'>
-                                <a class='nav-link {$active_class}' href='{$page}'>
-                                    <i class='{$item['icon']}'></i> {$item['text']}
-                                </a>
-                            </li>";
-                    }
-                    ?>
-                    <li class="nav-item mt-auto">
-                        <a class="nav-link text-danger" href="../../php/logout.php">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
-                    </li>
-                </ul>
+                foreach ($nav_items as $page => $item) {
+                    $active_class = ($current_page === $page || ($current_page === 'view_activity_logs.php' && $page === 'activity_logs.php')) ? 'active' : '';
+                    echo "<li class='nav-item'>
+                            <a class='nav-link {$active_class}' href='{$page}'>
+                                <i class='{$item['icon']}'></i> {$item['text']}
+                            </a>
+                        </li>";
+                }
+                ?>
+                <li class="nav-item mt-auto">
+                    <a class="nav-link text-danger" href="../../php/logout.php">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
             </ul>
         </div>
-
         <main class="content">
             <div class="container mt">
-                <h2>Activity Logs of <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></h2>
-                <div class="table-responsive">
+            <div class="container">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1 class="bookshelf-title">Activity Logs of <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></h1>
+                            <a href="activity_logs.php" class="btn btn-cancel">Back</a>
+                        </div>
+                    </div>
                     <table class="table table-hover">
                         <thead>
                             <tr>

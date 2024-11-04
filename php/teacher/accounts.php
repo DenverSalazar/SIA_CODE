@@ -93,6 +93,13 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
             border-color: #f5c6cb;
             color: #721c24;
         }
+        .bookshelf-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #4a90e2;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -173,7 +180,11 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
             </div>
 
     <main class="content">
-        <h2 class="mb-4">Accounts Management</h2>
+            <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="bookshelf-title">Accounts Management</h1>
+            </div>
+        </div>
 
         <!-- Student Accounts Table -->
         <div class="table-container">
