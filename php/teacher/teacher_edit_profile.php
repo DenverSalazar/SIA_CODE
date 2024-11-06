@@ -135,7 +135,7 @@ if(isset($_POST['update'])){
                         ];
 
                         foreach ($nav_items as $page => $item) {
-                            $active_class = ($current_page === $page || ($current_page === 'admin_edit_profile.php' && $page === 'admin_profile.php')) ? 'active' : '';
+                            $active_class = ($current_page === $page || ($current_page === 'teacher_edit_profile.php' && $page === 'teacher_profile.php')) ? 'active' : '';
                             echo "<li class='nav-item'>
                                     <a class='nav-link {$active_class}' href='{$page}'>
                                         <i class='{$item['icon']}'></i> {$item['text']}

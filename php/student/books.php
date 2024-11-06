@@ -3,20 +3,20 @@
     session_start();
 
     function getProfilePicturePath($profile_picture) {
-        if (isset($profile_picture) && !empty($profile_picture)) {
-            return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
-        } else {
-            return "../../../img/default-profile.png";
-        }
+      if (isset($profile_picture) && !empty($profile_picture)) {
+          return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
+      } else {
+          return "../../../img/default-profile.png";
+      }
     }
-  
-    // Fetch user data including profile picture
-        $id = $_SESSION['id'];
-        $query = mysqli_query($con, "SELECT * FROM students WHERE id = '$id'");
-        $result = mysqli_fetch_assoc($query);
-        $res_profile_picture = $result['profile_picture'];
-        $res_fName = $result['fName'];
-        $res_lName = $result['lName'];
+
+  // Fetch user data including profile picture
+      $id = $_SESSION['id'];
+      $query = mysqli_query($con, "SELECT * FROM students WHERE id = '$id'");
+      $result = mysqli_fetch_assoc($query);
+      $res_profile_picture = $result['profile_picture'];
+      $res_fName = $result['fName'];
+      $res_lName = $result['lName'];
 
     // Pagination settings
     $books_per_page = 9; // Set how many books to display per page
@@ -29,10 +29,27 @@
     // Build the WHERE clause based on search and category
     $where_clause = '';
     if ($search) {
-        $where_clause .= "WHERE (title LIKE '%$search%')";
+        $where_clause .= "WHERE (books.title LIKE '%$search%')";
     }
     if ($selected_category !== 'All') {
-        $where_clause .= ($where_clause ? " AND " : "WHERE ") . "book_category = '$selected_category'";
+        $where_clause .= ($where_clause ? " AND " : "WHERE ") . "books.book_category = '$selected_category'";
+    }
+
+    // Add these with your other initialization variables
+    $selected_teacher = isset($_GET['teacher']) ? $_GET['teacher'] : 'All';
+
+   // Fetch only teachers who have uploaded books
+    $teacher_result = mysqli_query($con, "
+    SELECT DISTINCT t.id, t.fName, t.lName 
+    FROM teacher t
+    INNER JOIN books b ON t.id = b.uploaded_by
+    ORDER BY t.fName
+    ");
+    $teachers = mysqli_fetch_all($teacher_result, MYSQLI_ASSOC);
+
+    // Modify your existing WHERE clause to include teacher filter
+    if ($selected_teacher !== 'All') {
+        $where_clause .= ($where_clause ? " AND " : "WHERE ") . "books.uploaded_by = '$selected_teacher'";
     }
 
     // Count total books for pagination
@@ -42,13 +59,20 @@
     $total_pages = ceil($total_books / $books_per_page);
 
     // Fetch books
-    $sql = "SELECT * FROM books $where_clause LIMIT $offset, $books_per_page";
+    $sql = "SELECT books.*, teacher.fName, teacher.lName 
+            FROM books 
+            LEFT JOIN teacher ON books.uploaded_by = teacher.id 
+            $where_clause 
+            LIMIT $offset, $books_per_page";
     $result = mysqli_query($con, $sql);
     $books = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     // Fetch categories from the database
     $category_result = mysqli_query($con, "SELECT DISTINCT book_category FROM books"); // Use DISTINCT to avoid duplicates
     $categories = mysqli_fetch_all($category_result, MYSQLI_ASSOC);
+
+    // Calculate current page for pagination
+    $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
 
     mysqli_close($con);
 ?>
@@ -60,6 +84,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Books</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/books.css">
     <style>
@@ -158,10 +183,16 @@
     <h1 class="mb-4">Browse Books</h1>
 
     <form class="d-flex align-items-center justify-content-center" action="" method="get">
-        <input class="form-control w-25 me-3" type ```php
-        <input class="form-control w-25 me-3" type="search" name="search" placeholder="Search books..." aria-label="Search" value="<?= htmlspecialchars($search) ?>">
-        
-        <select name="category" class="form-control w-25 me-3">
+    <!-- Search Input with Icon -->
+    <div class="input-group w-25 me-3">
+        <span class="input-group-text"><i class="fas fa-search"></i></span>
+        <input class="form-control" type="search" name="search" placeholder="Search books..." aria-label="Search" value="<?= htmlspecialchars($search) ?>">
+    </div>
+    
+    <!-- Category Filter with Icon -->
+    <div class="input-group w-25 me-3">
+        <span class="input-group-text"><i class="fas fa-filter"></i></span>
+        <select name="category" class="form-select">
             <option value="All" <?= $selected_category === 'All' ? 'selected' : '' ?>>All Categories</option>
             <?php foreach ($categories as $category): ?>
                 <option value="<?= htmlspecialchars($category['book_category']) ?>" <?= $selected_category === $category['book_category'] ? 'selected' : '' ?>>
@@ -169,33 +200,58 @@
                 </option>
             <?php endforeach; ?>
         </select>
-        
-        <button class="btn btn-outline-primary me-2" type="submit" name="submit">Filter</button>
-    </form>
+    </div>
+
+    <!-- Teacher Filter with Icon -->
+    <div class="input-group w-25 me-3">
+        <span class="input-group-text"><i class="fas fa-user"></i></span>
+        <select name="teacher" class="form-select">
+            <option value="All">All Teachers</option>
+            <?php foreach ($teachers as $teacher): ?>
+                <option value="<?= $teacher['id'] ?>" 
+                        <?= $selected_teacher == $teacher['id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($teacher['fName'] . ' ' . $teacher['lName']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    
+    <!-- Search Button -->
+    <button class="btn btn-outline-primary me-2" type="submit" name="submit">
+        <i class="fas fa-search me-2"></i>Search
+    </button>
+</form>
 
     <div class="row mt-5">
-        <?php if (count($books) > 0): ?>
-            <?php foreach ($books as $book): ?>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm book-card">
-                        <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($book['title']) ?>">
-                        <div class="card-body">
-                            <h5 class="card-title"><?= htmlspecialchars($book['title']) ?></h5>
-                            <p class="card-text">Category: <b><?= htmlspecialchars($book['book_category']) ?></b></p>
-                            <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
-                            <div class="d-flex justify-content-center align-items-center">
-                                <a href="read_more.php?id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
-                            </div>
+    <?php if (count($books) > 0): ?>
+        <?php foreach ($books as $book): ?>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm book-card">
+                    <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($book['title']) ?>">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= htmlspecialchars($book['title']) ?></h5>
+                        <p class="card-text">Category: <b><?= htmlspecialchars($book['book_category']) ?></b></p>
+                        <p class="card-text">Uploaded by: <?php 
+                            if ($book['fName'] && $book['lName']) {
+                                echo "<b>" . htmlspecialchars($book['fName'] . ' ' . $book['lName']) . "</b>";
+                            } else {
+                                echo "<b>Unknown</b>";
+                            }
+                        ?></p>
+                        <p class="card-text"><?= substr(htmlspecialchars($book['description']), 0, 100) ?>...</p>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <a href="read_more.php?id=<?= $book['id'] ?>" class="btn btn-outline-primary">Read More</a>
                         </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="col-12">
-                <p>No books found matching your search or category selection.</p>
             </div>
-        <?php endif; ?>
-    </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="col-12">
+            <p>No books found matching your search or category selection.</p>
+        </div>
+    <?php endif; ?>
+</div>
 
     <nav aria-label="Book pagination" class="mt-5">
         <ul class="pagination justify-content-center">

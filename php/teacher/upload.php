@@ -11,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $book_category = $_POST['bookCategory'];
     $description = $_POST['description'];
+    $teacher_id = $_SESSION['id']; // Get teacher ID from session
 
     // Handle the uploaded cover image
     $cover_image = $_FILES['cover_image']['name'];
@@ -38,15 +39,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Prepare an SQL statement to insert the book details
-    $stmt = $con->prepare("INSERT INTO books (title, description, cover_image, book_category, file_name, file_path) VALUES (?, ?, ?, ?, ?, ?)");
+    // Use only one INSERT statement that includes uploaded_by
+    $stmt = $con->prepare("INSERT INTO books (title, description, cover_image, book_category, file_name, file_path, uploaded_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    
     if ($stmt === false) {
         echo "Error preparing statement: " . $con->error;
         exit();
     }
 
-    // Bind parameters to the statement
-    $stmt->bind_param("ssssss", $title, $description, $cover_image, $book_category, $file_name, $module_target_file);
+    // Bind parameters including teacher_id
+    $stmt->bind_param("ssssssi", $title, $description, $cover_image, $book_category, $file_name, $module_target_file, $teacher_id);
 
     // Execute the statement
     if ($stmt->execute()) {
