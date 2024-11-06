@@ -47,7 +47,7 @@ function getActionIcon($action) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Logs for <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></title>
+    <title>Activity Logs of <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/activity_logs.css">
@@ -67,13 +67,13 @@ function getActionIcon($action) {
                 <?php
                 $current_page = basename($_SERVER['PHP_SELF']);
                 $nav_items = [
-                    'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                    'teacher_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                     'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                     'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                    'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
+                    'teacher_book.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                     'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                    'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
-                    'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                    'teacher_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                    'teacher_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                 ];
 
                 foreach ($nav_items as $page => $item) {

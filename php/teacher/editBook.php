@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the statement
     if ($stmt->execute()) {
-        header("Location: bookAdmin.php?success=1");
+        header("Location: teacher_book.php?success=1");
         exit();
     } else {
         echo "Error updating book: " . $stmt->error;
@@ -89,13 +89,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php
                 $current_page = basename($_SERVER['PHP_SELF']);
                 $nav_items = [
-                    'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                    'teacher_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                     'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                     'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                    'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
+                    'teacher_book.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                     'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                    'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
-                    'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                    'teacher_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                    'teacher_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                 ];
 
                 foreach ($nav_items as $page => $item) {
@@ -150,7 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="upload_module" class="form-label">Upload Module</label>
                     <input type="file" class="form-control" id="upload_module" name="upload_module" accept=".pdf,.doc,.docx,.txt,.pptx,.xlsx">
                 </div>
-                <a href="bookAdmin.php" class="btn btn-cancel">Cancel</a>
+                <a href="teacher_book.php" class="btn btn-cancel">Cancel</a>
                 <button type="submit" class="btn btn-submit">Update Module</button>
             </form>
         </div>

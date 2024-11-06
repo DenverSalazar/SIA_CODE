@@ -50,6 +50,11 @@
     <link rel="stylesheet" href="../../SIA/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
+<style>
+    body{
+        background: gray;
+    }
+</style>
 <body>
     
     <div class="container vh-100">

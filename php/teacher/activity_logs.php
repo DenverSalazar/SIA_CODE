@@ -24,6 +24,22 @@ $student_query = mysqli_query($con, "SELECT * FROM students WHERE is_accepted = 
     .sidebar{
         background-color: #052659;
     }
+    .search-filter-container {
+    background-color: #c1e8ff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    }
+
+    .search-filter-container .form-control {
+        margin-bottom: 10px;
+    }
+
+    @media (min-width: 768px) {
+        .search-filter-container .form-control {
+            margin-bottom: 0;
+        }
+    }
 </style>
 <body>
     <div class="sidebar">
@@ -34,13 +50,13 @@ $student_query = mysqli_query($con, "SELECT * FROM students WHERE is_accepted = 
             <?php
             $current_page = basename($_SERVER['PHP_SELF']);
             $nav_items = [
-                'homeAdmin.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                'teacher_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                 'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                 'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                'bookAdmin.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
+                'teacher_book.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                 'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
-                'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
-                'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                'teacher_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
+                'teacher_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
             ];
 
             foreach ($nav_items as $page => $item) {
@@ -68,40 +84,78 @@ $student_query = mysqli_query($con, "SELECT * FROM students WHERE is_accepted = 
         </div>
 
         <!-- Student Accounts Table -->
-        <div class="table-container">
-            <h3 class="table-title"><i class="fas fa-user-graduate mr-2"></i>Accepted Students</h3>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Department</th> 
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($row = mysqli_fetch_assoc($student_query)): ?>
+            <div class="table-container">
+                <!-- Search Section -->
+                <div class="search-filter-container mb-3 text-center">
+                <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, or ID...">
+                        </div>
+                    </div>
+                </div>
+                <h3 class="table-title"><i class="fas fa-user-graduate mr-2"></i>Accepted Students</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
                             <tr>
-                                <td><?php echo $row['id']; ?></td>
-                                <td><?php echo $row['fName']; ?></td>
-                                <td><?php echo $row['lName']; ?></td>
-                                <td><?php echo $row['email']; ?></td>
-                                <td><?php echo $row['department']; ?></td> 
-                                <td>
-                                    <a href="view_activity_logs.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action">
-                                        <i class="fas fa-eye"></i> View Activity
-                                    </a>
-                                </td>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Department</th> 
+                                <th>Actions</th>
                             </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php while($row = mysqli_fetch_assoc($student_query)): ?>
+                                <tr>
+                                    <td><?php echo $row['id']; ?></td>
+                                    <td><?php echo $row['fName']; ?></td>
+                                    <td><?php echo $row['lName']; ?></td>
+                                    <td><?php echo $row['email']; ?></td>
+                                    <td><?php echo $row['department']; ?></td> 
+                                    <td>
+                                        <a href="view_activity_logs.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action">
+                                            <i class="fas fa-eye"></i> View Activity
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+
+        <script>
+        // Search and Filter Function
+        function filterTable(tableId, searchInput, filters = {}) {
+            const input = document.getElementById(searchInput);
+            const table = document.querySelector(tableId + ' tbody');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let row of rows) {
+                let text = row.textContent.toLowerCase();
+                let showRow = true;
+
+                // Check search text
+                if (input.value) {
+                    if (!text.includes(input.value.toLowerCase())) {
+                        showRow = false;
+                    }
+                }
+
+                row.style.display = showRow ? '' : 'none';
+            }
+        }
+
+        // For activity_logs.php
+        if (document.getElementById('searchInput')) {
+            document.getElementById('searchInput').addEventListener('keyup', () => {
+                filterTable('.table', 'searchInput');
+            });
+        }
+        </script>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>
 </body>

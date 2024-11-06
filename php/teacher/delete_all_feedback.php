@@ -10,8 +10,8 @@ if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'teacher') {
 // Delete all feedback records
 $delete_query = "DELETE FROM feedback";
 if(mysqli_query($con, $delete_query)) {
-    header("Location: admin_feedback.php?msg=all_deleted");
+    header("Location: teacher_feedback.php?msg=all_deleted");
 } else {
-    header("Location: admin_feedback.php?error=delete_failed");
+    header("Location: teacher_feedback.php?error=delete_failed");
 }
 ?>

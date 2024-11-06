@@ -1,0 +1,215 @@
+.book-card img {
+    height: 300px;
+    object-fit: cover;
+}
+body {
+    background-color: #f8f9fa;
+    color: #333;
+}
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+.book-card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.book-cover {
+    height: 300px;
+    object-fit: cover;
+}
+.search-bar {
+    max-width: 500px;
+    margin: 0 auto;
+}
+.offcanvas {
+width: 300px !important;
+}
+
+.navbar {
+    background-color: #f8f9fa;
+}
+
+.offcanvas-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.offcanvas-body {
+    padding: 1rem;
+}
+
+.btn-outline-success {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.btn-outline-success:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.offcanvas .nav-item {
+    margin-bottom: 10px;
+}
+
+.offcanvas .nav-item a {
+    color: #333;
+    font-size: 16px;
+}
+
+.logout-link {
+    color: red; 
+}
+
+.logout-link:hover {
+    color: darkred; 
+}
+
+.offcanvas .nav-item a:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.navbar-brand img {
+    width: 150px;
+}
+
+.offcanvas-header h5 {
+    margin-bottom: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.bookshelf-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.books {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.book {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.book img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.book-title {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.book-status {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.book-meta {
+    font-size: 12px;
+    color: #888;
+}
+
+.upload-btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload-btn i {
+    margin-right: 5px;
+}
+
+.footer-section {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+}
+
+.footer-logo {
+    filter: brightness(0) invert(1);
+}
+
+.footer-description {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-heading {
+    font-family: 'Merriweather', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #3498db;
+}
+
+.footer-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #3498db;
+}
+
+.footer-contact {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-bottom {
+    background-color: #333;
+    padding: 1rem 0;
+}
+
+.footer-divider {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 1rem 0;
+}
+
+.footer-copyright {
+    color: white;
+}
+
+.about-section {
+    padding: 40px 0; 
+}
+
+.about-text {
+    overflow: hidden; 
+    max-height: 400px; 
+    overflow-y: auto; 
+}
+
+@media (max-width: 768px) {
+    .about-text {
+        max-height: none; 
+    }
+}

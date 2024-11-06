@@ -43,8 +43,8 @@
                 
                     if(mysqli_num_rows($query) > 0 || mysqli_num_rows($query2) > 0){
                         echo "<div class= 'message'>
-                        <p> Email is already in use!</p> </div> <br>";
-                        echo "<a href= 'javascript:self.history.back()'><button class='btn btn-outline-dark' style='color: white;'>Go back</button>";
+                        <p class='align-items-center justify-content-center d-flex'> Email is already in use!</p> </div> <br>";
+                        echo "<a href= 'javascript:self.history.back()'><button class='btn btn-outline-dark' style='margin-left: 80px; color: white;'>Go back</button>";
                     } else {
                         if (!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)) {
                             echo "<div class= 'message'>
@@ -68,8 +68,8 @@
                             }
                             
                             echo "<div class= 'message'>
-                            <p> Registration Successfully!</p> </div> <br>";
-                            echo "<a href='login.php'><button class='btn btn-outline-dark' style='color: white;'>Login Now</button>";
+                            <p class='align-items-center justify-content-center d-flex'> Registration Successfully!</p> </div> <br>";
+                            echo "<a href='login.php'><button class='btn btn-outline-dark' style='margin-left: 70px; color: white;'>Login Now</button>";
                         }
                     }
                 }else{

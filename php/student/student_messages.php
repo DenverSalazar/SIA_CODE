@@ -1,6 +1,23 @@
 <?php
 include('../../php/db_config.php');
 session_start();
+function getProfilePicturePath($profile_picture) {
+    if (isset($profile_picture) && !empty($profile_picture)) {
+        return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
+    } else {
+        return "../../../img/default-profile.png";
+    }
+}
+
+// Fetch user data including profile picture
+    $id = $_SESSION['id'];
+    $query = mysqli_query($con, "SELECT * FROM students WHERE id = '$id'");
+    $result = mysqli_fetch_assoc($query);
+    $res_profile_picture = $result['profile_picture'];
+    $res_fName = $result['fName'];
+    $res_lName = $result['lName'];
+
+
 if(!isset($_SESSION['valid'])){
     header("Location: ../../login.php");
 }
@@ -58,238 +75,118 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
     <title>Student Messages</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="/SIA/css/homestyle.css">
+    <link rel="stylesheet" href="/SIA/css/student_messages.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-    body {
-        background-color: #f0f2f5;
-    }
-    .content {
-        padding: 80px 20px 20px 20px;
-    }
-    .card, .chat-container {
-        height: calc(100vh - 140px);
-        display: flex;
-        flex-direction: column;
-    }
-    .card-header, .chat-header {
-        flex-shrink: 0;
-    }
-    .conversation-list{
-        height: calc(100% - 60px);
-        overflow-y: auto;
-    }
-    .conversation-item {
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-        background-color: white; 
-    }
-    .conversation-item:hover {
-        background-color: #f8f9fa;
-    }
-    .unread {
-        font-weight: bold;
-    }
-    .unread-badge {
-        background-color: #007bff;
-        color: white;
-        border-radius: 50%;
-        padding: 2px 6px;
-        font-size: 0.8em;
-    }
-    .chat-container {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-    }
-    .chat-header {
-        padding: 15px;
-        background-color: #f0f2f5;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        display: flex;
-        align-items: center;
-    }
-    .chat-box {
-        height: calc(100% - 120px);
-        overflow-y: auto;
-        padding: 15px;
-        background-color: #fff;
-    }
-    .chat-input {
-        height: 60px;
-        padding: 10px 15px;
-        background-color: #f0f2f5;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-    }
-    .input-group {
-        background-color: white;
-        border-radius: 20px;
-        overflow: hidden;
-    }
-    #message {
-        border: none;
-        border-radius: 20px;
-        padding-left: 20px;
-    }
-    #message:focus {
-        box-shadow: none;
-    }
-    .btn-send {
-        background-color: transparent;
-        border: none;
-        color: #0084ff;
-    }
-    .btn-send:hover {
-        color: #0056b3;
-    }
-    .back-button {
-        margin-right: 10px;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-    }
-    .back-button:hover {
-        color: #007bff;
-    }
-    #chat-header-name {
-        margin: 0;
-        font-weight: bold;
-    }
-
-    /* New Message Styles */
-    .message-container {
-        width: 100%;
-        margin-bottom: 10px;
-        display: flex;
-    }
-
-    .message-container.right {
-        justify-content: flex-end;
-    }
-
-    .message-container.left {
-        justify-content: flex-start;
-    }
-
-    .message {
-        max-width: 70%;
-        padding: 10px 15px;
-        border-radius: 15px;
-        position: relative;
-        word-wrap: break-word;
-    }
-
-    .message.admin {
-        background-color: #f0f0f0;
-        color: #000;
-        border-bottom-left-radius: 5px;
-    }
-
-    .message.student {
-        background-color: #0084ff;
-        color: #fff;
-        border-bottom-right-radius: 5px;
-    }
-
-    .message-time {
-        font-size: 11px;
-        margin-top: 5px;
-        opacity: 0.7;
-    }
-
-    .message.admin .message-time {
-        color: #666;
-    }
-
-    .message.student .message-time {
-        color: rgba(255, 255, 255, 0.8);
-    }
-
-    /* Default message styles */
-    .default-message {
-        display: flex;
-        height: 100%;
-        align-items: center;
-        justify-content: center;
-        color: #666;
-        text-align: center;
-    }
-
-    /* Active conversation styles */
-    .conversation-item.active {
-        background-color: #e6f2ff;
-    }
-
-    /* Scrollbar styles */
-    .chat-box::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .chat-box::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    .chat-box::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 3px;
-    }
-
-    .chat-box::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-    @media (max-width: 768px) {
-        .content {
-            padding: 60px 10px 10px 10px;
-        }
-    }
-</style>
+   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+<style>
+    .navbar {
+        background-color: #052659;
+        box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    }
+    .navbar-brand img {
+        filter: brightness(0) invert(1);
+    }
+    .navbar-nav .nav-link {
+        color: rgba(255,255,255,0.8) !important;
+        transition: color 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover {
+        color: #ffffff !important;
+    }
+    .nav-item.dropdown .user-profile {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        color: #ffffff;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 50px;
+        transition: background-color 0.3s ease;
+    }
+    .nav-item.dropdown .user-profile:hover {
+        background-color: rgba(255,255,255,0.2);
+    }
+    .nav-item.dropdown img {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+        margin-right: 10px;
+        border: 2px solid #ffffff;
+    }
+    .dropdown-menu {
+        background-color: #ffffff;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+        border-radius: 0.5rem;
+    }
+    .dropdown-item {
+        color: #052659;
+        padding: 0.5rem 1.5rem;
+        transition: background-color 0.3s ease;
+    }
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #052659;
+    }
+    .dropdown-item i {
+        margin-right: 10px;
+        color: #052659;
+    }
+    .card-header{
+        background-color: #C1E8FF;
+    }
+    .chat-header{
+        background-color: #C1E8FF;
+    }
+    .chat-input{
+        background-color: #C1E8FF;
+    }
+    .content-wrapper {
+        padding-top: 20px; /* Adjust this value as needed */
+    }
+
+</style>
 <body>
-            <header>
-                <nav class="navbar navbar-light fixed-top">
-                    <div class="container">
-                    <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a> 
-                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+           <!-- HEADER -->
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container">
+                    <a class="navbar-brand" href="#"><img src="../../img/logo.png" alt="Readiculous"></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    </div>
-                </nav>
-
-                <!-- Offcanvas Menu -->
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                    <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><img src="../../img/logo.png" alt="Readiculous" width="150"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="home.php">Home</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="../../php/profile.php">User Profile</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="./student_messages.php">Messages</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="about.php">About us</a>
-                        </li>
-                        <li class="nav-item-x">
-                        <a class="nav-link logout-link" href="../../php/logout.php">Logout</a>
-                        </li>            
-                    </ul>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto align-items-center">
+                            <li class="nav-item">
+                                <a class="nav-link" href="home.php">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./student_messages.php">Messages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./feedback.php">Feedback</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./about.php">About</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle user-profile" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="<?php echo getProfilePicturePath($res_profile_picture); ?>" alt="Profile" class="rounded-circle">
+                                    <span><?php echo $res_fName; ?></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="./student_profile.php"><i class="fas fa-user-circle"></i> View Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="../../php/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </header>
+            </nav>
 
-            <div class="content">
+
+            <div class="content-wrapper">
                 <div class="row">
                     <div class="col-md-4">
                         <!-- Chat list section -->
@@ -572,8 +469,10 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
 
             // Your existing JavaScript code...
         });
+      
         </script>
-<script src="../../js/bootstrap.bundle.min.js" ></script>
-<script src="../../js/bootstrap.min.js"></script>
+         
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -12,6 +12,9 @@ $role = $_SESSION['pending_role'];
 
 if($role == 'student') {
     $query = mysqli_query($con, "SELECT * FROM students WHERE id = '$id'");
+} else if($role == 'teacher') {
+    // Handle teacher pending approval
+    $query = mysqli_query($con, "SELECT * FROM teacher WHERE id = '$id'");
 } else {
     // Handle other roles if needed
     header("Location: login.php");
@@ -35,7 +38,7 @@ unset($_SESSION['pending_role']);
     <link rel="stylesheet" href="../css/style.css">
     <style>
         body {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+            background: gray;
             min-height: 100vh;
             display: flex;
             align-items: center;

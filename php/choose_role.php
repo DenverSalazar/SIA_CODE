@@ -31,11 +31,12 @@
         }
 
         .role-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: whitesmoke;
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px;
             width: 300px;
+            color: black;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
@@ -61,25 +62,24 @@
         .role-icon img {
             width: 60px;
             height: 60px;
-            filter: invert(1);
         }
 
         .role-title {
-            color: white;
+            color: black;
             font-size: 24px;
             margin-bottom: 15px;
             font-weight: 600;
         }
 
         .role-description {
-            color: rgba(255, 255, 255, 0.8);
+            color: black;
             font-size: 14px;
             margin-bottom: 25px;
         }
 
         .role-button {
             background: rgba(255, 255, 255, 0.2);
-            color: white;
+            color: black;
             border: none;
             padding: 10px 30px;
             border-radius: 30px;

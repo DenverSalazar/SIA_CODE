@@ -1,3 +1,28 @@
+<?php
+include('../../php/db_config.php');
+session_start();
+
+function getProfilePicturePath($profile_picture) {
+    if (isset($profile_picture) && !empty($profile_picture)) {
+        return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
+    } else {
+        return "../../../img/default-profile.png";
+    }
+}
+
+// Fetch user data including profile picture
+    $id = $_SESSION['id'];
+    $query = mysqli_query($con, "SELECT * FROM students WHERE id = '$id'");
+    $result = mysqli_fetch_assoc($query);
+    $res_profile_picture = $result['profile_picture'];
+    $res_fName = $result['fName'];
+    $res_lName = $result['lName'];
+
+if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'student') {
+    header("Location: ../../login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,247 +30,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/about.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <style>
-    .offcanvas {
-    width: 300px !important;
+         .navbar {
+        background-color: #052659;
+        box-shadow: 0 2px 4px rgba(0,0,0,.1);
     }
-
-    .navbar {
-        background-color: #f8f9fa;
-    }
-
-    .offcanvas-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .offcanvas-body {
-        padding: 1rem;
-    }
-
-    .btn-outline-success {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
-    }
-
-    .btn-outline-success:hover {
-        background-color:#0056b3;
-        border-color: #0056b3;
-    }
-
-    .offcanvas .nav-item {
-        margin-bottom: 10px;
-        text-align: start;
-    }
-    .offcanvas .nav-item-x{
-        margin-bottom: 10px;
-        text-align: start;
-    }
-
-    .offcanvas .nav-item a {
-        color: #333;
-        font-size: 16px;
-    }
-
-    .logout-link {
-         color: red; 
-    }
-
-    .logout-link:hover {
-        color: darkred; 
-    }
-
-    .offcanvas .nav-item a:hover {
-        color: #0056b3;
-        text-decoration: none;
-    }
-
     .navbar-brand img {
-        width: 150px;
-    }
-
-    .offcanvas-header h5 {
-        margin-bottom: 0;
-    }
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
-        line-height: 1.6;
-        margin: 0;
-        padding: 0;
-    }
-
-    header {
-        background: #2c3e50;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
-
-    h1 {
-        margin: 0;
-        font-size: 2.5rem;
-    }
-    section {
-        margin-bottom: 20px;
-    }
-
-    h2 {
-        color: #3498db;
-        font-size: 1.8rem;
-    }
-
-    ul {
-        list-style-type: square;
-        padding-left: 20px;
-    }
-
-    footer {
-        text-align: center;
-        padding: 10px;
-        background: #333;
-        color: #fff;
-        position: relative;
-        bottom: 0;
-        width: 100%;
-    }
-    .team .container {
-        margin-top: 20px;
-    }
-
-    .team .col-lg-3 {
-        margin-bottom: 30px;
-    }
-
-    .team .text-center {
-        text-align: center;
-    }
-
-    .team svg {
-        margin-bottom: 10px;
-    }
-    .footer-logo {
         filter: brightness(0) invert(1);
     }
-    
-    .footer-description {
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-    
-    .footer-heading {
-        font-family: 'Merriweather', serif;
-        font-size: 1.2rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: #3498db;
-    }
-    
-    .footer-links a {
-        color: #ecf0f1;
-        text-decoration: none;
-        font-size: 0.9rem;
+    .navbar-nav .nav-link {
+        color: rgba(255,255,255,0.8) !important;
         transition: color 0.3s ease;
     }
-    
-    .footer-links a:hover {
-        color: #3498db;
+    .navbar-nav .nav-link:hover {
+        color: #ffffff !important;
     }
-    
-    .footer-contact {
-        font-size: 0.9rem;
-        opacity: 0.8;
+    .nav-item.dropdown .user-profile {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        color: #ffffff;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 50px;
+        transition: background-color 0.3s ease;
     }
-    
-    .footer-bottom {
-        background-color: #333;
-        padding: 1rem 0;
+    .nav-item.dropdown .user-profile:hover {
+        background-color: rgba(255,255,255,0.2);
     }
-    
-    .footer-divider {
-        border: none;
-        border-top: 1px solid #444;
-        margin: 1rem 0;
-    }
-    
-    .footer-copyright {
-        color: white;
-    }
-    .img-container {
-    width: 140px; 
-    height: 140px;
-    overflow: hidden;
-    border-radius: 50%; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto 10px; 
-    border: 3px solid #3498db; /* Rounded border */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
-}
-
-.img-container img {
-    width: 100%;
-    height: auto; 
-    object-fit: cover;
-}
-
-
-    .img-container img {
-        width: 100%;
-        height: auto; 
+    .nav-item.dropdown img {
+        width: 32px;
+        height: 32px;
         object-fit: cover;
+        margin-right: 10px;
+        border: 2px solid #ffffff;
     }
-
-
-
+    .dropdown-menu {
+        background-color: #ffffff;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+        border-radius: 0.5rem;
+    }
+    .dropdown-item {
+        color: #052659;
+        padding: 0.5rem 1.5rem;
+        transition: background-color 0.3s ease;
+    }
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #052659;
+    }
+    .dropdown-item i {
+        margin-right: 10px;
+        color: #052659;
+    }
 </style>
 <body>
-    <!-- HEADER -->
-  <header>
-    <nav class="navbar navbar-light fixed-top">
-        <div class="container">
-          <a class="navbar-brand"><img src="../../img/logo.png" alt="Readiculous" width=""></a> 
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+  <!-- HEADER -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#"><img src="../../img/logo.png" alt="Readiculous"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-          </button>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="home.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./student_messages.php">Messages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./feedback.php">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./about.php">About</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle user-profile" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="<?php echo getProfilePicturePath($res_profile_picture); ?>" alt="Profile" class="rounded-circle">
+                        <span><?php echo $res_fName; ?></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="./student_profile.php"><i class="fas fa-user-circle"></i> View Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="../../php/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-      </nav>
-
-      <!-- Offcanvas Menu -->
-      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel"><img src="../../img/logo.png" alt="Readiculous" width="150"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="home.php">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../../php/profile.php">User Profile</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./student_messages.php">Messages</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../../php/student/feedback.php">Feedback</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="about.php">About us</a>
-            </li>
-            <li class="nav-item-x">
-              <a class="nav-link logout-link" href="../../php/logout.php">Logout</a>
-            </li>            
-          </ul>
-        </div>
-      </div>
-  </header>
-    <header class="pt-5" >
+    </div>
+</nav>
+    <header class="head pt-4" >
         <h1>About Us</h1>
     </header>
     <main class="container">
