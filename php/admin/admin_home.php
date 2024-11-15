@@ -16,7 +16,7 @@ include('../../php/db_config.php');
         $currentTime = date('H:i:s'); 
 
         if(!isset($_SESSION['valid'])){
-            header("Location: ../../login.php");
+          header("Location: ../../login.php");
         }
 
         if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
@@ -180,7 +180,6 @@ include('../../php/db_config.php');
                     'admin_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                     'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                     'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                    'admin_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                     'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                     'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                 ];
