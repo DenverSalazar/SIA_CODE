@@ -6,7 +6,7 @@ function getProfilePicturePath($profile_picture) {
     if (isset($profile_picture) && !empty($profile_picture)) {
         return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
     } else {
-        return "../../../img/default-profile.png";
+        return "/SIA/img/default-profile.png";
     }
 }
 
@@ -159,7 +159,6 @@ if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'student') {
                     <img src="/SIA/img/jannie.jpg" alt="Zurbano Jannie B." />
                 </div>
                 <h2 class="fw-normal">ZURBANO JANNIE B.</h2>
-                <p>Documentation / Assistant Leader.</p>
                 <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Online learning empowers knowledge without borders."</p>
             </div>
             
@@ -168,7 +167,6 @@ if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'student') {
                     <img src="/SIA/img/denver.jpg" alt="Salazar Denver T." />
                 </div>
                 <h2 class="fw-normal">SALAZAR DENVER T.</h2>
-                <p>Web Developer / Back-end / Documentation.</p>
                 <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Education in the digital age: learn anywhere, grow everywhere."</p>
             </div>
 
@@ -177,7 +175,6 @@ if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'student') {
                     <img src="/SIA/img/alleon.jpg" alt="Perez Alleon John I." />
                 </div>
                 <h2 class="fw-normal">PEREZ ALLEON JOHN I.</h2>
-                <p>Leader / Front-End / Documentation.</p>
                 <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Learning never stops, even when you're online."</p>
             </div>
 
@@ -186,7 +183,6 @@ if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'student') {
                     <img src="/SIA/img/berna.png" alt="Rodriguez Bernadette Anne H." />
                 </div>
                 <h2 class="fw-normal">RODRIGUEZ BERNADETTE ANNE H.</h2>
-                <p>Documentation.</p>
                 <p style="font-style: italic; font-family:'Times New Roman', Times, serif" >"Online learning turns curiosity into endless possibilities."</p>
             </div>
         </div>

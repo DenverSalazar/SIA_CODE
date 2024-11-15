@@ -7,137 +7,84 @@
 
         if(!isset($_SESSION['valid'])){
             header("Location: ../../login.php");
+            exit();
         }
 
         if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
             $id = $_SESSION['id'];
             $role = $_SESSION['role'];
-
-            if($role == 'student'){
-                $query = mysqli_query($con,"SELECT * FROM students WHERE id = '$id'");
-            } else if($role == 'teacher'){
-                $query = mysqli_query($con,"SELECT * FROM teacher WHERE id = '$id'");
+        
+            if ($role == 'student') {
+                $query = mysqli_query($con, "SELECT * FROM students WHERE id = '$id'");
+            } else if ($role == 'teacher') {
+                $query = mysqli_query($con, "SELECT * FROM teacher WHERE id = '$id'");
             }
-
-            while($result = mysqli_fetch_assoc($query)){
-                $res_fName = $result['fName'];
-                $res_lName = $result['lName'];
-                $res_email = $result['email'];
-            }
+        
+            $result = mysqli_fetch_assoc($query);
+            
+            // Fetch profile picture
+            $default_profile_picture = '../../img/admin-icon.jpg'; // Set your default profile picture path
+            $profile_picture = isset($result['profile_picture']) && !empty($result['profile_picture']) ? $result['profile_picture'] : $default_profile_picture;
+            
+            // Fetch other user details
+            $res_fName = $result['fName'];
+            $res_lName = $result['lName'];
+            $res_email = $result['email'];
         } else {
             echo "Error: ID is not set or empty.";
-    
+            exit();
+        }
+        // Get current teacher's ID
+        $current_teacher_id = $_SESSION['id'];
+
+        // Pagination settings
+        $books_per_page = 10000;
+        $offset = isset($_GET['page']) ? ($_GET['page'] - 1) * $books_per_page : 0;
+
+        // Initialize search, category, and teacher filter variables
+        $search = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
+        $selected_category = isset($_GET['category']) ? $_GET['category'] : 'All';
+        
+        // Modify the WHERE clause to always include current teacher's uploads
+        $where_clause = "WHERE books.uploaded_by = '$current_teacher_id'";
+        if ($search) {
+            $where_clause .= " AND (books.title LIKE '%$search%')";
+        }
+        if ($selected_category !== 'All') {
+            $where_clause .= " AND books.book_category = '$selected_category'";
         }
 
-        $query = mysqli_query($con, "SELECT * FROM students");
-        $total_students = mysqli_num_rows($query);
+        // Count total books for pagination
+        $count_sql = "SELECT COUNT(*) as total FROM books $where_clause";
+        $count_result = mysqli_query($con, $count_sql);
+        $total_books = mysqli_fetch_assoc($count_result)['total'];
+        $total_pages = ceil($total_books / $books_per_page);
 
-        $query2 = mysqli_query($con, "SELECT * FROM teacher");
-        $total_teachers = mysqli_num_rows($query2);
+        $sql = "SELECT books.*, teacher.fName, teacher.lName 
+        FROM books 
+        LEFT JOIN teacher ON books.uploaded_by = teacher.id 
+        $where_clause 
+        ORDER BY books.upload_date DESC 
+        LIMIT $offset, $books_per_page";
 
-        $query3 = mysqli_query($con, "SELECT COUNT(*) as total_books FROM books");
-        $result3 = mysqli_fetch_assoc($query3);
-        $total_books = $result3['total_books'];
+        $result = mysqli_query($con, $sql);
+        $books = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
+        // Fetch categories
+        $category_result = mysqli_query($con, "SELECT DISTINCT book_category FROM books");
+        $categories = mysqli_fetch_all($category_result, MYSQLI_ASSOC);
 
-        // Get today's date and past week's date
-        $today = date('Y-m-d');
-        $past_week = date('Y-m-d', strtotime('-7 days'));
-
-        // Query for new registrations in the past week
-        $new_registrations_query = mysqli_query($con, "
-            SELECT COUNT(*) as new_users 
-            FROM students 
-            WHERE DATE(created_at) BETWEEN '$past_week' AND '$today'
+        // Fetch teachers for filter (only those who have uploaded books)
+        $teacher_result = mysqli_query($con, "
+        SELECT DISTINCT t.id, t.fName, t.lName 
+        FROM teacher t
+        INNER JOIN books b ON t.id = b.uploaded_by
+        ORDER BY t.fName
         ");
+        $teachers = mysqli_fetch_all($teacher_result, MYSQLI_ASSOC);
+        mysqli_close($con);
 
-        // Get total logins/activity for today
-        $today = date('Y-m-d');
-        $today_activity_query = mysqli_query($con, "
-            SELECT COUNT(*) as today_active 
-            FROM login_history 
-            WHERE DATE(login_time) = '$today'
-        ");
-        $today_active = mysqli_fetch_assoc($today_activity_query)['today_active'];
-
-        $new_registrations = mysqli_fetch_assoc($new_registrations_query)['new_users'];
-
-        // Query for new books/modules added this week
-        $new_books_query = mysqli_query($con, "
-            SELECT COUNT(*) as new_books 
-            FROM books 
-            WHERE DATE(upload_date) BETWEEN '$past_week' AND '$today'
-        ");
-        $new_books = mysqli_fetch_assoc($new_books_query)['new_books'];
-
-       // Get today's active users
-            $today = date('Y-m-d');
-            $today_active_query = mysqli_query($con, "
-            SELECT COUNT(DISTINCT user_id) as today_active 
-            FROM login_history 
-            WHERE DATE(login_time) = '$today'
-            ");
-            $today_active = mysqli_fetch_assoc($today_active_query)['today_active'];
-
-            // Get yesterday's active users for comparison
-            $yesterday = date('Y-m-d', strtotime('-1 day'));
-            $yesterday_active_query = mysqli_query($con, "
-            SELECT COUNT(DISTINCT user_id) as yesterday_active 
-            FROM login_history 
-            WHERE DATE(login_time) = '$yesterday'
-            ");
-            $yesterday_active = mysqli_fetch_assoc($yesterday_active_query)['yesterday_active'];
-
-            // Calculate percentage change
-            $active_change = $yesterday_active > 0 ? 
-            (($today_active - $yesterday_active) / $yesterday_active) * 100 : 
-            100;
-        // For new books
-        $prev_week_books_query = mysqli_query($con, "
-            SELECT COUNT(*) as prev_books 
-            FROM books 
-            WHERE DATE(upload_date) BETWEEN DATE_SUB('$past_week', INTERVAL 7 DAY) AND '$past_week'
-        ");
-        $prev_week_books = mysqli_fetch_assoc($prev_week_books_query)['prev_books'];
-        $books_change = $prev_week_books > 0 ? (($new_books - $prev_week_books) / $prev_week_books) * 100 : 0;
-
-        // For new registrations
-        $prev_week_reg_query = mysqli_query($con, "
-            SELECT COUNT(*) as prev_reg 
-            FROM students 
-            WHERE DATE(created_at) BETWEEN DATE_SUB('$past_week', INTERVAL 7 DAY) AND '$past_week'
-        ");
-        $prev_week_reg = mysqli_fetch_assoc($prev_week_reg_query)['prev_reg'];
-        $reg_change = $prev_week_reg > 0 ? (($new_registrations - $prev_week_reg) / $prev_week_reg) * 100 : 0;
-
-       // Feedback Statistics Queries
-        $total_feedback_query = mysqli_query($con, "SELECT COUNT(*) as total FROM feedback");
-        $total_feedback = mysqli_fetch_assoc($total_feedback_query)['total'];
-
-        // Average rating
-        $avg_rating_query = mysqli_query($con, "SELECT AVG(rating) as avg_rating FROM feedback");
-        $avg_rating = round(mysqli_fetch_assoc($avg_rating_query)['avg_rating'], 1);
-
-        // Rating distribution
-        $rating_distribution_query = mysqli_query($con, "
-            SELECT rating, COUNT(*) as count 
-            FROM feedback 
-            GROUP BY rating 
-            ORDER BY rating DESC
-        ");
-        $rating_distribution = [];
-        while($row = mysqli_fetch_assoc($rating_distribution_query)) {
-            $rating_distribution[$row['rating']] = $row['count'];
-        }
-
-        // Recent feedback count (last 7 days)
-        $recent_feedback_query = mysqli_query($con, "
-            SELECT COUNT(*) as recent_count 
-            FROM feedback 
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-        ");
-        $recent_feedback = mysqli_fetch_assoc($recent_feedback_query)['recent_count'];
-?>
+ ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -150,11 +97,34 @@
     <link rel="stylesheet" href="/SIA/css/adminstyle.css">
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/dashboard.css">
+    <link rel="stylesheet" href="/SIA/css/bookAdmin.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <style>
+   
     .sidebar{
         background-color: #052659;
+    }
+    .my-upload {
+        position: relative;
+        border: 2px solid #052659 !important;
+        box-shadow: 0 0 10px rgba(5, 38, 89, 0.2) !important;
+    }
+
+    .my-upload-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #052659;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8em;
+        z-index: 1;
+    }
+
+    .book.my-upload .book-content {
+        background-color: rgba(5, 38, 89, 0.05);
     }
 </style>
 <body>
@@ -166,10 +136,9 @@
                 <?php
                 $current_page = basename($_SERVER['PHP_SELF']);
                 $nav_items = [
-                    'teacher_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                    'teacher_home.php' => ['icon' => 'fas fa-home', 'text' => 'Home'],
                     'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                     'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                    'teacher_book.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                     'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                     'teacher_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                     'teacher_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
@@ -196,34 +165,22 @@
         <div id="content">
             <section>
             <div class="welcome d-flex flex-column flex-md-row align-items-center justify-content-between" style="background-color:#C1E8FF; padding: 20px; border-radius: 10px;">
-                <div class="text mb-3 mb-md-0 flex-grow-1">
-                    <h1 style="font-weight: bold;">Welcome back Teacher, <?php echo $res_fName . " " . $res_lName; ?>!</h1>
-                    <div class="d-flex align-items-center">
-                    <p style="font-size: 1.2rem; margin-right: 15px; margin-bottom: 0;">
-                        Current Time: <span id="currentTime"><?php echo $currentTime; ?></span>
-                    </p>
-                    <div class="date-picker-container">
-                        <i class="far fa-calendar-alt calendar-icon"></i>
-                        <input type="date" class="form-control date-input" name="date" value="<?php echo isset($date_filter) ? $date_filter : date('Y-m-d'); ?>">
-                    </div>
-                </div>
-                </div>
-                <div class="circle-person ms-md-3" style="position: relative; right: 80px;"> 
-                    <?php 
-                    // Check if user has a profile picture
-                    $profile_picture_query = mysqli_query($con, "SELECT profile_picture FROM " . ($role == 'student' ? 'students' : 'teacher') . " WHERE id = '$id'");
-                    $profile_result = mysqli_fetch_assoc($profile_picture_query);
-                    
-                    if(isset($profile_result['profile_picture']) && !empty($profile_result['profile_picture'])) {
-                        $profile_picture = $profile_result['profile_picture'];
-                        echo '<img src="../../uploads/profiles/' . $profile_picture . '" alt="Profile Picture" class="rounded-circle profile-img">';
-                    } else {
-                        // Default profile picture if none is uploaded
-                        echo '<img src="../../img/admin-icon.jpg" alt="Default Profile" class="rounded-circle profile-img">';
-                    }
-                    ?>
-                </div>
+    <div class="text mb-3 mb-md-0 flex-grow-1">
+        <h1 style="font-weight: bold;">Welcome back Teacher, <?php echo htmlspecialchars($res_fName . " " . $res_lName); ?>!</h1>
+        <div class="d-flex align-items-center">
+            <p style="font-size: 1.2rem; margin-right: 15px; margin-bottom: 0;">
+                Current Time: <span id="currentTime"><?php echo $currentTime; ?></span>
+            </p>
+            <div class="date-picker-container">
+                <i class="far fa-calendar-alt calendar-icon"></i>
+                <input type="date" class="form-control date-input" name="date" value="<?php echo isset($date_filter) ? $date_filter : date('Y-m-d'); ?>">
             </div>
+        </div>
+    </div>
+    <div class="circle-person ms-md-3" style="position: relative; right: 80px;"> 
+        <img src="../../uploads/profiles/<?php echo htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="rounded-circle profile-img">
+    </div>
+</div>
             <script>
                 
                 function updateClock() {
@@ -248,379 +205,85 @@
                 setInterval(updateClock, 1000);
             </script>
 
-                 <div class="container align-items-center justify-content-center mt-4">
-                        <div class="row justify-content-center">
-                            <!-- Students Card -->
-                            <div class="col-md-4 mb-4">
-                                <div class="card dashboard-card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <h5 class="card-title text-muted">Total Students</h5>
-                                                <h2 class="card-text fw-bold"><?php echo $total_students; ?></h2>
-                                            </div>
-                                            <div class="col-4 text-end">
-                                                <div class="icon-shape">
-                                                    <i class="fas fa-user-graduate"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3">
-                                            <span class="text-success">
-                                                <i class="fas fa-arrow-up"></i> <?php echo $new_registrations; ?>
-                                            </span>
-                                            <span class="text-muted">New this week</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Admin Card -->
-                            <div class="col-md-4 mb-4">
-                                <div class="card dashboard-card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <h5 class="card-title text-muted">Total Teachers</h5>
-                                                <h2 class="card-text fw-bold"><?php echo $total_teachers; ?></h2>
-                                            </div>
-                                            <div class="col-4 text-end">
-                                                <div class="icon-shape">
-                                                    <i class="fas fa-user-shield"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3">
-                                            <span class="text-primary">
-                                                <i class="fas fa-user-check"></i>
-                                            </span>
-                                            <span class="text-muted">Active accounts</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="bookshelf-title">Collection of Modules</h1>
+                    <a href="upload.php"><button class="upload-btn"><i class="fas fa-upload me-2"></i>Upload New Module</button></a>
+                </div>
 
-                            <!-- Modules Card -->
-                            <div class="col-md-4 mb-4">
-                                <div class="card dashboard-card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <h5 class="card-title text-muted">Total Modules</h5>
-                                                <h2 class="card-text fw-bold"><?php echo $total_books; ?></h2>
-                                            </div>
-                                            <div class="col-4 text-end">
-                                                <div class="icon-shape">
-                                                    <i class="fas fa-book"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3">
-                                            <span class="text-info">
-                                                <i class="fas fa-arrow-up"></i> <?php echo $new_books; ?>
-                                            </span>
-                                            <span class="text-muted">New this week</span>
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="search-filter-form">
+            <form class="row g-3 align-items-center" action="" method="get">
+                <!-- Search Input -->
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input class="form-control" type="search" name="search" placeholder="Search modules..." value="<?= htmlspecialchars($search) ?>">
+                    </div>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-filter"></i></span>
+                        <select name="category" class="form-select">
+                            <option value="All" <?= $selected_category === 'All' ? 'selected' : '' ?>>All Categories</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?= htmlspecialchars($category['book_category']) ?>" 
+                                        <?= $selected_category === $category['book_category'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($category['book_category']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Search Button -->
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100" type="submit">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+
+            <!-- Display Books -->
+        <div class="books">
+            <?php if (count($books) > 0): ?>
+                <?php foreach ($books as $book): ?>
+                    <div class="book">
+                        <img alt="<?= htmlspecialchars($book['title']) ?> book cover" 
+                            src="uploads/<?= htmlspecialchars($book['cover_image']) ?>" />
+                        <div class="book-content">
+                            <div class="book-title"><?= htmlspecialchars($book['title']) ?></div>
+                            <div class="book-status">
+                                <?= isset($book['status']) ? htmlspecialchars($book['status']) : 'Uploaded' ?>
+                            </div>
+                            <div class="book-meta">
+                                <p>Category: <?= htmlspecialchars($book['book_category']) ?></p>
+                                <p>Description: <?= htmlspecialchars($book['description']) ?></p>
+                            </div>
+                            <div class="book-actions">
+                                <a href="editBook.php?id=<?= htmlspecialchars($book['id']) ?>" 
+                                class="btn btn-book btn-edit">Edit</a>
+                                <a href="deleteBook.php?id=<?= htmlspecialchars($book['id']) ?>" 
+                                class="btn btn-book btn-delete" 
+                                onclick="return confirm('Are you sure you want to delete this book ?');">Delete</a>
                             </div>
                         </div>
                     </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div>
+                <p>No modules found matching your search or filter criteria.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</main>
 
-                    <div class="container mt-5">
-                        <div class="row">
-                            <!-- Bar Chart -->
-                            <div class="col-md-6 mb-4">
-                                <div class="card">
-                                    <div class="card-body chart-container">
-                                        <h5 class="card-title">User Statistics</h5>
-                                        <canvas id="userChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Pie Chart -->
-                            <div class="col-md-6 mb-4">
-                                <div class="card">
-                                    <div class="card-body chart-container">
-                                        <h5 class="card-title">System Overview</h5>
-                                        <canvas id="systemChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> <br>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Feedback Overview</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!-- Total Feedback -->
-                        <div class="col-md-3 mb-4">
-                            <div class="dashboard-card">
-                                <div class="card-content">
-                                    <h1><?php echo $total_feedback; ?></h1>
-                                    <p>Total Feedback</p>
-                                </div>
-                                <div class="icon-container blue">
-                                    <i class="fas fa-comments"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Average Rating -->
-                        <div class="col-md-3 mb-4">
-                            <div class="dashboard-card">
-                                <div class="card-content">
-                                    <h1><?php echo $avg_rating; ?><small>/5</small></h1>
-                                    <p>Average Rating</p>
-                                </div>
-                                <div class="icon-container green">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Recent Feedback -->
-                        <div class="col-md-3 mb-4">
-                            <div class="dashboard-card">
-                                <div class="card-content">
-                                    <h1><?php echo $recent_feedback; ?></h1>
-                                    <p>Recent Feedback (7 days)</p>
-                                </div>
-                                <div class="icon-container orange">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 5-Star Ratings -->
-                        <div class="col-md-3 mb-4">
-                            <div class="dashboard-card">
-                                <div class="card-content">
-                                    <h1><?php echo isset($rating_distribution[5]) ? $rating_distribution[5] : 0; ?></h1>
-                                    <p>5-Star Ratings</p>
-                                </div>
-                                <div class="icon-container red">
-                                    <i class="fas fa-trophy"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Rating Distribution Chart -->
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Rating Distribution</h3>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="ratingDistributionChart" height="100"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                   <!-- Additional Statistics -->
-                <div class="container mt-4">
-                <div class="row">
-                <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Recent Activity</h5>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Metric</th>
-                                        <th>Value</th>
-                                        <th>Change</th>
-                                        <th>Period</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <i class="fas fa-users"></i>
-                                            Active Users Today
-                                        </td>
-                                        <td><?php echo $today_active; ?></td>
-                                        <td>
-                                            <?php
-                                            $arrow = $active_change >= 0 ? '↑' : '↓';
-                                            $color = $active_change >= 0 ? 'success' : 'danger';
-                                            echo "<span class='text-$color'>$arrow " . abs(round($active_change, 1)) . "%</span>";
-                                            ?>
-                                        </td>
-                                        <td>vs Yesterday</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <i class="fas fa-book"></i>
-                                            Modules Added
-                                        </td>
-                                        <td><?php echo $new_books; ?></td>
-                                        <td>
-                                            <?php
-                                            $arrow = $books_change >= 0 ? '↑' : '↓';
-                                            $color = $books_change >= 0 ? 'success' : 'danger';
-                                            echo "<span class='text-$color'>$arrow " . abs(round($books_change, 1)) . "%</span>";
-                                            ?>
-                                        </td>
-                                        <td>This Week</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <i class="fas fa-user-plus"></i>
-                                            New Registrations
-                                        </td>
-                                        <td><?php echo $new_registrations; ?></td>
-                                        <td>
-                                            <?php
-                                            $arrow = $reg_change >= 0 ? '↑' : '↓';
-                                            $color = $reg_change >= 0 ? 'success' : 'danger';
-                                            echo "<span class='text-$color'>$arrow " . abs(round($reg_change, 1)) . "%</span>";
-                                            ?>
-                                        </td>
-                                        <td>This Week</td>
-                                        </tr>
-                                     </tbody>
-                                 </table>
-                              </div>
-                                </div>
-                                </div>
-                               </div>
-                             </div>
-                            </div>
-                        </section>
-                    </div>
-                </main>
-
-                    <script>
-                    // Bar Chart
-                    const userCtx = document.getElementById('userChart').getContext('2d');
-                    new Chart(userCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Students', 'Teachers', 'Modules'],
-                            datasets: [{
-                                label: 'Total Count',
-                                data: [<?php echo $total_students; ?>, <?php echo $total_teachers; ?>, <?php echo $total_books; ?>],
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.5)',
-                                    'rgba(255, 99, 132, 0.5)',
-                                    'rgba(75, 192, 192, 0.5)'
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(75, 192, 192, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-
-                    // Pie Chart
-                    const systemCtx = document.getElementById('systemChart').getContext('2d');
-                    new Chart(systemCtx, {
-                        type: 'pie',
-                        data: {
-                            labels: ['Students', 'Teachers', 'Modules'],
-                            datasets: [{
-                                data: [<?php echo $total_students; ?>, <?php echo $total_teachers; ?>, <?php echo $total_books; ?>],
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.8)',
-                                    'rgba(255, 99, 132, 0.8)',
-                                    'rgba(75, 192, 192, 0.8)'
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(75, 192, 192, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                }
-                            }
-                        }
-                    });
-
-                  // Rating Distribution Chart
-                    const ratingCtx = document.getElementById('ratingDistributionChart').getContext('2d');
-                    new Chart(ratingCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'],
-                            datasets: [{
-                                label: 'Number of Ratings',
-                                data: [
-                                    <?php echo isset($rating_distribution[5]) ? $rating_distribution[5] : 0; ?>,
-                                    <?php echo isset($rating_distribution[4]) ? $rating_distribution[4] : 0; ?>,
-                                    <?php echo isset($rating_distribution[3]) ? $rating_distribution[3] : 0; ?>,
-                                    <?php echo isset($rating_distribution[2]) ? $rating_distribution[2] : 0; ?>,
-                                    <?php echo isset($rating_distribution[1]) ? $rating_distribution[1] : 0; ?>
-                                ],
-                                backgroundColor: [
-                                    '#28a745',
-                                    '#20c997',
-                                    '#ffc107',
-                                    '#fd7e14',
-                                    '#dc3545'
-                                ],
-                                borderColor: [
-                                    '#28a745',
-                                    '#20c997',
-                                    '#ffc107',
-                                    '#fd7e14',
-                                    '#dc3545'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        stepSize: 1
-                                    }
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    display: false
-                                },
-                                title: {
-                                    display: false
-                                }
-                            }
-                        }
-                    });
-
-                </script>
-    <script src="../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/bootstrap.bundle.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
     
 </body>
 </html>

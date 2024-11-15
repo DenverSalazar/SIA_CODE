@@ -90,7 +90,6 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
                         'admin_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                         'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                         'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                        'admin_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                         'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                         'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                     ];
@@ -166,7 +165,8 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
                                     <?php else: ?>
                                         <span class="text-success"><i class="fas fa-check-circle"></i>Accepted</span>
                                     <?php endif; ?>
-                                    <a href="delete_account.php?id=<?php echo $row['id']; ?>&type=student" class="btn btn-sm btn-outline-danger btn-action" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fas fa-trash-alt"></i> Delete</a>
+                                    <!-- <a href="delete_account.php?id=<?php echo $row['id']; ?>&type=student" class="btn btn-sm btn-outline-danger btn-action" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fas fa-trash-alt"></i> Delete</a> -->
+                                    <a href="view_accounts.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action mr-2"><i class="fas fa-eye"></i> View</a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -202,7 +202,8 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
                             <?php else: ?>
                                 <span class="text-success"><i class="fas fa-check-circle"></i>Accepted</span>
                             <?php endif; ?>
-                            <a href="delete_account.php?id=<?php echo $row['id']; ?>&type=teacher" class="btn btn-sm btn-outline-danger btn-action" onclick="return confirm('Are you sure you want to delete this Teacher?')"><i class="fas fa-trash-alt"></i> Delete</a>
+                            <!-- <a href="delete_account.php?id=<?php echo $row['id']; ?>&type=teacher" class="btn btn-sm btn-outline-danger btn-action" onclick="return confirm('Are you sure you want to delete this Teacher?')"><i class="fas fa-trash-alt"></i> Delete</a> -->
+                            <a href="view_teacher.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action mr-2"><i class="fas fa-eye"></i> View</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>

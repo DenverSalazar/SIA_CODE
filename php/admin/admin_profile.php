@@ -47,7 +47,6 @@ $result = mysqli_fetch_assoc($query);
                             'admin_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                             'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                             'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                            'admin_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                             'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                             'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                         ];
@@ -78,7 +77,7 @@ $result = mysqli_fetch_assoc($query);
                     <img src="../../img/admin-icon.jpg" alt="Default Profile Picture" class="profile-img">
                 <?php endif; ?>
                 <h2><?php echo htmlspecialchars($result['fName'] . ' ' . $result['lName']); ?></h2>
-                <p><?php echo ucfirst($role); ?></p>
+                <p><?php echo ($role == 'teacher') ? 'Admin' : ucfirst($role); ?></p>
             </div>
             
             <div class="profile-info">

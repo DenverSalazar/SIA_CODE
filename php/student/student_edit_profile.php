@@ -10,7 +10,7 @@ function getProfilePicturePath($profile_picture) {
     if (isset($profile_picture) && !empty($profile_picture)) {
         return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
     } else {
-        return "../../../img/default-profile.png";
+        return "/SIA/img/default-profile.png";
     }
 }
 
@@ -324,7 +324,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <img src="../../../uploads/profiles/<?php echo htmlspecialchars($result['profile_picture']); ?>" 
                                 alt="Current Profile Picture" id="preview-image">
                         <?php else: ?>
-                            <img src="../../../img/default-profile.png" alt="Default Profile Picture" id="preview-image">
+                            <img src="/SIA/img/default-profile.png" alt="Default Profile Picture" id="preview-image">
                         <?php endif; ?>
                         
                         <div class="mt-3">

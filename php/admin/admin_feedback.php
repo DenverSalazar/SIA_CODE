@@ -106,7 +106,6 @@ $result = mysqli_query($con, $query);
                                 'admin_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                                 'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                                 'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                                'admin_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                                 'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                                 'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                             ];

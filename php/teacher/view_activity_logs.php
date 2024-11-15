@@ -67,10 +67,9 @@ function getActionIcon($action) {
                 <?php
                 $current_page = basename($_SERVER['PHP_SELF']);
                 $nav_items = [
-                    'teacher_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                    'teacher_home.php' => ['icon' => 'fas fa-home', 'text' => 'Home'],
                     'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                     'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                    'teacher_book.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                     'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                     'teacher_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                     'teacher_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],

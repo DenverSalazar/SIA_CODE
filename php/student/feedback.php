@@ -6,7 +6,7 @@ function getProfilePicturePath($profile_picture) {
     if (isset($profile_picture) && !empty($profile_picture)) {
         return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
     } else {
-        return "../../../img/default-profile.png";
+        return "/SIA/img/default-profile.png";
     }
 }
 

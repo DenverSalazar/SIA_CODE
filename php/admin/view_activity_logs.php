@@ -22,6 +22,29 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     exit();
 }
 
+$id = $_GET['id'];
+
+// Check if the user is a student or teacher
+$student_query = mysqli_query($con, "SELECT * FROM students WHERE id = '$id'");
+$teacher_query = mysqli_query($con, "SELECT * FROM teacher WHERE id = '$id'");
+
+if(mysqli_num_rows($student_query) > 0) {
+    $user = mysqli_fetch_assoc($student_query);
+    $user_type = 'student';
+} elseif(mysqli_num_rows($teacher_query) > 0) {
+    $user = mysqli_fetch_assoc($teacher_query);
+    $user_type = 'teacher';
+} else {
+    // Handle case where user is not found
+    die("User not found");
+}
+
+// Fetch activity logs
+if($user_type == 'student') {
+    $logs_query = mysqli_query($con, "SELECT * FROM activity_logs WHERE student_id = '$id' ORDER BY timestamp DESC");
+} else {
+    $logs_query = mysqli_query($con, "SELECT * FROM activity_logs WHERE teacher_id = '$id' ORDER BY timestamp DESC");
+}
 // Query to fetch student information
 $student_query = mysqli_query($con, "SELECT fName, lName FROM students WHERE id = '$student_id'");
 $student_info = mysqli_fetch_assoc($student_query);
@@ -57,7 +80,7 @@ function getActionIcon($action) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Logs for <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></title>
+    <title>Activity Logs of <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/activity_logs.css">
@@ -80,7 +103,6 @@ function getActionIcon($action) {
                     'admin_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
                     'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                     'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                    'admin_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                     'admin_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                     'admin_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
                 ];
@@ -105,7 +127,7 @@ function getActionIcon($action) {
             <div class="container mt">
             <div class="container">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h1 class="bookshelf-title">Activity Logs of <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></h1>
+                        <h2>Activity Logs of <?php echo $user_type == 'student' ? 'Student' : 'Teacher'; ?>: <?php echo $user['fName'] . ' ' . $user['lName']; ?></h2>
                             <a href="activity_logs.php" class="btn btn-cancel">Back</a>
                         </div>
                     </div>
@@ -130,6 +152,25 @@ function getActionIcon($action) {
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
+
+                                <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Action</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while($log = mysqli_fetch_assoc($logs_query)): ?>
+                                        <tr>
+                                            <td><?php echo $log['timestamp']; ?></td>
+                                            <td><?php echo $log['action']; ?></td>
+                                            <td><?php echo $log['details']; ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
                                 <tr>
                                     <td colspan="3" class="text-center">No activity logs found for this student.</td>
                                 </tr>

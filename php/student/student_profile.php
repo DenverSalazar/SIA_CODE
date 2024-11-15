@@ -6,7 +6,7 @@ function getProfilePicturePath($profile_picture) {
     if (isset($profile_picture) && !empty($profile_picture)) {
         return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
     } else {
-        return "../../../img/default-profile.png";
+        return "/SIA/img/default-profile.png";
     }
 }
 
@@ -224,7 +224,7 @@ $result = mysqli_fetch_assoc($query);
                     <img src="../../../uploads/profiles/<?php echo htmlspecialchars($result['profile_picture']); ?>" 
                         alt="Profile Picture" class="profile-img">
                 <?php else: ?>
-                    <img src="../../../img/default-profile.png" alt="Default Profile Picture" class="profile-img">
+                    <img src="/SIA/img/default-profile.png" alt="Default Profile Picture" class="profile-img">
                 <?php endif; ?>
                 <h2><?php echo htmlspecialchars($result['fName'] . ' ' . $result['lName']); ?></h2>
                 <p><?php echo ucfirst($role); ?></p>

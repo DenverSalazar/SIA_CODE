@@ -87,10 +87,9 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
                     <?php
                     $current_page = basename($_SERVER['PHP_SELF']);
                     $nav_items = [
-                        'teacher_home.php' => ['icon' => 'fas fa-chart-bar', 'text' => 'Dashboard'],
+                        'teacher_home.php' => ['icon' => 'fas fa-home', 'text' => 'Home'],
                         'accounts.php' => ['icon' => 'fas fa-users', 'text' => 'Accounts'],
                         'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
-                        'teacher_book.php' => ['icon' => 'fas fa-book', 'text' => 'Modules'],
                         'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                         'teacher_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
                         'teacher_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
@@ -167,7 +166,8 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
                                     <?php else: ?>
                                         <span class="text-success"><i class="fas fa-check-circle"></i>Accepted</span>
                                     <?php endif; ?>
-                                    <a href="delete_account.php?id=<?php echo $row['id']; ?>&type=student" class="btn btn-sm btn-outline-danger btn-action" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fas fa-trash-alt"></i> Delete</a>
+                                    <!-- <a href="delete_account.php?id=<?php echo $row['id']; ?>&type=student" class="btn btn-sm btn-outline-danger btn-action" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fas fa-trash-alt"></i> Delete</a> -->
+                                    <a href="view_student.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action mr-2"><i class="fas fa-eye"></i> View</a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -177,7 +177,7 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
         </div>
 
         <!-- teacher Accounts Table -->
-        <div class="table-container">
+        <!-- <div class="table-container">
             <h3 class="table-title"><i class="fas fa-user-shield mr-2"></i>Teacher Accounts</h3>
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -205,7 +205,7 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher");
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
     </main>
 
     <script>

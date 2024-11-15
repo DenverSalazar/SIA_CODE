@@ -6,7 +6,7 @@ function getProfilePicturePath($profile_picture) {
     if (isset($profile_picture) && !empty($profile_picture)) {
         return "../../../uploads/profiles/" . htmlspecialchars($profile_picture);
     } else {
-        return "../../../img/default-profile.png";
+        return "/SIA/img/default-profile.png";
     }
 }
 
@@ -18,72 +18,30 @@ function getProfilePicturePath($profile_picture) {
     $res_fName = $result['fName'];
     $res_lName = $result['lName'];
 
-// Function to check file details and handle file streaming
-function streamFile($filepath, $mime_type) {
-    if (file_exists($filepath) && is_readable($filepath)) {
-        header('Content-Type: ' . $mime_type);
-        header('Content-Disposition: inline; filename="' . basename($filepath) . '"');
-        header('Content-Length: ' . filesize($filepath));
-        readfile($filepath);
-        exit;
-    }
-    return false;
+
+
+if (!isset($_SESSION['valid'])) {
+    header("Location: ../../login.php");
 }
 
-// Validate and sanitize the ID
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    die("Error: No book ID provided. Please select a valid book.");
+// Check if module ID is provided in URL
+if (!isset($_GET['id'])) {
+    header("Location: books.php");
+    exit();
 }
 
-$id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
-if ($id === false || $id <= 0) {
-    die("Error: Invalid book ID format.");
+$module_id = mysqli_real_escape_string($con, $_GET['id']);
+
+// Fetch module details
+$query = "SELECT * FROM books WHERE id = '$module_id'";
+$result = mysqli_query($con, $query);
+
+if (mysqli_num_rows($result) == 0) {
+    header("Location: books.php");
+    exit();
 }
 
-// Fetch book details
-$sql = "SELECT * FROM books WHERE id = ?";
-$stmt = $con->prepare($sql);
-if (!$stmt) {
-    die("Error preparing statement: " . $con->error);
-}
-
-$stmt->bind_param("i", $id);
-if (!$stmt->execute()) {
-    die("Error executing query: " . $stmt->error);
-}
-
-$result = $stmt->get_result();
-
-if ($result && $result->num_rows > 0) {
-    $book = $result->fetch_assoc();
-} else {
-    die("Book not found in database.");
-}
-
-// Debug function (you can remove this in production)
-function debug_file_info($file_path) {
-    echo "File path: " . $file_path . "<br>";
-    echo "File exists: " . (file_exists($file_path) ? 'Yes' : 'No') . "<br>";
-    echo "Is readable: " . (is_readable($file_path) ? 'Yes' : 'No') . "<br>";
-    if (file_exists($file_path)) {
-        echo "File permissions: " . substr(sprintf('%o', fileperms($file_path)), -4) . "<br>";
-        echo "File size: " . filesize($file_path) . " bytes<br>";
-    }
-}
-
-$student_id = $_SESSION['id'];
-$book_id = $_GET['id']; // Assuming you get the book ID from the URL
-$book_title = $book['title']; // Assuming you have fetched the book details
-$query = "INSERT INTO activity_logs (student_id, action, details, timestamp) 
-          VALUES ('$student_id', 'view_module', 'Viewed Module: $book_title (ID: $book_id)', NOW())";
-mysqli_query($con, $query);
-
-$student_id = $_SESSION['id'];
-$book_id = $_GET['id'];
-$book_title = $book['title'];
-$query = "INSERT INTO activity_logs (student_id, action, details, timestamp) 
-          VALUES ('$student_id', 'download_module', 'Downloaded Module: $book_title (ID: $book_id)', NOW())";
-mysqli_query($con, $query);
+$module = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
@@ -91,233 +49,355 @@ mysqli_query($con, $query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($book['title']) ?> - Book Details</title>
+    <title>View Module</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../css/homeStyle.css">
-</head>
-<style>
-    .navbar {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navbar */
+        .navbar {
         background-color: #052659;
         box-shadow: 0 2px 4px rgba(0,0,0,.1);
-    }
-    .navbar-brand img {
-        filter: brightness(0) invert(1);
-    }
-    .navbar-nav .nav-link {
-        color: rgba(255,255,255,0.8) !important;
-        transition: color 0.3s ease;
-    }
-    .navbar-nav .nav-link:hover {
-        color: #ffffff !important;
-    }
-    .nav-item.dropdown .user-profile {
-        display: flex;
-        align-items: center;
-        padding: 0.5rem 1rem;
-        color: #ffffff;
-        background-color: rgba(255,255,255,0.1);
-        border-radius: 50px;
-        transition: background-color 0.3s ease;
-    }
-    .nav-item.dropdown .user-profile:hover {
-        background-color: rgba(255,255,255,0.2);
-    }
-    .nav-item.dropdown img {
-        width: 32px;
-        height: 32px;
-        object-fit: cover;
-        margin-right: 10px;
-        border: 2px solid #ffffff;
-    }
-    .dropdown-menu {
-        background-color: #ffffff;
-        border: none;
-        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
-        border-radius: 0.5rem;
-    }
-    .dropdown-item {
-        color: #052659;
-        padding: 0.5rem 1.5rem;
-        transition: background-color 0.3s ease;
-    }
-    .dropdown-item:hover {
-        background-color: #f8f9fa;
-        color: #052659;
-    }
-    .dropdown-item i {
-        margin-right: 10px;
-        color: #052659;
-    }
-</style>
+        height: 65px;
+        }
+        .navbar-brand img {
+            filter: brightness(0) invert(1);
+            height: 20px;
+        }
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            transition: color 0.3s ease;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #ffffff !important;
+        }
+        .nav-item.dropdown .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: #ffffff;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            transition: background-color 0.3s ease;
+        }
+        .nav-item.dropdown .user-profile:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        .nav-item.dropdown img {
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid #ffffff;
+        }
+        .dropdown-menu {
+            background-color: #ffffff;
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+            border-radius: 0.5rem;
+        }
+        .dropdown-item {
+            color: #052659;
+            padding: 0.5rem 1.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #052659;
+        }
+        .dropdown-item i {
+            margin-right: 10px;
+            color: #052659;
+        }
+
+        /* Module Details */
+        .module-details {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        h2 {
+            color: #052659;
+            font-weight: bold;
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+
+        .document-title {
+            color: #052659;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .document-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .document-preview {
+            position: relative;
+            text-align: center;
+        }
+
+        .document-preview a {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            background-color: #052659;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .document-preview a:hover {
+            background-color: #1c3f70;
+        }
+
+        .info-group {
+            margin-bottom: 20px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .info-value {
+            color: #555;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            background-color: #052659;
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #1c3f70;
+        }
+
+        .btn-back {
+            margin-top: 20px;
+        }
+
+        /* Footer */
+        .footer-section {
+            background-color: #052659;
+            color: #fff;
+            padding: 30px 0;
+        }
+
+        .footer-section h5 {
+            color: #fff;
+            margin-bottom: 0px;
+        }
+
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #f1f1f1;
+        }
+
+        .footer-logo {
+            max-width: 180px;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-description {
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        .footer-contact p {
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        /* Cover Image */
+        .cover-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
 <body>
-  <!-- HEADER -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container">
+                    <a class="navbar-brand" href="#"><img src="../../img/logo.png" alt="Readiculous"></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto align-items-center">
+                            <li class="nav-item">
+                                <a class="nav-link" href="home.php">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./student_messages.php">Messages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./feedback.php">Feedback</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./about.php">About</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle user-profile" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="<?php echo getProfilePicturePath($res_profile_picture); ?>" alt="Profile" class="rounded-circle">
+                                    <span><?php echo $res_fName; ?></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="./student_profile.php"><i class="fas fa-user-circle"></i> View Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="../../php/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+
     <div class="container">
-        <a class="navbar-brand" href="#"><img src="../../img/logo.png" alt="Readiculous"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./student_messages.php">Messages</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./feedback.php">Feedback</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./about.php">About</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle user-profile" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo getProfilePicturePath($res_profile_picture); ?>" alt="Profile" class="rounded-circle">
-                        <span><?php echo $res_fName; ?></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="./student_profile.php"><i class="fas fa-user-circle"></i> View Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="../../php/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+        <h2><i class="fas fa-book"></i> Module Details</h2>
+        <a href="books.php" class="btn btn-back"><i class="fas fa-arrow-left"></i> Back to Books</a>
+        <div class="module-details">
+            <?php if (!empty($module['cover_photo'])): ?>
+                <img src="../../php/teacher/uploads/<?php echo htmlspecialchars($module['cover_photo']); ?>" alt="Module Cover" class="cover-image">
+            <?php else: ?>
+                <p>No cover photo available.</p>
+            <?php endif; ?>
 
-                    <div class="container mt-5">
-                    <h1 class="mb-4"><?= htmlspecialchars($book['title']) ?></h1>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <img src="../teacher/uploads/<?= htmlspecialchars($book['cover_image']) ?>" class="img-fluid" alt="<?= htmlspecialchars($book['title']) ?>">
-                        </div>
-                        <div class="col-md-6">
-                <p><?= nl2br(htmlspecialchars($book['description'])) ?></p>
-                <a href="books.php" class="btn btn-outline-primary">Back to Browse</a>
+            <div class="info-group">
+                <span class="info-label">Module ID:</span>
+                <span class="info-value"><?php echo htmlspecialchars($module['id']); ?></span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Title:</span>
+                <span class="info-value"><?php echo htmlspecialchars($module['title']); ?></span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Description:</span>
+                <span class="info-value"><?php echo htmlspecialchars($module['description']); ?></span>
+            </div>
 
-                <h2 class="mt-5">Learning Material</h2>
+            <div class="document-section">
+    <h4 class="document-title"><i class="fas fa-file-alt"></i> Module Document</h4>
+    <div class="document-container">
+        <?php if (!empty($module['file_name'])): ?>
+            <div class="document-preview">
                 <?php
-                if (!empty($book['file_name'])) {
-                    // Construct and validate file path
-                    $upload_dir = realpath(__DIR__ . "/../teacher/uploads/");
-                    $sanitized_filename = basename($book['file_name']);
-                    $final_path = $upload_dir . DIRECTORY_SEPARATOR . $sanitized_filename;
+                // Set the file path relative to the server root
+                $file_path = '../../php/teacher/uploads/' . $module['file_name'];  // Use correct file name from the database
 
-                    // Security check
-                    if (strpos(realpath($final_path), $upload_dir) !== 0) {
-                        die("Invalid file path detected");
-                    }
-
-                    $file_extension = strtolower(pathinfo($sanitized_filename, PATHINFO_EXTENSION));
-                    $mime_type = mime_content_type($final_path);
-
-                    if (file_exists($final_path) && is_readable($final_path)) {
-                        echo '<div class="file-viewer mb-3">';
-                        
-                        switch ($file_extension) {
-                            case 'pdf':
-                                // Directly embed PDF
-                                echo '<div class="embed-responsive" style="height: 600px;">';
-                                echo '<iframe class="embed-responsive-item" src="' . htmlspecialchars($final_path) . '" width="100%" height="100%" frameborder="0"></iframe>';
-                                echo '</div>';
-                                break;
-                                
-                            case 'pptx':
-                            case 'ppt':
-                                // Using Microsoft's Office Online viewer
-                                $encoded_path = urlencode('https://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/view_file.php?id=' . $id);
-                                echo '<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=' . $encoded_path . '" width="100%" height="600px" frameborder="0"></iframe>';
-                                break;
-                                
-                            case 'doc':
-                            case 'docx':
-                                echo '<div class="alert alert-info">Word documents can be viewed online or downloaded.</div>';
-                                echo '<a href="view_file.php' . htmlspecialchars($final_path) . '" class="btn btn-primary" target="_blank">View Document</a>';
-                                echo '<a href="download_file.php?id=' . $id . '" class="btn btn-secondary">Download Document</a>';
-                                break;
-                                
-                            case 'txt':
-                                // Display text file content
-                                echo '<pre class="p-3 bg-light" style="max-height: 600px; overflow-y: auto;">';
-                                echo htmlspecialchars(file_get_contents($final_path));
-                                echo '</pre>';
-                                break;
-                                
-                            case 'jpg':
-                            case 'jpeg':
-                            case 'png':
-                            case 'gif':
-                                // Display image directly
-                                echo '<img src="' . htmlspecialchars($final_path) . '" class="img-fluid" alt="' . htmlspecialchars($book['title']) . '">';
-                                break;
-
-                            default:
-                                echo '<div class="alert alert-warning">Preview not available for this file type.</div>';
-                                echo '<a href="download_file.php?id=' . $id . '" class="btn btn-primary">Download File</a>';
-                        }
-
-                        echo '</div>';
-                        
-                        // Add download button below viewer
-                        echo '<a href="download_file.php?id=' . $id . '" class="btn btn-secondary">Download File</a>';
-                        
-                    } else {
-                        echo '<div class="alert alert-danger">File not found or not readable. Please contact administrator.</div>';
-                    }
-                } else {
-                    echo '<p>No learning materials available for this book.</p>';
-                }
-                ?>
-
+                if (file_exists($file_path)): 
+                    $file_extension = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+                    
+                    // Handling different file types
+                    if (in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                        <img src="<?php echo htmlspecialchars($file_path); ?>" class="img-fluid" alt="Module Document">
+                    <?php elseif ($file_extension == 'pdf'): ?>
+                        <embed src="<?php echo htmlspecialchars($file_path); ?>" type="application/pdf" width="100%" height="500px" />
+                    <?php elseif ($file_extension == 'pptx'): ?>
+                        <iframe src="https://view.officeapps.live.com/op/view.aspx?src=<?php echo urlencode($file_path); ?>" width="100%" height="500px"></iframe>
+                    <?php elseif ($file_extension == 'docx' || $file_extension == 'doc'): ?>
+                        <iframe src="https://view.officeapps.live.com/op/view.aspx?src=<?php echo urlencode($file_path); ?>" width="100%" height="500px"></iframe>
+                    <?php else: ?>
+                        <p>Unsupported file type. <a href="<?php echo htmlspecialchars($file_path); ?>" target="_blank">Download file</a></p>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <span class="text-danger">File not found at path: <?php echo htmlspecialchars($file_path); ?></span>
+                <?php endif; ?>
             </div>
-        </div>
+        <?php else: ?>
+            <span class="text-danger">No document available for this module.</span>
+        <?php endif; ?>
+    </div>
+</div>
+
+</div>
     </div>
 
-    <hr class="featurette-divider">
-
-<footer class="footer-section py-5">
+    <!-- FOOTER -->
+    <footer class="footer-section py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <img src="../../img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
+        <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+        <h5 class="footer-heading">Quick Links</h5>
+        <ul class="footer-links list-unstyled">
+          <li><a href="#Home">Home</a></li>
+          <li><a href="books.php">Books</a></li>
+          <li><a href="../../php/profile.php">Profile</a></li>
+          <li><a href="about.php">About Us</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+        <h5 class="footer-heading">Services</h5>
+        <ul class="footer-links list-unstyled">
+          <li>Book Search</li>
+          <li>Online Reading</li>
+          <li>Give Feedback</li>
+          <li>Digital Resources</li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-md-4">
+        <h5 class="footer-heading">Contact Us</h5>
+        <address class="footer-contact">
+          <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
+          <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
+          <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
+        </address>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-4 mb-4 mb-lg-0">
-                <img src="/SIA/img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
-                <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-heading">Quick Links</h5>
-                <ul class="footer-links list-unstyled">
-                    <li><a href="home.php">Home</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-heading">Services</h5>
-                <ul class="footer-links list-unstyled">
-                    <li>Book Search</li>
-                    <li>Online Reading</li>
-                    <li>Give Feedback</li>
-                    <li>Digital Resources</li>
-                </ul>
-            </div>
-            <div class="col-lg-4 col-md-4">
-                <h5 class="footer-heading">Contact Us</h5>
-                <address class="footer-contact">
-                    <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
-                    <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
-                    <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
-                </address>
-            </div>
-        </div>
+      <hr class="footer-divider">
+      <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
     </div>
-    <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
-        <div class="container">
-            <hr class="footer-divider">
-            <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
-        </div>
-    </div>
+  </div>
 </footer>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
