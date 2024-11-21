@@ -2,7 +2,7 @@
 include '../../php/db_config.php'; // Ensure this path is correct and the file contains $conn
 session_start();
 
-if(!isset($_SESSION['valid'])){
+if (!isset($_SESSION['valid'])) {
     header("Location: ../../login.php");
     exit();
 }
@@ -52,6 +52,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the statement
     if ($stmt->execute()) {
+        // Log the upload action
+        $action = 'upload_module';
+        $details = "Uploaded module: $title";
+        $log_stmt = $con->prepare("INSERT INTO activity_logs (teacher_id, action, details) VALUES (?, ?, ?)");
+        $log_stmt->bind_param("iss", $teacher_id, $action, $details);
+        $log_stmt->execute();
+        $log_stmt->close();
+
         header("Location: teacher_home.php?success=1");
         exit();
     } else {
@@ -63,7 +71,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,12 +81,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/upload.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/> 
+    <style>
+        .sidebar {
+            background-color: #052659;
+        }
+    </style>
 </head>
-<style>
-    .sidebar{
-        background-color: #052659;
-    }
-</style>
 <body>
     <div class="sidebar">
         <h5 class="sidebar-title mb-5">
@@ -94,11 +101,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'activity_logs.php' => ['icon' => 'fas fa-history', 'text' => 'Activity Logs'],
                 'teacher_messages.php' => ['icon' => 'fas fa-envelope', 'text' => 'Messages'],
                 'teacher_feedback.php' => ['icon' => 'fas fa-comment-alt', 'text' => 'Feedbacks'],
-                'teacher_profile.php' => ['icon' => 'fas fa-user', 'text' => 'Profile'],
+                'teacher_profile.php' => ['icon' => 'fas fa-user','text' => 'Profile'],
             ];
 
             foreach ($nav_items as $page => $item) {
-                $active_class = ($current_page === $page || ($current_page === 'editBook.php' && $page === 'teahcer_home.php') || ($current_page === 'upload.php' && $page === 'teacher_home.php')) ? 'active' : '';
+                $active_class = ($current_page === $page) ? 'active' : '';
                 echo "<li class='nav-item'>
                         <a class='nav-link {$active_class}' href='{$page}'>
                             <i class='{$item['icon']}'></i> {$item['text']}

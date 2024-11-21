@@ -73,6 +73,31 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC); // This will en
     .chat-input{
         background-color: #C1E8FF;
     }
+    .font-weight-bold {
+    font-weight: bold;
+}
+.unread-badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.8em;
+    margin-left: 8px;
+}
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
 
 </style>
 <body>
@@ -131,13 +156,16 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC); // This will en
                                 <?php foreach ($conversations as $conversation): ?>
                                     <div class="conversation-item <?php echo $conversation['unread_count'] > 0 ? 'unread' : ''; ?>" 
                                         data-student-id="<?php echo $conversation['id']; ?>">
-                                        <strong><?php echo htmlspecialchars($conversation['fName'] . ' ' . $conversation['lName']); ?></strong>
+                                        <strong class="<?php echo $conversation['unread_count'] > 0 ? 'font-weight-bold' : ''; ?>">
+                                            <?php echo htmlspecialchars($conversation['fName'] . ' ' . $conversation['lName']); ?>
+                                        </strong>
                                         <?php if ($conversation['unread_count'] > 0): ?>
                                             <span class="unread-badge"><?php echo $conversation['unread_count']; ?></span>
                                         <?php endif; ?>
                                         <br>
                                         <small><?php echo htmlspecialchars(substr($conversation['last_message'], 0, 30)) . '...'; ?></small>
                                     </div>
+
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </div>
@@ -184,7 +212,7 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC); // This will en
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="chatSettingsModalLabel">Chat Settings</h5>
+                    <h5 class="modal-title" id="chatSettingsModalLabel">Search Messages</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -192,6 +220,9 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC); // This will en
                     <div id="searchResults" class="mt-3"></div>
                 </div>
                 <div class="modal-footer">
+                <button type="submit" name="delete_conversation" class="delete-btn" onclick="return confirm('Are you sure you want to delete this Conversation?');">
+                        <i class="fas fa-trash-alt"></i> Delete Conversation
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -363,6 +394,35 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC); // This will en
                     $('#searchResults').empty();
                 }
             });
+
+            $('.delete-btn').click(function() {
+            if (selectedUserId) {
+                $.ajax({
+                    url: "delete_conversation.php",
+                    method: "POST",
+                    data: {
+                        student_id: selectedUserId
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert(response.message);
+                            // Reload the conversation list
+                            updateConversationList();
+                            hideConversation();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("An error occurred. Please try again.");
+                    }
+                });
+            } else {
+                alert("No conversation selected.");
+            }
+        });
+
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

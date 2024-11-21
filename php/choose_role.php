@@ -9,14 +9,17 @@
     <title>Choose Role</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <style>
-        body {
-            background: gray;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        body{
+        background-image: url(/SIA/img/index.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         }
-
+    
         .role-container {
             max-width: 900px;
             width: 100%;

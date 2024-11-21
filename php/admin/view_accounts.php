@@ -152,7 +152,7 @@ $student = mysqli_fetch_assoc($result);
             ];
 
             foreach ($nav_items as $page => $item) {
-                $active_class = ($current_page === $page) ? 'active' : '';
+                $active_class = ($current_page === $page || ($current_page === 'view_accounts.php' && $page === 'accounts.php')) ? 'active' : '';
                 echo "<li class='nav-item'>
                         <a class='nav-link {$active_class}' href='{$page}'>
                             <i class='{$item['icon']}'></i> {$item['text']}
@@ -271,14 +271,14 @@ $student = mysqli_fetch_assoc($result);
                         <?php endif; ?>
                     </div>
                 </div>
-
-                <!-- <div class="action-buttons">
+            </div>
+        </div>
+        <!-- DELETE ACCOUNT -->
+        <div class="action-buttons">
                     <a href="delete_account.php?id=<?php echo $student['id']; ?>&type=student" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this student account?')">
                         <i class="fas fa-trash-alt"></i> Delete Account
                     </a>
-                </div> -->
-            </div>
-        </div>
+                </div>
     </main>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>

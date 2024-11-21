@@ -2,13 +2,12 @@
 include('../../php/db_config.php');
 session_start();
 
-if(!isset($_SESSION['valid'])){
+if (!isset($_SESSION['valid'])) {
     header("Location: ../../login.php");
 }
 
 $student_query = mysqli_query($con, "SELECT * FROM students WHERE is_accepted = 1");
 $teacher_query = mysqli_query($con, "SELECT * FROM teacher WHERE is_accepted = 1");
-
 ?>
 
 <!DOCTYPE html>
@@ -23,20 +22,18 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher WHERE is_accepted = 1
     <link rel="stylesheet" href="/SIA/css/activity_logs.css">
 </head>
 <style>
-    .sidebar{
+    .sidebar {
         background-color: #052659;
     }
     .search-filter-container {
-    background-color: #c1e8ff;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+        background-color: #c1e8ff;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
     }
-
     .search-filter-container .form-control {
         margin-bottom: 10px;
     }
-
     @media (min-width: 768px) {
         .search-filter-container .form-control {
             margin-bottom: 0;
@@ -77,125 +74,127 @@ $teacher_query = mysqli_query($con, "SELECT * FROM teacher WHERE is_accepted = 1
     </div>
 
     <main class="content">
-            <div class="container">
+        <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="bookshelf-title">Activity Logs of Students And Teachers</h1>
             </div>
         </div>
 
-        <!-- Student Accounts Table -->
-            <div class="table-container">
-                <!-- Search Section -->
-                <div class="search-filter-container mb-3 text-center">
+        <!-- Accepted Students -->
+        <div class="table-container">
+            <div class="search-filter-container mb-3 text-center">
                 <div class="row justify-content-center">
-                        <div class="col-md-4">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, or ID...">
-                        </div>
+                    <div class="col-md-4">
+                        <input type="text" id="studentSearchInput" class="form-control" placeholder="Search students by name, email, or ID...">
                     </div>
                 </div>
-                <h3 class="table-title"><i class="fas fa-user-graduate mr-2"></i>Accepted Students</h3>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Department</th> 
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($row = mysqli_fetch_assoc($student_query)): ?>
-                                <tr>
-                                    <td><?php echo $row['id']; ?></td>
-                                    <td><?php echo $row['fName']; ?></td>
-                                    <td><?php echo $row['lName']; ?></td>
-                                    <td><?php echo $row['email']; ?></td>
-                                    <td><?php echo $row['department']; ?></td> 
-                                    <td>
-                                        <a href="view_activity_logs.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action">
-                                            <i class="fas fa-eye"></i> View Activity
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </div>
             </div>
+            <h3 class="table-title"><i class="fas fa-user-graduate mr-2"></i>Accepted Students</h3>
+            <div class="table-responsive">
+                <table class="table table-hover" id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = mysqli_fetch_assoc($student_query)): ?>
+                            <tr>
+                                <td><?php echo $row['id']; ?></td>
+                                <td><?php echo $row['fName']; ?></td>
+                                <td><?php echo $row['lName']; ?></td>
+                                <td><?php echo $row['email']; ?></td>
+                                <td><?php echo $row['department']; ?></td>
+                                <td>
+                                    <a href="view_activity_logs.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action">
+                                        <i class="fas fa-eye"></i> View Activity
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-            <div class="table-container">
-                <!-- Search Section -->
-                <div class="search-filter-container mb-3 text-center">
+        <!-- Accepted Teachers -->
+        <div class="table-container">
+            <div class="search-filter-container mb-3 text-center">
                 <div class="row justify-content-center">
-                        <div class="col-md-4">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, or ID...">
-                        </div>
+                    <div class="col-md-4">
+                        <input type="text" id="teacherSearchInput" class="form-control" placeholder="Search teachers by name, email, or ID...">
                     </div>
                 </div>
-                <h3 class="table-title"><i class="fas fa-user-graduate mr-2"></i>Accepted Teachers</h3>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($row = mysqli_fetch_assoc($teacher_query)): ?>
-                                <tr>
-                                    <td><?php echo $row['id']; ?></td>
-                                    <td><?php echo $row['fName']; ?></td>
-                                    <td><?php echo $row['lName']; ?></td>
-                                    <td><?php echo $row['email']; ?></td>
-                                    <td>
-                                        <a href="view_activity_logs.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action">
-                                            <i class="fas fa-eye"></i> View Activity
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </main>
+            <h3 class="table-title"><i class="fas fa-chalkboard-teacher mr-2"></i>Accepted Teachers</h3>
+            <div class="table-responsive">
+                <table class="table table-hover" id="teacherTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = mysqli_fetch_assoc($teacher_query)): ?>
+                            <tr>
+                                <td><?php echo $row['id']; ?></td>
+                                <td><?php echo $row['fName']; ?></td>
+                                <td><?php echo $row['lName']; ?></td>
+                                <td><?php echo $row['email']; ?></td>
+                                <td>
+                                    <a href="view_teacher_activity_logs.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-outline-primary btn-action">
+                                        <i class="fas fa-eye"></i> View Activity
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
-        <script>
-        // Search and Filter Function
-        function filterTable(tableId, searchInput, filters = {}) {
-            const input = document.getElementById(searchInput);
-            const table = document.querySelector(tableId + ' tbody');
-            const rows = table.getElementsByTagName('tr');
+    <script>
+    // Filter Function
+    function filterTable(inputId, tableId) {
+        const input = document.getElementById(inputId);
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById(tableId);
+        const rows = table.getElementsByTagName("tr");
 
-            for (let row of rows) {
-                let text = row.textContent.toLowerCase();
-                let showRow = true;
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName("td");
+            let rowContainsFilter = false;
 
-                // Check search text
-                if (input.value) {
-                    if (!text.includes(input.value.toLowerCase())) {
-                        showRow = false;
-                    }
+            for (let cell of cells) {
+                if (cell.textContent.toLowerCase().includes(filter)) {
+                    rowContainsFilter = true;
+                    break;
                 }
-
-                row.style.display = showRow ? '' : 'none';
             }
-        }
 
-        // For activity_logs.php
-        if (document.getElementById('searchInput')) {
-            document.getElementById('searchInput').addEventListener('keyup', () => {
-                filterTable('.table', 'searchInput');
-            });
+            rows[i].style.display = rowContainsFilter ? "" : "none";
         }
-        </script>
+    }
+
+    // Event Listeners
+    document.getElementById("studentSearchInput").addEventListener("keyup", () => {
+        filterTable("studentSearchInput", "studentTable");
+    });
+
+    document.getElementById("teacherSearchInput").addEventListener("keyup", () => {
+        filterTable("teacherSearchInput", "teacherTable");
+    });
+    </script>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>
 </body>

@@ -265,7 +265,7 @@
         <h5 class="footer-heading">Quick Links</h5>
         <ul class="footer-links list-unstyled">
           <li><a href="#Home">Home</a></li>
-          <li><a href="books.php">Books</a></li>
+          <li><a href="books.php">Modules</a></li>
           <li><a href="../../php/profile.php">Profile</a></li>
           <li><a href="about.php">About Us</a></li>
         </ul>
@@ -282,16 +282,15 @@
       <div class="col-lg-4 col-md-4">
         <h5 class="footer-heading">Contact Us</h5>
         <address class="footer-contact">
-          <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
-          <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
-          <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
+          <p><i class="fas fa-map-marker-alt me-2"></i>BSU Lipa Batangas</p>
+          <p><i class="fas fa-phone me-2"></i>0985-982-2196</p>
+          <p><i class="fas fa-envelope me-2"></i>readiculous@gmail.com</p>
         </address>
       </div>
     </div>
   </div>
   <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
     <div class="container">
-      <hr class="footer-divider">
       <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
     </div>
   </div>

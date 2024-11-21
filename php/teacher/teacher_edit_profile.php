@@ -82,6 +82,17 @@ if(isset($_POST['update'])){
     if(!empty($update_query)){
         try {
             if(mysqli_query($con, $update_query)){
+                $log_action = 'update_profile';
+                $log_details = "Updated profile for user: " . htmlspecialchars($fName . ' ' . $lName);
+                
+                // Insert activity log
+                $log_query = "INSERT INTO activity_logs (teacher_id, action, details, timestamp) VALUES (?, ?, ?, NOW())";
+                $log_stmt = $con->prepare($log_query);
+                $log_stmt->bind_param("iss", $_SESSION['id'], $log_action, $log_details);
+                $log_stmt->execute();
+                $log_stmt->close();
+        
+                
                 $_SESSION['message'] = "Profile updated successfully!";
                 header("Cache-Control: no-cache, must-revalidate");
                 header("Location: teacher_profile.php"); // Modified redirect path

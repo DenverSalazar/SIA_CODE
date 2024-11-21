@@ -4,6 +4,7 @@ session_start();
 
 if (!isset($_SESSION['valid'])) {
     header("Location: ../../login.php");
+    exit();
 }
 
 if (isset($_POST['student_id']) && isset($_POST['query'])) {
@@ -20,11 +21,19 @@ if (isset($_POST['student_id']) && isset($_POST['query'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    while ($row = $result->fetch_assoc()) {
-        echo "<div class='message-item'>";
-        echo "<strong>" . htmlspecialchars($row['sender']) . ":</strong> ";
-        echo "<span>" . htmlspecialchars($row['message']) ."<br>" . "</span>";
-        echo "<small class='text-muted'>" .  htmlspecialchars($row['created_at']) . "</small>";
-        echo "</div>";
+    // Check if any rows are returned
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            echo "<div class='message-item'>";
+            echo "<strong>" . htmlspecialchars($row['sender']) . ":</strong> ";
+            echo "<span>" . htmlspecialchars($row['message']) . "<br>" . "</span>";
+            echo "<small class='text-muted'>" . htmlspecialchars($row['created_at']) . "</small>";
+            echo "</div>";
+        }
+    } else {
+        // No messages found
+        echo "<p class='text-muted'>No matching messages found.</p>";
     }
+} else {
+    echo "<p class='text-danger'>Invalid request parameters.</p>";
 }

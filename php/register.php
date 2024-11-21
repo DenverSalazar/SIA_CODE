@@ -13,11 +13,15 @@
 </head>
 <style>
     body {
-        background: gray;
+        background-image: url(/SIA/img/index.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        
     }
     .form-box {
         width: 100%;

@@ -38,11 +38,14 @@ unset($_SESSION['pending_role']);
     <link rel="stylesheet" href="../css/style.css">
     <style>
         body {
-            background: gray;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        background-image: url(/SIA/img/index.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         }
         .pending-box {
             background-color: white;

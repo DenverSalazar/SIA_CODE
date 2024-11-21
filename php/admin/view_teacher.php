@@ -129,7 +129,7 @@ $teacher = mysqli_fetch_assoc($result);
             ];
 
             foreach ($nav_items as $page => $item) {
-                $active_class = ($current_page === $page) ? 'active' : '';
+                $active_class = ($current_page === $page || ($current_page === 'view_teacher.php' && $page === 'accounts.php')) ? 'active' : '';
                 echo "<li class='nav-item'>
                         <a class='nav-link {$active_class}' href='{$page}'>
                             <i class='{$item['icon']}'></i> {$item['text']}
@@ -206,12 +206,12 @@ $teacher = mysqli_fetch_assoc($result);
         <span class="text-danger">No document available</span>
     <?php endif; ?>
 </div>
-
-                <!-- <div class="action-buttons">
+                <!-- DELETE ACCOUNT -->
+                <div class="action-buttons">
                     <a href="delete_account.php?id=<?php echo $teacher['id']; ?>&type=teacher" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this teacher account?')">
                         <i class="fas fa-trash-alt"></i> Delete Account
                     </a>
-                </div> -->
+                </div>
             </div>
         </div>
     </main>

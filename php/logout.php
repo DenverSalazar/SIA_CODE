@@ -11,6 +11,14 @@ if(isset($_SESSION['valid']) && $_SESSION['role'] == 'student') {
                   VALUES ('$student_id', 'logout', 'Student logged out', NOW())";
     mysqli_query($con, $log_query);
 }
+else if(isset($_SESSION['valid']) && $_SESSION['role'] == 'teacher') {
+    $student_id = $_SESSION['id'];
+    
+    // Log the logout action
+    $log_query = "INSERT INTO activity_logs (teacher_id, action, details, timestamp) 
+                  VALUES ('$student_id', 'logout', 'Teacher logged out', NOW())";
+    mysqli_query($con, $log_query);
+}
 
 // Destroy the session
 session_destroy();

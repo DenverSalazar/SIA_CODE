@@ -140,6 +140,10 @@
         margin-right: 10px;
         color: #052659;
     }
+    .footer-copyright {
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
 </style>
 <body>
   <!-- HEADER -->
@@ -264,45 +268,47 @@
     </nav>
 </div>
 
+<!-- FOOTER -->
 <footer class="footer-section py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <img src="../../img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
+        <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+        <h5 class="footer-heading">Quick Links</h5>
+        <ul class="footer-links list-unstyled">
+          <li><a href="#Home">Home</a></li>
+          <li><a href="books.php">Modules</a></li>
+          <li><a href="../../php/profile.php">Profile</a></li>
+          <li><a href="about.php">About Us</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+        <h5 class="footer-heading">Services</h5>
+        <ul class="footer-links list-unstyled">
+          <li>Book Search</li>
+          <li>Online Reading</li>
+          <li>Give Feedback</li>
+          <li>Digital Resources</li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-md-4">
+        <h5 class="footer-heading">Contact Us</h5>
+        <address class="footer-contact">
+          <p><i class="fas fa-map-marker-alt me-2"></i>BSU Lipa Batangas</p>
+          <p><i class="fas fa-phone me-2"></i>0985-982-2196</p>
+          <p><i class="fas fa-envelope me-2"></i>readiculous@gmail.com</p>
+        </address>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-4 mb-4 mb-lg-0">
-                <img src="/SIA/img/logo.png" alt="Readiculous" class="footer-logo mb-3" style="max-width: 200px;">
-                <p class="footer-description">Readiculous: Your gateway to a world of knowledge and imagination. Explore, learn, and grow with our comprehensive library management system.</p>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-heading">Quick Links</h5>
-                <ul class="footer-links list-unstyled">
-                    <li><a href="home.php">Home</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-heading">Services</h5>
-                <ul class="footer-links list-unstyled">
-                    <li>Book Search</li>
-                    <li>Online Reading</li>
-                    <li>Give Feedback</li>
-                    <li>Digital Resources</li>
-                </ul>
-            </div>
-            <div class="col-lg-4 col-md-4">
-                <h5 class="footer-heading">Contact Us</h5>
-                <address class="footer-contact">
-                    <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
-                    <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
-                    <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
-                </address>
-            </div>
-        </div>
+      <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
     </div>
-    <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
-        <div class="container">
-            <hr class="footer-divider">
-            <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
-        </div>
-    </div>
+  </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>

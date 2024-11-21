@@ -42,6 +42,15 @@ if (mysqli_num_rows($result) == 0) {
 }
 
 $module = mysqli_fetch_assoc($result);
+
+// Insert view module activity log
+$action = 'view_module';
+$details = "Viewed module: " . htmlspecialchars($module['title']);
+$query = "INSERT INTO activity_logs (student_id, action, details, timestamp) VALUES (?, ?, ?, NOW())";
+$stmt = $con->prepare($query);
+$stmt->bind_param("iss", $_SESSION['id'], $action, $details);
+$stmt->execute();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +63,8 @@ $module = mysqli_fetch_assoc($result);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
+ 
+ <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f7fc;
@@ -210,9 +220,8 @@ $module = mysqli_fetch_assoc($result);
 
         /* Footer */
         .footer-section {
-            background-color: #052659;
-            color: #fff;
-            padding: 30px 0;
+            background-color: #2c3e50;
+            color: #ecf0f1;
         }
 
         .footer-section h5 {
@@ -243,6 +252,10 @@ $module = mysqli_fetch_assoc($result);
         .footer-contact p {
             font-size: 0.9rem;
             color: #ddd;
+        }
+        .footer-copyright {
+            font-size: 0.8rem;
+            opacity: 0.6;
         }
 
         /* Cover Image */
@@ -324,22 +337,15 @@ $module = mysqli_fetch_assoc($result);
             <div class="document-preview">
                 <?php
                 // Set the file path relative to the server root
-                $file_path = '../../php/teacher/uploads/' . $module['file_name'];  // Use correct file name from the database
+                $file_path = '../../php/teacher/uploads/' . $module['file_name']; 
 
                 if (file_exists($file_path)): 
+                    // Only allow PDF files for embedding
                     $file_extension = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
-                    
-                    // Handling different file types
-                    if (in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                        <img src="<?php echo htmlspecialchars($file_path); ?>" class="img-fluid" alt="Module Document">
-                    <?php elseif ($file_extension == 'pdf'): ?>
+                    if ($file_extension == 'pdf'): ?>
                         <embed src="<?php echo htmlspecialchars($file_path); ?>" type="application/pdf" width="100%" height="500px" />
-                    <?php elseif ($file_extension == 'pptx'): ?>
-                        <iframe src="https://view.officeapps.live.com/op/view.aspx?src=<?php echo urlencode($file_path); ?>" width="100%" height="500px"></iframe>
-                    <?php elseif ($file_extension == 'docx' || $file_extension == 'doc'): ?>
-                        <iframe src="https://view.officeapps.live.com/op/view.aspx?src=<?php echo urlencode($file_path); ?>" width="100%" height="500px"></iframe>
                     <?php else: ?>
-                        <p>Unsupported file type. <a href="<?php echo htmlspecialchars($file_path); ?>" target="_blank">Download file</a></p>
+                        <p>Non-PDF file detected. Click below to download the file:</p>
                     <?php endif; ?>
                 <?php else: ?>
                     <span class="text-danger">File not found at path: <?php echo htmlspecialchars($file_path); ?></span>
@@ -349,13 +355,16 @@ $module = mysqli_fetch_assoc($result);
             <span class="text-danger">No document available for this module.</span>
         <?php endif; ?>
     </div>
+     <!-- Button to trigger download -->
+    <div class="align-items-center d-flex justify-content-center"><a href="download_module.php?id=<?php echo htmlspecialchars($module['id']); ?>" class="btn"><i class="fas fa-download"></i> Download File</a></div>
 </div>
+
 
 </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="footer-section py-5">
+   <!-- FOOTER -->
+ <footer class="footer-section py-5">
   <div class="container">
     <div class="row">
       <div class="col-lg-4 mb-4 mb-lg-0">
@@ -366,7 +375,7 @@ $module = mysqli_fetch_assoc($result);
         <h5 class="footer-heading">Quick Links</h5>
         <ul class="footer-links list-unstyled">
           <li><a href="#Home">Home</a></li>
-          <li><a href="books.php">Books</a></li>
+          <li><a href="books.php">Modules</a></li>
           <li><a href="../../php/profile.php">Profile</a></li>
           <li><a href="about.php">About Us</a></li>
         </ul>
@@ -383,16 +392,15 @@ $module = mysqli_fetch_assoc($result);
       <div class="col-lg-4 col-md-4">
         <h5 class="footer-heading">Contact Us</h5>
         <address class="footer-contact">
-          <p><i class="fas fa-map-marker-alt me-2"></i>123 Library Street, Booktown, BK 12345</p>
-          <p><i class="fas fa-phone me-2"></i>(123) 456-7890</p>
-          <p><i class="fas fa-envelope me-2"></i>info@readiculous.com</p>
+          <p><i class="fas fa-map-marker-alt me-2"></i>BSU Lipa Batangas</p>
+          <p><i class="fas fa-phone me-2"></i>0985-982-2196</p>
+          <p><i class="fas fa-envelope me-2"></i>readiculous@gmail.com</p>
         </address>
       </div>
     </div>
   </div>
   <div class="footer-bottom text-center mt-4" style="background-color: transparent;">
     <div class="container">
-      <hr class="footer-divider">
       <p class="footer-copyright">&copy; 2024 Readiculous Library Management System. All rights reserved.</p>
     </div>
   </div>

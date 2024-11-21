@@ -93,7 +93,7 @@ $student = mysqli_fetch_assoc($result);
 
            
             foreach ($nav_items as $page => $item) {
-                $active_class = ($current_page === $page || ($current_page === 'view_students.php' && $page === 'accounts.php') || ($current_page === 'view_students.php' && $page === 'accounts.php')) ? 'active' : '';
+                $active_class = ($current_page === $page || ($current_page === 'view_student.php' && $page === 'accounts.php')) ? 'active' : '';
                 echo "<li class='nav-item'>
                         <a class='nav-link {$active_class}' href='{$page}'>
                             <i class='{$item['icon']}'></i> {$item['text']}

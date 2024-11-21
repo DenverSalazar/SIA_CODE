@@ -145,6 +145,18 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
     .content-wrapper {
         padding-top: 20px; /* Adjust this value as needed */
     }
+    .info-button {
+    background: none;
+    border: none;
+    color: #0084ff; /* Match the color used in teacher_messages.php */
+    font-size: 20px; /* Adjust size as needed */
+    margin-left: auto; /* Pushes the button to the right */
+    cursor: pointer;
+    }
+    .back-button {
+    color: #0084ff; 
+    }
+
 
 </style>
 <body>
@@ -218,35 +230,93 @@ $conversations = $conversations_result->fetch_all(MYSQLI_ASSOC);
                         </div>
                     </div>
                     <div class="col-md-8">
-            <!-- Chat box section -->
-            <div class="chat-container">
-                <div class="chat-header">
-                    <button class="back-button">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h5 id="chat-header-name"></h5>
-                </div>
-                <div class="chat-box" id="chat-box">
-                    <!-- Messages will be loaded here -->
-                </div>
-                <div class="chat-input">
-                    <form id="message-form">
-                        <div class="input-group">
-                            <input type="text" id="message" name="message" class="form-control" placeholder="Type a message..." required>
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-send">
-                                    <i class="fas fa-paper-plane"></i>
+                        <!-- Chat box section -->
+                        <div class="chat-container">
+                        <div class="chat-header">
+                                <button class="back-button">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <h5 id="chat-header-name"></h5>
+                                <button class="info-button" data-bs-toggle="modal" data-bs-target="#chatSettingsModal" title="More information about this conversation">
+                                    <i class="fas fa-info-circle"></i>
                                 </button>
                             </div>
+
+                            <div class="chat-box" id="chat-box">
+                                <!-- Messages will be loaded here -->
+                            </div>
+                            <div class="chat-input">
+                                <form id="message-form">
+                                    <div class="input-group">
+                                        <input type="text" id="message" name="message" class="form-control" placeholder="Type a message..." required>
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-send">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-                    <script>
+                    </div>
+
+                   <!-- Chat Settings Modal -->
+                    <div class="modal fade" id="chatSettingsModal" tabindex="-1" aria-labelledby="chatSettingsModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="chatSettingsModalLabel">Search Messages</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" id="searchMessages" class="form-control" placeholder="Search messages...">
+                                    <div id="searchResults" class="mt-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+        <script>
                 $(document).ready(function(){
             var selectedUserId = null;
 
+            $(document).ready(function () {
+                // Show modal when clicking the info button
+                $('.info-button').click(function () {
+                    $('#chatSettingsModal').modal('show');
+                });
+
+        // Handle message search
+                $('#searchMessages').on('input', function () {
+                    const query = $(this).val();
+                    const studentId = <?php echo $student_id; ?>;
+                    const adminId = selectedUserId; // Use the selected admin ID from the current conversation
+
+                    if (query.trim() !== '' && adminId) {
+                        $.ajax({
+                            url: "search_messages.php",
+                            method: "POST",
+                            data: {
+                                student_id: studentId,
+                                admin_id: adminId,
+                                query: query
+                            },
+                            success: function (data) {
+                                $('#searchResults').html(data);
+                            },
+                            error: function () {
+                                $('#searchResults').html('<p class="text-danger">Error fetching search results.</p>');
+                            }
+                        });
+                    } else {
+                        $('#searchResults').empty();
+                    }
+                });
+            });
             $('.back-button').click(function() {
                 // Hide the chat container
                 $('.chat-box').html('');

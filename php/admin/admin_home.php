@@ -1,42 +1,42 @@
 <?php
-session_start();
-include('../../php/db_config.php');
+    session_start();
+    include('../../php/db_config.php');
 
-        if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'teacher') {
+            if(!isset($_SESSION['valid']) || $_SESSION['role'] !== 'teacher') {
+                header("Location: ../../login.php");
+                exit();
+            }
+
+            // Initialize variables
+            $res_fName = 'Admin';
+            $res_lName = 'User';
+            $res_email = 'admin@gmail,com';
+
+            date_default_timezone_set('Asia/Manila');
+            $currentTime = date('H:i:s'); 
+
+            if(!isset($_SESSION['valid'])){
             header("Location: ../../login.php");
-            exit();
-        }
+            }
 
-        // Initialize variables
-        $res_fName = 'Admin';
-        $res_lName = 'User';
-        $res_email = 'admin@gmail,com';
+            if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
+                $id = $_SESSION['id'];
+                $role = $_SESSION['role'];
 
-        date_default_timezone_set('Asia/Manila');
-        $currentTime = date('H:i:s'); 
-
-        if(!isset($_SESSION['valid'])){
-          header("Location: ../../login.php");
-        }
-
-        if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
-            $id = $_SESSION['id'];
-            $role = $_SESSION['role'];
-
-             // Query the admin table
-        $query = mysqli_query($con, "SELECT * FROM admin WHERE id = '$id'");
-        if($result = mysqli_fetch_assoc($query)) {
-            $res_fName = $result['fName'];
-            $res_lName = $result['lName'];
-            $res_email = $result['email'];
+                // Query the admin table
+            $query = mysqli_query($con, "SELECT * FROM admin WHERE id = '$id'");
+            if($result = mysqli_fetch_assoc($query)) {
+                $res_fName = $result['fName'];
+                $res_lName = $result['lName'];
+                $res_email = $result['email'];
+            } else {
+                echo "Error: Admin data not found.";
+                exit();
+            }
         } else {
-            echo "Error: Admin data not found.";
+            echo "Error: ID is not set or empty.";
             exit();
         }
-    } else {
-        echo "Error: ID is not set or empty.";
-        exit();
-    }
 
         
 
@@ -533,6 +533,11 @@ include('../../php/db_config.php');
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            layout: {
+                                padding: {
+                                    bottom: 20 // Add 20px padding to the bottom
+                                }
+                            },
                             scales: {
                                 y: {
                                     beginAtZero: true
@@ -565,6 +570,11 @@ include('../../php/db_config.php');
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            layout: {
+                                padding: {
+                                    bottom: 20 // Add 20px padding to the bottom
+                                }
+                            },
                             plugins: {
                                 legend: {
                                     position: 'bottom'

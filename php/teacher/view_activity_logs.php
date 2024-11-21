@@ -19,8 +19,36 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 $student_query = mysqli_query($con, "SELECT fName, lName FROM students WHERE id = '$student_id'");
 $student_info = mysqli_fetch_assoc($student_query);
 
-// Query to fetch activity logs for the specific student
-$activity_query = mysqli_query($con, "SELECT * FROM activity_logs WHERE student_id = '$student_id' ORDER BY timestamp DESC");
+// Fetch unique action types for the filter
+$action_types_query = mysqli_query($con, "SELECT DISTINCT action FROM activity_logs WHERE student_id = '$student_id'");
+$action_types = [];
+while ($type = mysqli_fetch_assoc($action_types_query)) {
+    $action_types[] = $type['action'];
+}
+
+// Fetch filter inputs
+$filter_action = isset($_GET['filter_action']) ? mysqli_real_escape_string($con, $_GET['filter_action']) : '';
+$date_range = isset($_GET['date_range']) ? mysqli_real_escape_string($con, $_GET['date_range']) : '';
+
+// Parse the date range if provided
+$date_conditions = '';
+if ($date_range) {
+    $dates = explode(' - ', $date_range);
+    if (count($dates) == 2) {
+        $start_date = $dates[0];
+        $end_date = $dates[1];
+        $date_conditions = " AND timestamp BETWEEN '$start_date' AND '$end_date'";
+    }
+}
+
+// Build query with filters
+$where_clause = "WHERE student_id = '$student_id'";
+if ($filter_action) {
+    $where_clause .= " AND action = '$filter_action'";
+}
+$where_clause .= $date_conditions;
+
+$activity_query = mysqli_query($con, "SELECT * FROM activity_logs $where_clause ORDER BY timestamp DESC");
 
 function getActionIcon($action) {
     switch ($action) {
@@ -52,11 +80,43 @@ function getActionIcon($action) {
     <link rel="stylesheet" href="/SIA/css/homeAdmin.css">
     <link rel="stylesheet" href="/SIA/css/activity_logs.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 </head>
 <style>
     .sidebar{
         background-color: #052659;
     }
+    .filter-container{ 
+       margin-bottom: 20px;
+    }
+    .filter-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .filter-form .form-control,
+        .filter-form .btn {
+            border-radius: 8px;
+        }
+        .btn-filter {
+            background-color: #052659;
+            color: #fff;
+            transition: background 0.3s ease;
+        }
+        .btn-filter:hover {
+            background-color: #0c3d91;
+        }
+        .btn-reset {
+            background-color: #e63946;
+            color: #fff;
+            transition: background 0.3s ease;
+        }
+        .btn-reset:hover {
+            background-color: #d82f40;
+        }
+
 </style>
 <body>
         <div class="sidebar">
@@ -98,6 +158,31 @@ function getActionIcon($action) {
                             <h1 class="bookshelf-title">Activity Logs of <?php echo htmlspecialchars($student_info['fName'] . ' ' . $student_info['lName']); ?></h1>
                             <a href="activity_logs.php" class="btn btn-cancel">Back</a>
                         </div>
+                          <!-- FILTER -->
+        <form method="GET" class="filter-form">
+            <input type="hidden" name="id" value="<?php echo $student_id; ?>">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="filter_action" class="form-label">Action</label>
+                    <select name="filter_action" id="filter_action" class="form-control">
+                        <option value="">All Actions</option>
+                        <?php foreach ($action_types as $action): ?>
+                            <option value="<?php echo htmlspecialchars($action); ?>" <?php echo $filter_action == $action ? 'selected' : ''; ?>>
+                                <?php echo ucfirst($action); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="date_range" class="form-label">Date Range</label>
+                    <input type="text" name="date_range" id="date_range" class="form-control" value="<?php echo htmlspecialchars($date_range); ?>" placeholder="Select Date Range">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-filter w-100 me-2">Filter</button>
+                </div>
+            </div>
+        </form>
+
                     </div>
                     <table class="table table-hover">
                         <thead>
@@ -130,7 +215,28 @@ function getActionIcon($action) {
             </div>
         </main>
     </div>
+    <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script>
+    $(function() {
+        $('#date_range').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            autoUpdateInput: false,
+            opens: 'right',
+        });
 
+        $('#date_range').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#date_range').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    });
+</script>
     <script src="../../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

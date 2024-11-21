@@ -96,6 +96,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     if(mysqli_query($con, $update_query)) {
+
+        $log_action = 'update_profile';
+        $log_details = "Updated profile for user: " . htmlspecialchars($fName . ' ' . $lName);
+        
+        // Insert activity log
+        $log_query = "INSERT INTO activity_logs (student_id, action, details, timestamp) VALUES (?, ?, ?, NOW())";
+        $log_stmt = $con->prepare($log_query);
+        $log_stmt->bind_param("iss", $_SESSION['id'], $log_action, $log_details);
+        $log_stmt->execute();
+        $log_stmt->close();
+        
         $_SESSION['success_message'] = "Profile updated successfully!";
         header("Location: student_profile.php");
         exit();

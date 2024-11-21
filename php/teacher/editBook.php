@@ -2,7 +2,7 @@
 include '../../php/db_config.php'; // Ensure this path is correct and the file contains $con
 session_start();
 
-if(!isset($_SESSION['valid'])){
+if (!isset($_SESSION['valid'])) {
     header("Location: ../../login.php");
     exit();
 }
@@ -53,6 +53,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the statement
     if ($stmt->execute()) {
+        // Log the edit action
+        $action = 'edit_module';
+        $details = "Edited module: " . htmlspecialchars($title);
+        $log_stmt = $con->prepare("INSERT INTO activity_logs (teacher_id, action, details, timestamp) VALUES (?, ?, ?, NOW())");
+        $log_stmt->bind_param("iss", $_SESSION['id'], $action, $details);
+        $log_stmt->execute();
+        $log_stmt->close();
+
         header("Location: teacher_home.php?success=1");
         exit();
     } else {
@@ -129,11 +137,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <option value="HTML" <?= $book['book_category'] == 'HTML' ? 'selected' : '' ?>>HTML</option>
                         <option value="CSS" <?= $book['book_category'] == 'CSS' ? 'selected' : '' ?>>CSS</option>
                         <option value="Bootstrap" <?= $book['book_category'] == 'Bootstrap' ? 'selected' : '' ?>>Bootstrap</option>
-                        <option value="python" <?= $book['book_category'] == 'python' ? 'selected' : '' ?>>Python</option>
-                        <option value="java" <?= $book['book_category'] == 'java' ? 'selected' : '' ?>>Java</option>
-                        <option value="javascript" <?= $book['book_category'] == 'javascript' ? 'selected' : '' ?>>JavaScript</option>
-                        <option value="c#" <?= $book['book_category'] == 'c#' ? 'selected' : '' ?>>C#</option>
-                        <option value="c++" <?= $book['book_category'] == 'c++' ? 'selected' : '' ?>>C++</option>
+                        <option value="Python" <?= $book['book_category'] == 'Python' ? 'selected' : '' ?>>Python</option>
+                        <option value="Java" <?= $book['book_category'] == 'Java' ? 'selected' : '' ?>>Java</option>
+                        <option value="JavaScript" <?= $book['book_category'] == 'JavaScript' ? 'selected' : '' ?>>JavaScript</option>
+                        <option value="C#" <?= $book['book_category'] == 'C#' ? 'selected' : '' ?>>C#</option>
+                        <option value="C++" <?= $book['book_category'] == 'C++' ? 'selected' : '' ?>>C++</option>
                         <option value="SQL" <?= $book['book_category'] == 'SQL' ? 'selected' : '' ?>>SQL</option>
                     </select>
                 </div>
